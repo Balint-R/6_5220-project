@@ -1,5 +1,6 @@
-#include <bits/stdc++.h>
-#include "/Users/mac/mylibrary/debug.hpp"
+#include <iostream>
+#include <vector>
+#include <string>
 
 using namespace std;
 
