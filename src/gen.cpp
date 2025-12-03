@@ -1,4 +1,4 @@
-#include <bits/stdc++.h>
+#include <random>
 using namespace std;
 
 mt19937 rng(430298584);
