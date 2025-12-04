@@ -6,7 +6,7 @@
 #include <fstream>
 #include <iostream>
 #include <optional>
-
+#include <algorithm>
 
 constexpr size_t NUM_TESTS = 1;
 size_t num_rounds = 3;
@@ -31,6 +31,17 @@ auto generate_strings(size_t n, size_t m, size_t sigma, size_t seed){
     return std::make_tuple(A, B);
 }
 
+// Calculate the approximation ratio between reference solution and the approximation, 
+// assuming the approximation achieves a lower than correct hamming distance for all matches
+double approximation_ratio(const std::vector<uint32_t>& ref_solution, const std::vector<uint32_t>& approx_solution){
+  assert(ref_solution.size() == approx_solution.size());
+  size_t d = ref_solution.size();
+  double final_ratio = 1;
+  for (size_t i=0; i<d; i++){
+    final_ratio = std::min(final_ratio, ((double) approx_solution[i]) / (ref_solution[i]));
+  }
+  return 1-final_ratio;
+}
 
 template <typename T>
 double test(size_t n, size_t m, const std::vector<T> &A, const std::vector<T> &B, std::optional<std::vector<T>> ref_answer, 
