@@ -12,6 +12,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 set(DATA_DIR "${CMAKE_CURRENT_SOURCE_DIR}/data")
+set(CACHE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/cache")
 
 add_compile_options(-O3 -mcx16 -march=native)
 
@@ -23,6 +24,7 @@ add_executable(testing_framework
 target_compile_definitions(testing_framework
     PRIVATE
         DATA_DIR="${DATA_DIR}"
+        CACHE_DIR="${CACHE_DIR}"
 )
 
 target_include_directories(testing_framework

@@ -58,5 +58,8 @@
 # Zip files
 *.zip
 
+# Cache files
+cache/*
+
 build/
 .vscode

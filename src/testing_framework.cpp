@@ -32,20 +32,8 @@ auto generate_strings(size_t n, size_t m, size_t sigma, size_t seed){
     return std::make_tuple(A, B);
 }
 
-// Calculate the approximation ratio between reference solution and the approximation, 
-// assuming the approximation achieves a lower than correct hamming distance for all matches
-double approximation_ratio(const std::vector<uint32_t>& ref_solution, const std::vector<uint32_t>& approx_solution){
-  assert(ref_solution.size() == approx_solution.size());
-  size_t d = ref_solution.size();
-  double final_ratio = 1;
-  for (size_t i=0; i<d; i++){
-    final_ratio = std::min(final_ratio, ((double) approx_solution[i]) / (ref_solution[i]));
-  }
-  return 1-final_ratio;
-}
-
 template <typename T>
-double test(size_t n, size_t m, const std::vector<T> &A, const std::vector<T> &B, std::optional<std::vector<T>> ref_answer, 
+double test(size_t n, size_t m, const std::vector<T> &A, const std::vector<T> &B, const std::optional<std::vector<T>>& ref_answer, 
             int id=0) {
   std::cout << "\nTest name: " << id << std::endl;
 
@@ -57,7 +45,7 @@ double test(size_t n, size_t m, const std::vector<T> &A, const std::vector<T> &B
   } else{
     reference_answer = ref_answer.value();
   }
-  
+
   // for (int i=0; i<reference_answer.size(); i++){
   //   std::cout << reference_answer[i] << " ";
   // }
@@ -82,6 +70,19 @@ double test(size_t n, size_t m, const std::vector<T> &A, const std::vector<T> &B
   printf("Average time: %f\n", total_time / num_rounds);
   return average_time;
 }
+
+void get_reference_solution(std::string filename, size_t n, size_t m, std::vector<uint32_t>& A, std::vector<uint32_t>& B, 
+  std::vector<uint32_t>& reference_solution){
+  if (check_output_cached(filename)){
+    get_answer_from_cache(filename, reference_solution);
+  }
+  else{
+    reference_solution = std::vector<uint32_t>(n-m+1, 0);
+    HammingDistanceBF(n, m, A, B, reference_solution);
+    write_output_to_cache(filename, reference_solution);
+  }
+}
+
 
 int main(int argc, char **argv){
   if (argc < 2){
@@ -109,9 +110,15 @@ int main(int argc, char **argv){
     num_rounds = atoi(argv[5]);
 
     // Run synth data tests
-    std::vector<uint32_t> A, B;
+    std::vector<uint32_t> A, B, reference_solution;
     std::tie(A, B) = generate_strings<uint32_t>(n, m, sigma, seed);
-    test(n, m, A, B, {});
+
+    std::string filename = "synth_" + std::to_string(n) + "_" + std::to_string(m) + "_" 
+                                    + std::to_string(sigma) + "_" + std::to_string(seed);
+
+    get_reference_solution(filename, n, m, A, B, reference_solution);
+
+    test(n, m, A, B, std::optional{reference_solution});
   }
   else if (mode == "real"){
     if (argc < 4){
@@ -124,10 +131,19 @@ int main(int argc, char **argv){
     std::string filename = argv[2];
     num_rounds = atoi(argv[3]);
 
-    // Run real tests
-    std::vector<uint32_t> A, B;
+    // Run real tests, assuming the format in file to be:
+    // n m
+    // text
+    // pattern
+
+    std::vector<uint32_t> A, B, reference_solution;
     size_t n,m;
     std::tie(n, m) = parse_input_file(filename, A, B);
-    test(n, m, A, B, {});
+    assert(n == A.size());
+    assert(m == B.size());
+
+    get_reference_solution(filename, n, m, A, B, reference_solution);
+
+    test(n, m, A, B, std::optional{reference_solution});
   }
 }
