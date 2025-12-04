@@ -58,6 +58,11 @@ double test(size_t n, size_t m, const std::vector<T> &A, const std::vector<T> &B
     reference_answer = ref_answer.value();
   }
   
+  // for (int i=0; i<reference_answer.size(); i++){
+  //   std::cout << reference_answer[i] << " ";
+  // }
+  // std::cout << std::endl;
+
   double total_time = 0;
   for (size_t i = 0; i <= num_rounds; i++) {
     std::vector<T> result(n-m+1, 0); //initialize result array to all 0
@@ -109,24 +114,20 @@ int main(int argc, char **argv){
     test(n, m, A, B, {});
   }
   else if (mode == "real"){
-    if (argc < 5){
+    if (argc < 4){
       printf(
-          "Usage: ./testing_framework real <f1> <f2> <rounds>\n"
-          "f1: name of first file\n"
-          "f2: name of second file\n"
+          "Usage: ./testing_framework real <filename> <rounds>\n"
+          "filename: name of input file\n"
           "rounds: number of rounds");
       exit(0);
     }
-    std::string f1 = argv[2];
-    std::string f2 = argv[3];
-    num_rounds = atoi(argv[4]);
+    std::string filename = argv[2];
+    num_rounds = atoi(argv[3]);
 
     // Run real tests
     std::vector<uint32_t> A, B;
-    parse_text_file(f1, A);
-    parse_text_file(f2, B);
-    size_t n = A.size();
-    size_t m = B.size();
+    size_t n,m;
+    std::tie(n, m) = parse_input_file(filename, A, B);
     test(n, m, A, B, {});
   }
 }
