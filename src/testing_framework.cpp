@@ -1,4 +1,5 @@
 #include "hamming_distance_bf.h"
+#include "utils.h"
 
 #include <random>
 #include <chrono>
@@ -56,7 +57,7 @@ double test(size_t n, size_t m, const std::vector<T> &A, const std::vector<T> &B
   } else{
     reference_answer = ref_answer.value();
   }
-
+  
   double total_time = 0;
   for (size_t i = 0; i <= num_rounds; i++) {
     std::vector<T> result(n-m+1, 0); //initialize result array to all 0
@@ -78,23 +79,54 @@ double test(size_t n, size_t m, const std::vector<T> &A, const std::vector<T> &B
 }
 
 int main(int argc, char **argv){
-    if (argc < 5){
+  if (argc < 2){
+    printf(
+          "Usage: ./testing_framework <mode> <mode_args>\n"
+          "mode: real or synth\n"
+          "mode_args: arguments specific to mode");
+      exit(0);
+  }
+  std::string mode = argv[1];
+  if (mode == "synth"){
+    if (argc < 6){
         printf(
-            "Usage: ./testing_framework <n> <m> <sigma> <rounds>\n"
+            "Usage: ./testing_framework synth <n> <m> <sigma> <rounds>\n"
             "n: length of the first string\n"
             "m: length of the second(pattern) string\n"
             "sigma: alphabet size\n"
             "rounds: number of rounds");
         exit(0);
     }
-    size_t n = atoi(argv[1]);
-    size_t m = atoi(argv[2]);
+    size_t n = atoi(argv[2]);
+    size_t m = atoi(argv[3]);
     assert(n >= m);
-    size_t sigma = atoi(argv[3]);
-    num_rounds = atoi(argv[4]);
+    size_t sigma   = atoi(argv[4]);
+    num_rounds = atoi(argv[5]);
 
-    // Run all tests
+    // Run synth data tests
     std::vector<uint32_t> A, B;
     std::tie(A, B) = generate_strings<uint32_t>(n, m, sigma, seed);
     test(n, m, A, B, {});
+  }
+  else if (mode == "real"){
+    if (argc < 5){
+      printf(
+          "Usage: ./testing_framework real <f1> <f2> <rounds>\n"
+          "f1: name of first file\n"
+          "f2: name of second file\n"
+          "rounds: number of rounds");
+      exit(0);
+    }
+    std::string f1 = argv[2];
+    std::string f2 = argv[3];
+    num_rounds = atoi(argv[4]);
+
+    // Run real tests
+    std::vector<uint32_t> A, B;
+    parse_text_file(f1, A);
+    parse_text_file(f2, B);
+    size_t n = A.size();
+    size_t m = B.size();
+    test(n, m, A, B, {});
+  }
 }

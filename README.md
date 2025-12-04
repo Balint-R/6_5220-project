@@ -10,10 +10,20 @@ cmake --build .
 ```
 
 ## Running Code
+
+### For synthetic data:
 `
-./testing_framework <n> <m> <sigma> <rounds>
+./testing_framework synth <n> <m> <sigma> <rounds>
 `
 - n: length of first string
 - m: length of second string
 - sigma: alphabet size
+- rounds: number of rounds to run the algorithms for
+
+### For real data:
+`
+./testing_framework real <f1> <f2> <rounds>
+`
+- f1: first filename
+- f2: second filename
 - rounds: number of rounds to run the algorithms for
