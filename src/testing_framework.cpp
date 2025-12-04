@@ -62,7 +62,8 @@ double test(size_t n, size_t m, const std::vector<T> &A, const std::vector<T> &B
     if (i == 0) {
       printf("Warmup round: %f\n", s_float.count());
     } else {
-      printf("Round %zu: %f\n", i, s_float.count());
+      printf("Round %zu time: %f\n", i, s_float.count());
+      printf("Round %zu approximation ratio: %f\n", i, approximation_ratio(reference_answer, result));
       total_time += s_float.count();
     }
   }
