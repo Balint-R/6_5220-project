@@ -7,7 +7,6 @@
 #include <iostream>
 #include <optional>
 
-using namespace std;
 
 constexpr size_t NUM_TESTS = 1;
 size_t num_rounds = 3;
@@ -16,9 +15,9 @@ size_t seed = 430298584;
 template <typename T>
 auto generate_strings(size_t n, size_t m, size_t sigma, size_t seed){
     // Uniformly at random generate each character
-    mt19937 rng(seed);
+    std::mt19937 rng(seed);
     auto randInt = [&rng](int a, int b) { // Capture x by value
-        return uniform_int_distribution(a, b)(rng);
+        return std::uniform_int_distribution(a, b)(rng);
     };
 
     printf("Generating test case... (n: %zu, k: %zu, alpha: %zu, seed: %zu)\n", n, m, sigma, seed);
