@@ -22,8 +22,7 @@ cmake --build .
 
 ### For real data:
 `
-./testing_framework real <f1> <f2> <rounds>
+./testing_framework real <filename> <rounds>
 `
-- f1: first filename
-- f2: second filename
+- filename: filename of input file
 - rounds: number of rounds to run the algorithms for
