@@ -5,19 +5,22 @@
 #include <cassert>
 #include <fstream>
 #include <iostream>
+#include <optional>
 
 using namespace std;
 
 constexpr size_t NUM_TESTS = 1;
 size_t num_rounds = 3;
-size_t seed = 42;
-
-mt19937 rng(430298584);
-int randInt(int a, int b){return uniform_int_distribution(a, b)(rng);}
+size_t seed = 430298584;
 
 template <typename T>
 auto generate_strings(size_t n, size_t m, size_t sigma, size_t seed){
     // Uniformly at random generate each character
+    mt19937 rng(seed);
+    auto randInt = [&rng](int a, int b) { // Capture x by value
+        return uniform_int_distribution(a, b)(rng);
+    };
+
     printf("Generating test case... (n: %zu, k: %zu, alpha: %zu, seed: %zu)\n", n, m, sigma, seed);
     std::vector<T> A(n), B(m);
     for (int i=0; i<n; i++){
@@ -31,9 +34,19 @@ auto generate_strings(size_t n, size_t m, size_t sigma, size_t seed){
 
 
 template <typename T>
-double test(size_t n, size_t m, const std::vector<T> &A, const std::vector<T> &B,
+double test(size_t n, size_t m, const std::vector<T> &A, const std::vector<T> &B, std::optional<std::vector<T>> ref_answer, 
             int id=0) {
   std::cout << "\nTest name: " << id << std::endl;
+
+  std::vector<T> reference_answer;
+  if (!ref_answer.has_value()){
+    std::cout << "\nRecalculating reference answer with brute force... " << std::endl;
+    reference_answer = std::vector<T>(n-m+1, 0);
+    HammingDistanceBF(n, m, A, B, reference_answer);
+  } else{
+    reference_answer = ref_answer.value();
+  }
+
   double total_time = 0;
   for (size_t i = 0; i <= num_rounds; i++) {
     std::vector<T> result(n-m+1, 0); //initialize result array to all 0
@@ -73,5 +86,5 @@ int main(int argc, char **argv){
     // Run all tests
     std::vector<uint32_t> A, B;
     std::tie(A, B) = generate_strings<uint32_t>(n, m, sigma, seed);
-    test(n, m, A, B);
+    test(n, m, A, B, {});
 }
