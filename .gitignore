@@ -55,5 +55,8 @@
 *.out
 *.app
 
+# Zip files
+*.zip
+
 build/
 .vscode
