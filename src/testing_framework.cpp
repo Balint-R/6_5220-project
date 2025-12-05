@@ -59,7 +59,7 @@ double test(size_t n, size_t m, size_t sigma, const std::vector<T> &A, const std
 		std::vector<T> result(n-m+1, 0); //initialize result array to all 0
 		auto t1 = std::chrono::high_resolution_clock::now();
 		// HammingDistanceBF(n, m, A, B, result);
-		HammingDistanceProj(n, m, A, B, result, rng);
+		HammingDistanceProj(n, m, sigma, A, B, result, rng);
 		auto t2 = std::chrono::high_resolution_clock::now();
 
 		std::chrono::duration<float> s_float = t2 - t1;
@@ -145,16 +145,12 @@ int main(int argc, char **argv){
 		std::string filename = argv[2];
 		num_rounds = atoi(argv[3]);
 
-		// Run real tests, assuming the format in file to be:
-		// n m
-		// text
-		// pattern
-
 		std::vector<uint32_t> A, B, reference_solution;
-		size_t n,m;
+		size_t n, m, sigma;
 		std::tie(n, m) = parse_input_file(filename, A, B);
 		assert(n == A.size());
 		assert(m == B.size());
+		sigma = 1 + std::max(*std::max_element(A.begin(), A.end()), *std::max_element(B.begin(), B.end()));
 
 		get_reference_solution(filename, n, m, A, B, reference_solution);
 
@@ -163,6 +159,6 @@ int main(int argc, char **argv){
 		cout << "writing output to file: " << solution_filename << '\n';
 		save_output_to_file(solution_filename, reference_solution);
 
-		test(n, m, A, B, std::optional{reference_solution});
+		test(n, m, sigma, A, B, std::optional{reference_solution});
 	}
 }

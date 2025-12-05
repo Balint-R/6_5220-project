@@ -19,6 +19,7 @@ add_compile_options(-O3)
 add_executable(testing_framework
     src/testing_framework.cpp
     src/hamming_distance_bf.cpp
+    src/hamming_distance_proj.cpp
 )
 
 target_compile_definitions(testing_framework
