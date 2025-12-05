@@ -20,6 +20,7 @@ add_executable(testing_framework
     src/testing_framework.cpp
     src/hamming_distance_bf.cpp
     src/hamming_distance_proj.cpp
+    src/first_alg_with_heuristics.cpp
 )
 
 target_compile_definitions(testing_framework

@@ -1,5 +1,6 @@
 #include "hamming_distance_bf.h"
 #include "hamming_distance_proj.h"
+#include "first_alg_with_heuristics.h"
 #include "utils.h"
 
 #include <random>
@@ -16,6 +17,9 @@ constexpr size_t NUM_TESTS = 1;
 size_t num_rounds = 3;
 size_t seed = 430298584;
 std::mt19937 rng(seed);
+
+// const auto FUNC = HammingDistanceBase;
+const auto FUNC = HammingDistanceHeuristic_1;
 
 template <typename T>
 auto generate_strings(size_t n, size_t m, size_t sigma, size_t seed){
@@ -59,7 +63,8 @@ double test(size_t n, size_t m, size_t sigma, const std::vector<T> &A, const std
 		std::vector<T> result(n-m+1, 0); //initialize result array to all 0
 		auto t1 = std::chrono::high_resolution_clock::now();
 		// HammingDistanceBF(n, m, A, B, result);
-		HammingDistanceProj(n, m, sigma, A, B, result, rng);
+		FUNC(n, m, sigma, A, B, result, rng);
+        // HammingDistanceHeuristic_1(n, m, sigma, A, B, result, rng);
 		auto t2 = std::chrono::high_resolution_clock::now();
 
 		std::chrono::duration<float> s_float = t2 - t1;
@@ -155,9 +160,9 @@ int main(int argc, char **argv){
 		get_reference_solution(filename, n, m, A, B, reference_solution);
 
 		// save reference_solution to "filename.sol"
-		std::string solution_filename = filename.replace(filename.find_last_of("."), filename.size(), ".sol");
-		cout << "writing output to file: " << solution_filename << '\n';
-		save_output_to_file(solution_filename, reference_solution);
+		// std::string solution_filename = filename.replace(filename.find_last_of("."), filename.size(), ".sol");
+		// cout << "writing output to file: " << solution_filename << '\n';
+		// save_output_to_file(solution_filename, reference_solution);
 
 		test(n, m, sigma, A, B, std::optional{reference_solution});
 	}
