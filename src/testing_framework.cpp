@@ -1,4 +1,5 @@
 #include "hamming_distance_bf.h"
+#include "hamming_distance_proj.h"
 #include "utils.h"
 
 #include <random>
@@ -14,28 +15,28 @@ using namespace std;
 constexpr size_t NUM_TESTS = 1;
 size_t num_rounds = 3;
 size_t seed = 430298584;
+std::mt19937 rng(seed);
 
 template <typename T>
 auto generate_strings(size_t n, size_t m, size_t sigma, size_t seed){
     // Uniformly at random generate each character
-    std::mt19937 rng(seed);
-    auto randInt = [&rng](int a, int b) { // Capture x by value
+    auto randInt = [](int a, int b) { // Capture x by value
         return std::uniform_int_distribution(a, b)(rng);
     };
 
     printf("Generating test case... (n: %zu, k: %zu, alpha: %zu, seed: %zu)\n", n, m, sigma, seed);
     std::vector<T> A(n), B(m);
     for (int i=0; i<n; i++){
-        A[i] = randInt(0, sigma);
+        A[i] = randInt(0, sigma-1);
     }
     for (int i=0; i<m; i++){
-        B[i] = randInt(0, sigma);
+        B[i] = randInt(0, sigma-1);
     }
     return std::make_tuple(A, B);
 }
 
 template <typename T>
-double test(size_t n, size_t m, const std::vector<T> &A, const std::vector<T> &B, const std::optional<std::vector<T>>& ref_answer,
+double test(size_t n, size_t m, size_t sigma, const std::vector<T> &A, const std::vector<T> &B, const std::optional<std::vector<T>>& ref_answer,
             int id=0) {
 	std::cout << "\nTest name: " << id << std::endl;
 
@@ -57,7 +58,8 @@ double test(size_t n, size_t m, const std::vector<T> &A, const std::vector<T> &B
 	for (size_t i = 0; i <= num_rounds; i++) {
 		std::vector<T> result(n-m+1, 0); //initialize result array to all 0
 		auto t1 = std::chrono::high_resolution_clock::now();
-		HammingDistanceBF(n, m, A, B, result);
+		// HammingDistanceBF(n, m, A, B, result);
+		HammingDistanceProj(n, m, A, B, result, rng);
 		auto t2 = std::chrono::high_resolution_clock::now();
 
 		std::chrono::duration<float> s_float = t2 - t1;
@@ -118,7 +120,7 @@ int main(int argc, char **argv){
 		size_t n = atoi(argv[2]);
 		size_t m = atoi(argv[3]);
 		assert(n >= m);
-		size_t sigma   = atoi(argv[4]);
+		size_t sigma = atoi(argv[4]);
 		num_rounds = atoi(argv[5]);
 
 		// Run synth data tests
@@ -130,7 +132,7 @@ int main(int argc, char **argv){
 
 		get_reference_solution(filename, n, m, A, B, reference_solution);
 
-		test(n, m, A, B, std::optional{reference_solution});
+		test(n, m, sigma, A, B, std::optional{reference_solution});
 	}
 	else if (mode == "real"){
 		if (argc < 4){
