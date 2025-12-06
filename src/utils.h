@@ -9,8 +9,8 @@
 #include <vector>
 
 const std::string FILE_STR = std::string(__FILE__);
-const std::string DATA_DIR = FILE_STR.substr(0, FILE_STR.rfind('/')) + "/data";
-const std::string CACHE_DIR = FILE_STR.substr(0, FILE_STR.rfind('/')) + "/cache";
+const std::string DATA_DIR = FILE_STR.substr(0, FILE_STR.substr(0, FILE_STR.rfind('/')).rfind('/')) + "/data";
+const std::string CACHE_DIR = FILE_STR.substr(0, FILE_STR.substr(0, FILE_STR.rfind('/')).rfind('/')) + "/cache";
 
 // Function to parse a file with a text file to
 // std::vector variable, blank lines and

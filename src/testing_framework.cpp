@@ -114,16 +114,6 @@ void get_reference_solution(string filename, size_t n, size_t m, vector<uint32_t
 	}
 }
 
-void save_output_to_file(string filename, const vector<uint32_t> &dist){
-	ofstream out_file(filename);
-	out_file << dist.size() << "\n";
-	for (auto num : dist) {
-		out_file << num << " ";
-	}
-	out_file.close();
-}
-
-
 int main(int argc, char **argv){
 	if (argc < 2) {
 		printf(
@@ -189,11 +179,6 @@ int main(int argc, char **argv){
 		sigma = 1 + max(*max_element(A.begin(), A.end()), *max_element(B.begin(), B.end()));
 
 		get_reference_solution(filename, n, m, A, B, reference_solution);
-
-		// save reference_solution to "filename.sol"
-		string solution_filename = filename.replace(filename.find_last_of("."), filename.size(), ".sol");
-		cout << "writing output to file: " << solution_filename << '\n';
-		save_output_to_file(solution_filename, reference_solution);
 
 		test(n, m, sigma, eps, A, B, std::optional{reference_solution}, id);
 	}
