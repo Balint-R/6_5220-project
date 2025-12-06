@@ -6,7 +6,6 @@
 #include <algorithm>
 #include <cassert>
 #include <chrono>
-#include <fstream>
 #include <iostream>
 #include <optional>
 #include <random>
@@ -119,14 +118,14 @@ int main(int argc, char **argv){
 		printf(
 			"Usage: ./testing_framework <mode> <mode_args>\n"
 			"mode: real or synth\n"
-			"mode_args: arguments specific to mode");
-		exit(0);
+			"mode_args: arguments specific to mode\n");
+		exit(1);
 	}
 	std::string mode = argv[1];
 	int id = 0;
 	double eps = 0.01;
-	if (mode == "synth"){
-		if (argc < 7){
+	if (mode == "synth") {
+		if (argc < 7) {
 			printf(
 				"Usage: ./testing_framework synth <n> <m> <eps> <sigma> <rounds> <id>\n"
 				"n: length of the first string\n"
@@ -135,7 +134,7 @@ int main(int argc, char **argv){
 				"sigma: alphabet size\n"
 				"rounds: number of rounds\n"
 				"id: algorithm to test\n");
-			exit(0);
+			exit(1);
 		}
 		size_t n = atoi(argv[2]);
 		size_t m = atoi(argv[3]);
@@ -156,15 +155,15 @@ int main(int argc, char **argv){
 
 		test(n, m, sigma, eps, A, B, std::optional{reference_solution}, id);
 	}
-	else if (mode == "real"){
-		if (argc < 5){
-		printf(
-			"Usage: ./testing_framework real <filename> <eps> <rounds> <id>\n"
-			"filename: name of input file\n"
-			"eps: desired approximation ratio"
-			"rounds: number of rounds"
-			"id: algorithm to test");
-		exit(0);
+	else if (mode == "real") {
+		if (argc < 5) {
+			printf(
+				"Usage: ./testing_framework real <filename> <eps> <rounds> <id>\n"
+				"filename: name of input file\n"
+				"eps: desired approximation ratio\n"
+				"rounds: number of rounds\n"
+				"id: algorithm to test\n");
+			exit(1);
 		}
 		std::string filename = argv[2];
 		eps = atof(argv[3]);
@@ -184,5 +183,6 @@ int main(int argc, char **argv){
 	}
 	else {
 		printf("Invalid mode. Should be 'synth' or 'real'.");
+		exit(1);
 	}
 }
