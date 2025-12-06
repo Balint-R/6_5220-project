@@ -18,6 +18,8 @@ const int SEED = 430298584;
 mt19937 alg_rng(SEED);
 
 const int NUM_ALGORITHMS = 5;
+const bool SKEWED = true; // whether to generate skewed test case
+const double BIG_PROB = 0.8;
 
 string get_test_name(int id){
 	switch (id){
@@ -142,12 +144,18 @@ int main(int argc, char **argv){
 
 		// Run synth data tests
 		vector<uint32_t> A, B, reference_solution;
-		// std::tie(A, B) = generate_uniform_strings<uint32_t>(n, m, sigma, SEED);
-		std::tie(A, B) = generate_skewed_strings<uint32_t>(n, m, sigma, SEED, 0.9);
-		// std::tie(A, B) = generate_increasing_seq<uint32_t>(n, m, sigma, SEED);
 
 		string filename = "synth_" + to_string(n) + "_" + to_string(m) + "_"
 										+ to_string(sigma) + "_" + to_string(SEED);
+
+        if (SKEWED) {
+		    std::tie(A, B) = generate_skewed_strings<uint32_t>(n, m, sigma, SEED, BIG_PROB);
+            filename += "_skewed_" + to_string(static_cast<int>(BIG_PROB * 100));
+        } else {
+            std::tie(A, B) = generate_uniform_strings<uint32_t>(n, m, sigma, SEED);
+        }
+		// std::tie(A, B) = generate_increasing_seq<uint32_t>(n, m, sigma, SEED);
+
 
 		get_reference_solution(filename, n, m, A, B, reference_solution);
 

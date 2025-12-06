@@ -3,6 +3,8 @@
 #include <vector>
 #include <numeric>
 
+// #include "/Users/mac/mylibrary/debug.hpp"
+
 template <typename T>
 auto generate_uniform_strings(size_t n, size_t m, size_t sigma, size_t seed){
     // Uniformly at random generate each character
@@ -48,9 +50,11 @@ auto generate_skewed_strings(size_t n, size_t m, size_t sigma, size_t seed, doub
 
     for (size_t i = 0; i < n; i++) {
         A[i] = gen_symbol();
+        // cout << A[i] << " ";
     }
     for (size_t i = 0; i < m; i++) {
         B[i] = gen_symbol();
+        // cout << B[i] << " ";
     }
 
     return std::make_tuple(A, B);
