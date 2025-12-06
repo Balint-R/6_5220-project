@@ -1,25 +1,25 @@
-#include "hamming_distance_bf.h"
-#include "hamming_distance_proj.h"
+#include "ham_dist_bf.h"
+#include "ham_dist_proj.h"
+#include "ham_dist_sqrt.h"
 #include "first_alg_with_heuristics.h"
 #include "utils.h"
 
 #include <algorithm>
 #include <cassert>
 #include <chrono>
-#include <fstream>
 #include <iostream>
 #include <optional>
 #include <random>
 
 using namespace std;
 
-constexpr size_t NUM_TESTS = 1;
+// constexpr size_t NUM_TESTS = 1;
 size_t num_rounds;
 const size_t SEED = 430298584;
 mt19937 alg_rng(SEED);
 
 // const auto FUNC = HammingDistanceBase;
-const auto FUNC = HammingDistanceHeuristic_1;
+// const auto FUNC = HammingDistanceHeuristic_1;
 
 template <typename T>
 auto generate_strings(size_t n, size_t m, size_t sigma, size_t seed){
@@ -29,7 +29,7 @@ auto generate_strings(size_t n, size_t m, size_t sigma, size_t seed){
         return uniform_int_distribution(a, b)(rng);
     };
 
-    printf("Generating test case... (n: %zu, k: %zu, alpha: %zu, seed: %zu)\n", n, m, sigma, seed);
+    printf("Generating test case... (n: %zu, m: %zu, sigma: %zu, seed: %zu)\n", n, m, sigma, seed);
     vector<T> A(n), B(m);
     for (size_t i = 0; i < n; i++){
         A[i] = randInt(0, sigma-1);
@@ -46,6 +46,8 @@ std::string get_test_name(int id){
 			return "Brute Force";
 		case 1:
 			return "Projection to Binary Alphabet";
+		case 2:
+			return "Sqrt";
 		default:
 			return "N/A";
 	}
@@ -61,7 +63,7 @@ double test(size_t n, size_t m, size_t sigma, double eps,
 	if (!ref_answer.has_value()) {
 		cout << "\nRecalculating reference answer with brute force... " << endl;
 		reference_answer = vector<T>(n-m+1, 0);
-		HammingDistanceBF(n, m, A, B, reference_answer);
+		ham_dist_bf(n, m, A, B, reference_answer);
 	}
 	else {
 		reference_answer = ref_answer.value();
@@ -79,10 +81,13 @@ double test(size_t n, size_t m, size_t sigma, double eps,
 
 		switch (id) {
 			case 0:
-				HammingDistanceBF(n, m, A, B, result);
+				ham_dist_bf(n, m, A, B, result);
 				break;
 			case 1:
-				HammingDistanceProj(n, m, sigma, eps, A, B, result, alg_rng);
+				ham_dist_proj(n, m, sigma, eps, A, B, result, alg_rng);
+				break;
+			case 2:
+				ham_dist_sqrt(n, m, sigma, eps, A, B, result);
 				break;
 		}
 		auto t2 = std::chrono::steady_clock::now();
@@ -109,34 +114,24 @@ void get_reference_solution(string filename, size_t n, size_t m, vector<uint32_t
 	}
 	else {
 		reference_solution = vector<uint32_t>(n-m+1, 0);
-		HammingDistanceBF(n, m, A, B, reference_solution);
+		ham_dist_bf(n, m, A, B, reference_solution);
 		write_output_to_cache(filename, reference_solution);
 	}
 }
-
-void save_output_to_file(string filename, const vector<uint32_t> &dist){
-	ofstream out_file(filename);
-	out_file << dist.size() << "\n";
-	for (auto num : dist) {
-		out_file << num << " ";
-	}
-	out_file.close();
-}
-
 
 int main(int argc, char **argv){
 	if (argc < 2) {
 		printf(
 			"Usage: ./testing_framework <mode> <mode_args>\n"
 			"mode: real or synth\n"
-			"mode_args: arguments specific to mode");
-		exit(0);
+			"mode_args: arguments specific to mode\n");
+		exit(1);
 	}
 	std::string mode = argv[1];
 	int id = 0;
 	double eps = 0.01;
-	if (mode == "synth"){
-		if (argc < 7){
+	if (mode == "synth") {
+		if (argc < 7) {
 			printf(
 				"Usage: ./testing_framework synth <n> <m> <eps> <sigma> <rounds> <id>\n"
 				"n: length of the first string\n"
@@ -145,7 +140,7 @@ int main(int argc, char **argv){
 				"sigma: alphabet size\n"
 				"rounds: number of rounds\n"
 				"id: algorithm to test\n");
-			exit(0);
+			exit(1);
 		}
 		size_t n = atoi(argv[2]);
 		size_t m = atoi(argv[3]);
@@ -166,15 +161,15 @@ int main(int argc, char **argv){
 
 		test(n, m, sigma, eps, A, B, std::optional{reference_solution}, id);
 	}
-	else if (mode == "real"){
-		if (argc < 5){
-		printf(
-			"Usage: ./testing_framework real <filename> <eps> <rounds> <id>\n"
-			"filename: name of input file\n"
-			"eps: desired approximation ratio"
-			"rounds: number of rounds"
-			"id: algorithm to test");
-		exit(0);
+	else if (mode == "real") {
+		if (argc < 5) {
+			printf(
+				"Usage: ./testing_framework real <filename> <eps> <rounds> <id>\n"
+				"filename: name of input file\n"
+				"eps: desired approximation ratio\n"
+				"rounds: number of rounds\n"
+				"id: algorithm to test\n");
+			exit(1);
 		}
 		std::string filename = argv[2];
 		eps = atof(argv[3]);
@@ -190,15 +185,10 @@ int main(int argc, char **argv){
 
 		get_reference_solution(filename, n, m, A, B, reference_solution);
 
-		// save reference_solution to "filename.sol"
-		string solution_filename = filename.replace(filename.find_last_of("."), filename.size(), ".sol");
-		cout << "writing output to file: " << solution_filename << '\n';
-		save_output_to_file(solution_filename, reference_solution);
-
 		test(n, m, sigma, eps, A, B, std::optional{reference_solution}, id);
 	}
 	else {
-		printf("Invalid mode. Should be 'synth' or 'real'.");
-		assert(false);
+		printf("Invalid mode. Should be 'synth' or 'real'.\n");
+		exit(1);
 	}
 }

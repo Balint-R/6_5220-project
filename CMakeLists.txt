@@ -8,7 +8,7 @@ project(
   LANGUAGES CXX
 )
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 add_compile_options(-O3)
@@ -16,8 +16,9 @@ add_compile_options(-Wall)
 
 add_executable(testing_framework
     src/testing_framework.cpp
-    src/hamming_distance_bf.cpp
-    src/hamming_distance_proj.cpp
+    src/ham_dist_bf.cpp
+    src/ham_dist_proj.cpp
+    src/ham_dist_sqrt.cpp
     src/first_alg_with_heuristics.cpp
 )
 
