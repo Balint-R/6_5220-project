@@ -35,10 +35,8 @@ std::vector<int> HAM(size_t n, size_t m, const std::vector<uint32_t>& A, const s
 // choose the best h from k candidates
 // that minimizes sum(bucket mass)^2
 std::function<int(size_t)> choose_hash_heuristic_1(size_t num_buckets, int k, std::map<int, long long>& freq) {
-    // std::vector<std::pair<int, int>> candidates;
 
     auto score_function = [&](std::function<int(size_t)> h) {
-        // std::vector<long long> bucket_mass(num_buckets, 0);
         std::map<int, long long> bucket_mass;
         for (const auto& [val, count] : freq) {
             int bucket = h(val);
@@ -71,10 +69,7 @@ void HammingDistanceHeuristic_1(size_t n, size_t m, size_t sigma, const std::vec
     double c = 1; // run c * log n times
     size_t num_rounds = std::max((size_t)1, (size_t)(c * std::log2(n)));
 
-    // std::cout << "n = " << n << ", m = " << m << ", sigma = " << sigma << ", eps = " << eps << ", c = " << c << ", num_rounds = " << num_rounds << "\n";
-
     size_t num_buckets = static_cast<size_t>(2 / eps);
-    // std::cout << "num_buckets = " << num_buckets << "\n";
     int k = 5; // number of candidate hash functions
 
     std::map<int, long long> freq;
@@ -103,15 +98,10 @@ void HammingDistanceHeuristic_1(size_t n, size_t m, size_t sigma, const std::vec
         auto cur_res = HAM(n, m, hA, hB);
         assert(cur_res.size() == dist.size());
 
-        // std::cout << cur_res.front() << " ";
-
         for (size_t i = 0; i < cur_res.size(); i++) {
             dist[i] = std::max(dist[i], (uint32_t)cur_res[i]);
         }
     }
-
-    // for (auto& val : dist) std::cout << val << " ";
-    // std::cout << "\n";
 
 }
 
