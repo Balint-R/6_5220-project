@@ -56,10 +56,10 @@ double test(int n, int m, int sigma, double eps, const vector<T> &A, const vecto
 				ham_dist_sqrt(n, m, sigma, eps, A, B, result);
 				break;
             case 3:
-                HammingDistanceHeuristic_1(n, m, sigma, A, B, result, alg_rng);
+                HammingDistanceHeuristic_1(n, m, sigma, eps, A, B, result, alg_rng);
                 break;
             case 4:
-                HammingDistanceBase(n, m, sigma, A, B, result, alg_rng);
+                HammingDistanceBase(n, m, sigma, eps, A, B, result, alg_rng);
                 break;
 			default:
 				assert(false);
@@ -87,8 +87,7 @@ double test_all(int n, int m, int sigma, double eps, const vector<uint32_t> &A, 
                            const vector<uint32_t> &ref_answer) {
     double total_time = 0;
     for (int id = 0; id < NUM_ALGORITHMS; id++) {
-        cout << "\n==============================" << endl;
-        cout << "Testing algorithm: " << get_test_name(id) << endl;
+        cout << "\n==============================";
         double avg_time = test<uint32_t>(n, m, sigma, eps, A, B, ref_answer, id);
         total_time += avg_time;
     }

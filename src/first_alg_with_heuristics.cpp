@@ -7,8 +7,10 @@ const int PRIME = 1e9+7;
 const size_t SEED = 430298584;
 mt19937 rng(SEED);
 
-function<int(size_t)> generate_hash(size_t num_buckets) {
-    uniform_int_distribution<int> dist(1, PRIME - 1);
+uniform_int_distribution<int> dist(1, PRIME - 1);
+
+function<long long(size_t)> generate_hash(size_t num_buckets) {
+    // uniform_int_distribution<int> dist(1, PRIME - 1);
     int a = dist(rng);
     int b = dist(rng);
     return [=](size_t x) {
@@ -59,11 +61,10 @@ function<int(size_t)> choose_hash_heuristic_1(size_t num_buckets, int k, unorder
     return best_h;
 }
 
-void HammingDistanceHeuristic_1(size_t n, size_t m, size_t sigma, const vector<uint32_t> &A,
+void HammingDistanceHeuristic_1(size_t n, size_t m, size_t sigma, double eps, const vector<uint32_t> &A,
                                 const vector<uint32_t> &B, vector<uint32_t> &dist, mt19937 &rng1) {
     // parameters
-    double eps = 0.01;
-    double c = 1; // run c * log n times
+    double c = 2; // run c * log n times
     size_t num_rounds = max((size_t)1, (size_t)(c * log2(n)));
 
     size_t num_buckets = static_cast<size_t>(2 / eps);
@@ -97,10 +98,9 @@ void HammingDistanceHeuristic_1(size_t n, size_t m, size_t sigma, const vector<u
 }
 
 
-void HammingDistanceBase(size_t n, size_t m, size_t sigma, const vector<uint32_t> &A,
+void HammingDistanceBase(size_t n, size_t m, size_t sigma, double eps, const vector<uint32_t> &A,
                          const vector<uint32_t> &B, vector<uint32_t> &dist, mt19937 &rng1) {
     // parameters
-    double eps = 0.01;
     double c = 2; // run c * log n times
 
     size_t num_buckets = static_cast<size_t>(2 / eps);
