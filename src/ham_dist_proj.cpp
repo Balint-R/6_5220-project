@@ -11,13 +11,14 @@ void ham_dist_proj(int n, int m, int sigma, double eps,
                    vector<uint32_t> &result, mt19937 &rng) {
 
     int reduced_sigma = ceil(min(2 / eps, (double) sigma));
-    int c = 2; // run c * log n times
-    int num_its = c * ceil(log2(n));
+    // int c = 2; // run c * log n times
+    // int num_its = c * ceil(log2(n));
 
-    if(num_its * reduced_sigma >= sigma){
-        reduced_sigma = sigma;
-        num_its = 1;
-    }
+    // if(num_its * reduced_sigma >= sigma){
+    //     reduced_sigma = sigma;
+    //     num_its = 1;
+    // }
+    int num_its = 1;
 
     vector<uint32_t> binA(n), binB(m), binOut(n+m-1), aggBinOut(n-m+1); // scratch arrays to run FFT on
 
@@ -25,7 +26,7 @@ void ham_dist_proj(int n, int m, int sigma, double eps,
     vector<int> ord(sigma), rng_map(sigma);
     iota(begin(ord), end(ord), 0);
 
-    // fprintf(stderr, "num_its: %d\n", num_its);
+    fprintf(stderr, "num_its: %d\n", num_its);
 
     for (int round = 0; round < num_its; round++){ // run for c log n rounds
         shuffle(begin(ord), end(ord), rng);
