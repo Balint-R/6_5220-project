@@ -115,7 +115,7 @@ inline double approximation_ratio(const vector<uint32_t> &ref_solution,
     for(int i = 0; i < d; i++){
         int ref = ref_solution[i];
         int act = approx_solution[i];
-        final_ratio = max(final_ratio, (double) abs(act - ref)/ref);
+        final_ratio = max(final_ratio, abs(act - ref) / max<double>(1e-9, ref));
     }
     return final_ratio;
 }
