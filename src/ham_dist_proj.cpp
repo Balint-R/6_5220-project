@@ -1,4 +1,4 @@
-#include "hamming_distance_proj.h"
+#include "ham_dist_proj.h"
 #include "atcoder/convolution.hpp"
 #include <algorithm>
 #include <cmath>
@@ -6,10 +6,9 @@
 using namespace std;
 
 
-void HammingDistanceProj(int n, int m, int sigma, double eps,
-                         const vector<uint32_t> &A, const vector<uint32_t> &B, 
-                         vector<uint32_t> &result, mt19937 &rng) {
-
+void ham_dist_sqrt(int n, int m, int sigma, double eps,
+                   const vector<uint32_t> &A, const vector<uint32_t> &B, 
+                   vector<uint32_t> &result, mt19937 &rng) {
 
     int reduced_sigma = ceil(min(2 / eps, (double) sigma));
     int c = 2; // run c * log n times
@@ -25,6 +24,8 @@ void HammingDistanceProj(int n, int m, int sigma, double eps,
     // Random ordering of the alphabet
     vector<int> ord(sigma), rng_map(sigma);
     iota(begin(ord), end(ord), 0);
+
+    // fprintf(stderr, "num_its: %d\n", num_its);
 
     for (int round = 0; round < num_its; round++){ // run for c log n rounds
         shuffle(begin(ord), end(ord), rng);

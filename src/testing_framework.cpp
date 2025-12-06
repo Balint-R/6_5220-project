@@ -1,5 +1,5 @@
-#include "hamming_distance_bf.h"
-#include "hamming_distance_proj.h"
+#include "ham_dist_bf.h"
+#include "ham_dist_proj.h"
 #include "first_alg_with_heuristics.h"
 #include "utils.h"
 
@@ -60,7 +60,7 @@ double test(size_t n, size_t m, size_t sigma, double eps,
 	if (!ref_answer.has_value()) {
 		cout << "\nRecalculating reference answer with brute force... " << endl;
 		reference_answer = vector<T>(n-m+1, 0);
-		HammingDistanceBF(n, m, A, B, reference_answer);
+		ham_dist_bf(n, m, A, B, reference_answer);
 	}
 	else {
 		reference_answer = ref_answer.value();
@@ -78,10 +78,10 @@ double test(size_t n, size_t m, size_t sigma, double eps,
 
 		switch (id) {
 			case 0:
-				HammingDistanceBF(n, m, A, B, result);
+				ham_dist_bf(n, m, A, B, result);
 				break;
 			case 1:
-				HammingDistanceProj(n, m, sigma, eps, A, B, result, alg_rng);
+				ham_dist_sqrt(n, m, sigma, eps, A, B, result, alg_rng);
 				break;
 		}
 		auto t2 = std::chrono::steady_clock::now();
@@ -108,7 +108,7 @@ void get_reference_solution(string filename, size_t n, size_t m, vector<uint32_t
 	}
 	else {
 		reference_solution = vector<uint32_t>(n-m+1, 0);
-		HammingDistanceBF(n, m, A, B, reference_solution);
+		ham_dist_bf(n, m, A, B, reference_solution);
 		write_output_to_cache(filename, reference_solution);
 	}
 }
