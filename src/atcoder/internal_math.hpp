@@ -179,7 +179,7 @@ template <int m> constexpr int primitive_root = primitive_root_constexpr(m);
 // @param n `n < 2^32`
 // @param m `1 <= m < 2^32`
 // @return sum_{i=0}^{n-1} floor((ai + b) / m) (mod 2^64)
-unsigned long long floor_sum_unsigned(unsigned long long n,
+inline unsigned long long floor_sum_unsigned(unsigned long long n,
                                       unsigned long long m,
                                       unsigned long long a,
                                       unsigned long long b) {

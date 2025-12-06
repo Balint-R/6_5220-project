@@ -266,7 +266,7 @@ std::vector<T> convolution(const std::vector<T>& a, const std::vector<T>& b) {
     return c;
 }
 
-std::vector<long long> convolution_ll(const std::vector<long long>& a,
+inline std::vector<long long> convolution_ll(const std::vector<long long>& a,
                                       const std::vector<long long>& b) {
     int n = int(a.size()), m = int(b.size());
     if (!n || !m) return {};

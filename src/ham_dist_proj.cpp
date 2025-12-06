@@ -6,7 +6,7 @@
 using namespace std;
 
 
-void ham_dist_sqrt(int n, int m, int sigma, double eps,
+void ham_dist_proj(int n, int m, int sigma, double eps,
                    const vector<uint32_t> &A, const vector<uint32_t> &B, 
                    vector<uint32_t> &result, mt19937 &rng) {
 

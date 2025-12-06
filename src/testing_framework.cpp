@@ -1,5 +1,6 @@
 #include "ham_dist_bf.h"
 #include "ham_dist_proj.h"
+#include "ham_dist_sqrt.h"
 #include "first_alg_with_heuristics.h"
 #include "utils.h"
 
@@ -45,6 +46,8 @@ std::string get_test_name(int id){
 			return "Brute Force";
 		case 1:
 			return "Projection to Binary Alphabet";
+		case 2:
+			return "Sqrt";
 		default:
 			return "N/A";
 	}
@@ -81,7 +84,10 @@ double test(size_t n, size_t m, size_t sigma, double eps,
 				ham_dist_bf(n, m, A, B, result);
 				break;
 			case 1:
-				ham_dist_sqrt(n, m, sigma, eps, A, B, result, alg_rng);
+				ham_dist_proj(n, m, sigma, eps, A, B, result, alg_rng);
+				break;
+			case 2:
+				ham_dist_sqrt(n, m, sigma, eps, A, B, result);
 				break;
 		}
 		auto t2 = std::chrono::steady_clock::now();
@@ -182,7 +188,7 @@ int main(int argc, char **argv){
 		test(n, m, sigma, eps, A, B, std::optional{reference_solution}, id);
 	}
 	else {
-		printf("Invalid mode. Should be 'synth' or 'real'.");
+		printf("Invalid mode. Should be 'synth' or 'real'.\n");
 		exit(1);
 	}
 }
