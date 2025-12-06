@@ -12,6 +12,22 @@ std::function<int(size_t)> generate_hash(size_t num_buckets) {
     };
 }
 
+// For now we're using brute force, will replace with FFT later
+std::vector<int> HAM(size_t n, size_t m, const std::vector<uint32_t>& A, const std::vector<uint32_t>& B) {
+    std::vector<int> dist(n - m + 1);
+    // do brute force
+    for (uint32_t i = 0; i < n - m + 1; i++) {
+        uint32_t cur_dist = 0;
+        for (uint32_t j = 0; j < m; j++) {
+            if (A[i + j] != B[j]) {
+                cur_dist++;
+            }
+        }
+        dist[i] = cur_dist;
+    }
+    return dist;
+}
+
 // choose the best h from k candidates
 // that minimizes sum(bucket mass)^2
 std::function<int(size_t)> choose_hash_heuristic_1(size_t num_buckets, int k, std::map<int, int>& freq) {
@@ -74,18 +90,15 @@ void HammingDistanceHeuristic_1(size_t n, size_t m, size_t sigma, const std::vec
         for (auto& val : hB) {
             val = h(val);
         }
+
+        // do brute force
+        auto cur_res = HAM(n, m, hA, hB);
+        assert(cur_res.size() == dist.size());
+        for (size_t i = 0; i < cur_res.size(); i++) {
+            dist[i] = std::max(dist[i], (uint32_t)cur_res[i]);
+        }
     }
 
-    // do brute force
-    for (uint32_t i = 0; i < n - m + 1; i++) {
-        uint32_t cur_dist = 0;
-        for (uint32_t j = 0; j < m; j++) {
-            if (A[i + j] != B[j]) {
-                cur_dist++;
-            }
-        }
-        dist[i] = cur_dist;
-    }
 }
 
 
@@ -110,16 +123,12 @@ void HammingDistanceBase(size_t n, size_t m, size_t sigma, const std::vector<uin
         for (auto& val : hB) {
             val = h(val);
         }
-    }
 
-    // do brute force
-    for (uint32_t i = 0; i < n - m + 1; i++) {
-        uint32_t cur_dist = 0;
-        for (uint32_t j = 0; j < m; j++) {
-            if (A[i + j] != B[j]) {
-                cur_dist++;
-            }
+        // do brute force
+        auto cur_res = HAM(n, m, hA, hB);
+        assert(cur_res.size() == dist.size());
+        for (size_t i = 0; i < cur_res.size(); i++) {
+            dist[i] = std::max(dist[i], (uint32_t)cur_res[i]);
         }
-        dist[i] = cur_dist;
     }
 }

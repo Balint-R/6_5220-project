@@ -4,6 +4,8 @@
 #include <random>
 #include <functional>
 #include <map>
+#include <cassert>
+#include <algorithm>
 
 std::function<int(size_t)> generate_hash(size_t num_buckets);
 
