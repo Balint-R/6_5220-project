@@ -4,9 +4,13 @@
 
 const int PRIME = 1e9+7;
 
+const size_t SEED = 430298584;
+std::mt19937 rng(SEED);
+
 std::function<int(size_t)> generate_hash(size_t num_buckets) {
-    int a = rand() % PRIME;
-    int b = rand() % PRIME;
+    std::uniform_int_distribution<int> dist(1, PRIME - 1);
+    int a = dist(rng);
+    int b = dist(rng);
     return [&](size_t x) {
         return ((a * x + b) % PRIME) % num_buckets;
     };
@@ -30,7 +34,7 @@ std::vector<int> HAM(size_t n, size_t m, const std::vector<uint32_t>& A, const s
 
 // choose the best h from k candidates
 // that minimizes sum(bucket mass)^2
-std::function<int(size_t)> choose_hash_heuristic_1(size_t num_buckets, int k, std::map<int, int>& freq) {
+std::function<int(size_t)> choose_hash_heuristic_1(size_t num_buckets, int k, std::map<int, long long>& freq) {
     // std::vector<std::pair<int, int>> candidates;
 
     auto score_function = [&](std::function<int(size_t)> h) {
@@ -64,12 +68,16 @@ void HammingDistanceHeuristic_1(size_t n, size_t m, size_t sigma, const std::vec
                         std::vector<uint32_t>& dist, std::mt19937& rng) {
     // parameters
     double eps = 0.01;
-    double c = 2; // run c * log n times
+    double c = 1; // run c * log n times
+    size_t num_rounds = std::max((size_t)1, (size_t)(c * std::log2(n)));
+
+    // std::cout << "n = " << n << ", m = " << m << ", sigma = " << sigma << ", eps = " << eps << ", c = " << c << ", num_rounds = " << num_rounds << "\n";
 
     size_t num_buckets = static_cast<size_t>(2 / eps);
+    // std::cout << "num_buckets = " << num_buckets << "\n";
     int k = 5; // number of candidate hash functions
 
-    std::map<int, int> freq;
+    std::map<int, long long> freq;
     for (size_t i = 0; i < n; i++) {
         freq[A[i]]++;
     }
@@ -77,7 +85,7 @@ void HammingDistanceHeuristic_1(size_t n, size_t m, size_t sigma, const std::vec
         freq[B[i]]++;
     }
 
-    for (size_t round = 0; round < (size_t) (c * std::log2(n)); round++){ // run for c log n rounds
+    for (size_t round = 0; round < num_rounds; round++){ // run for c log n rounds
         // pick 2-universal hash function
         auto h = choose_hash_heuristic_1(num_buckets, k, freq);
 
@@ -94,10 +102,16 @@ void HammingDistanceHeuristic_1(size_t n, size_t m, size_t sigma, const std::vec
         // do brute force
         auto cur_res = HAM(n, m, hA, hB);
         assert(cur_res.size() == dist.size());
+
+        std::cout << cur_res.front() << " ";
+
         for (size_t i = 0; i < cur_res.size(); i++) {
             dist[i] = std::max(dist[i], (uint32_t)cur_res[i]);
         }
     }
+
+    // for (auto& val : dist) std::cout << val << " ";
+    std::cout << "\n";
 
 }
 

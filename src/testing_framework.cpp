@@ -48,6 +48,10 @@ std::string get_test_name(int id){
 			return "Projection to Binary Alphabet";
 		case 2:
 			return "Sqrt";
+        case 3:
+            return "Heuristic 1: sum(bucket_mass)^2";
+        case 4:
+            return "Base Algorithm";
 		default:
 			return "N/A";
 	}
@@ -89,6 +93,12 @@ double test(size_t n, size_t m, size_t sigma, double eps,
 			case 2:
 				ham_dist_sqrt(n, m, sigma, eps, A, B, result);
 				break;
+            case 3:
+                HammingDistanceHeuristic_1(n, m, sigma, A, B, result, alg_rng);
+                break;
+            case 4:
+                HammingDistanceBase(n, m, sigma, A, B, result, alg_rng);
+                break;
 		}
 		auto t2 = std::chrono::steady_clock::now();
 
