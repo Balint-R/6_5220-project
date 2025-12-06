@@ -12,7 +12,7 @@
 
 using namespace std;
 
-string get_proj_dir(){
+inline string get_proj_dir(){
     string path = __FILE__;
     while(path.back() != '/') path.pop_back();
     path.pop_back();

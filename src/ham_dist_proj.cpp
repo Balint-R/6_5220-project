@@ -40,7 +40,7 @@ void ham_dist_proj(int n, int m, int sigma, double eps,
 
             binOut = atcoder::convolution(binA, binB);
 
-            for (int i = 0; i<n-m+1; i++) aggBinOut[i] += binOut[i+m-1];
+            for (int i = 0; i < n-m+1; i++) aggBinOut[i] += binOut[i+m-1];
         }
 
         for (int i = 0; i < n-m+1; i++) result[i] = max(result[i], aggBinOut[i]);
