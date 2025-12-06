@@ -17,6 +17,8 @@ int num_rounds;
 const int SEED = 430298584;
 mt19937 alg_rng(SEED);
 
+const int NUM_ALGORITHMS = 5;
+
 string get_test_name(int id){
 	switch (id){
 		case 0:
@@ -81,6 +83,18 @@ double test(int n, int m, int sigma, double eps, const vector<T> &A, const vecto
 	return average_time;
 }
 
+double test_all(int n, int m, int sigma, double eps, const vector<uint32_t> &A, const vector<uint32_t> &B,
+                           const vector<uint32_t> &ref_answer) {
+    double total_time = 0;
+    for (int id = 0; id < NUM_ALGORITHMS; id++) {
+        cout << "\n==============================" << endl;
+        cout << "Testing algorithm: " << get_test_name(id) << endl;
+        double avg_time = test<uint32_t>(n, m, sigma, eps, A, B, ref_answer, id);
+        total_time += avg_time;
+    }
+    return total_time;
+}
+
 void get_reference_solution(string filename, int n, int m, const vector<uint32_t> &A,
 							const vector<uint32_t> &B, vector<uint32_t> &reference_solution){
 	if (check_output_cached(filename)) {
@@ -104,7 +118,7 @@ int main(int argc, char **argv){
 		exit(1);
 	}
 	string mode = argv[1];
-	int id = 0;
+	int id = -1;
 	if (mode == "synth") {
 		if (argc < 7) {
 			printf(
@@ -135,7 +149,11 @@ int main(int argc, char **argv){
 
 		get_reference_solution(filename, n, m, A, B, reference_solution);
 
-		test(n, m, sigma, eps, A, B, reference_solution, id);
+        if (id == -1) {
+            test_all(n, m, sigma, eps, A, B, reference_solution);
+        } else  {
+		    test(n, m, sigma, eps, A, B, reference_solution, id);
+        }
 	}
 	else if (mode == "real") {
 		if (argc < 5) {
@@ -161,7 +179,11 @@ int main(int argc, char **argv){
 
 		get_reference_solution(filename, n, m, A, B, reference_solution);
 
-		test(n, m, sigma, eps, A, B, reference_solution, id);
+        if (id == -1) {
+            test_all(n, m, sigma, eps, A, B, reference_solution);
+        } else  {
+            test(n, m, sigma, eps, A, B, reference_solution, id);
+        }
 	}
 	else {
 		printf("Invalid mode. Should be 'synth' or 'real'.\n");
