@@ -39,10 +39,22 @@ auto generate_strings(size_t n, size_t m, size_t sigma, size_t seed){
     return std::make_tuple(A, B);
 }
 
+std::string get_test_name(int id){
+	switch (id){
+		case 0:
+			return "Brute Force";
+		case 1:
+			return "Projection to Binary Alphabet";
+		default:
+			return "N/A";
+	}
+}
+
 template <typename T>
-double test(size_t n, size_t m, size_t sigma, const std::vector<T> &A, const std::vector<T> &B, const std::optional<std::vector<T>>& ref_answer,
+double test(size_t n, size_t m, size_t sigma, double eps,
+			const std::vector<T> &A, const std::vector<T> &B, const std::optional<std::vector<T>>& ref_answer,
             int id=0) {
-	std::cout << "\nTest name: " << id << std::endl;
+	std::cout << "\nTest name: " << get_test_name(id) << std::endl;
 
 	std::vector<T> reference_answer;
 	if (!ref_answer.has_value()){
@@ -62,9 +74,14 @@ double test(size_t n, size_t m, size_t sigma, const std::vector<T> &A, const std
 	for (size_t i = 0; i <= num_rounds; i++) {
 		std::vector<T> result(n-m+1, 0); //initialize result array to all 0
 		auto t1 = std::chrono::high_resolution_clock::now();
-		// HammingDistanceBF(n, m, A, B, result);
-		FUNC(n, m, sigma, A, B, result, rng);
-        // HammingDistanceHeuristic_1(n, m, sigma, A, B, result, rng);
+
+		switch (id){
+			case 0:
+				HammingDistanceBF(n, m, A, B, result);
+			case 1:
+				HammingDistanceProj(n, m, sigma, eps, A, B, result, rng);
+		}
+		// FUNC(n, m, sigma, A, B, result, rng);
 		auto t2 = std::chrono::high_resolution_clock::now();
 
 		std::chrono::duration<float> s_float = t2 - t1;
@@ -112,21 +129,29 @@ int main(int argc, char **argv){
 		exit(0);
 	}
 	std::string mode = argv[1];
+	int id = 0;
+	double eps = 0.01;
 	if (mode == "synth"){
 		if (argc < 6){
 			printf(
-				"Usage: ./testing_framework synth <n> <m> <sigma> <rounds>\n"
+				"Usage: ./testing_framework synth <n> <m> <eps> <sigma> <rounds> <id>\n"
 				"n: length of the first string\n"
 				"m: length of the second(pattern) string\n"
+				"eps: desired approximation ratio"
 				"sigma: alphabet size\n"
-				"rounds: number of rounds");
+				"rounds: number of rounds\n"
+				"id: algorithm to test");
 			exit(0);
 		}
 		size_t n = atoi(argv[2]);
 		size_t m = atoi(argv[3]);
 		assert(n >= m);
-		size_t sigma = atoi(argv[4]);
-		num_rounds = atoi(argv[5]);
+		eps = atof(argv[4]);
+		size_t sigma = atoi(argv[5]);
+		num_rounds = atoi(argv[6]);
+		if (argc >= 7){
+			id = atoi(argv[7]);
+		}
 
 		// Run synth data tests
 		std::vector<uint32_t> A, B, reference_solution;
@@ -137,18 +162,24 @@ int main(int argc, char **argv){
 
 		get_reference_solution(filename, n, m, A, B, reference_solution);
 
-		test(n, m, sigma, A, B, std::optional{reference_solution});
+		test(n, m, sigma, eps, A, B, std::optional{reference_solution}, id);
 	}
 	else if (mode == "real"){
 		if (argc < 4){
 		printf(
-			"Usage: ./testing_framework real <filename> <rounds>\n"
+			"Usage: ./testing_framework real <filename> <eps> <rounds> <id>\n"
 			"filename: name of input file\n"
-			"rounds: number of rounds");
+			"eps: desired approximation ratio"
+			"rounds: number of rounds"
+			"id: algorithm to test");
 		exit(0);
 		}
 		std::string filename = argv[2];
-		num_rounds = atoi(argv[3]);
+		eps = atof(argv[3]);
+		num_rounds = atoi(argv[4]);
+		if (argc >= 5){
+			id = atoi(argv[5]);
+		}
 
 		std::vector<uint32_t> A, B, reference_solution;
 		size_t n, m, sigma;
@@ -164,6 +195,6 @@ int main(int argc, char **argv){
 		// cout << "writing output to file: " << solution_filename << '\n';
 		// save_output_to_file(solution_filename, reference_solution);
 
-		test(n, m, sigma, A, B, std::optional{reference_solution});
+		test(n, m, sigma, eps, A, B, std::optional{reference_solution}, id);
 	}
 }
