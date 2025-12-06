@@ -11,7 +11,7 @@ std::function<int(size_t)> generate_hash(size_t num_buckets) {
     std::uniform_int_distribution<int> dist(1, PRIME - 1);
     int a = dist(rng);
     int b = dist(rng);
-    return [&](size_t x) {
+    return [=](size_t x) {
         return ((a * x + b) % PRIME) % num_buckets;
     };
 }
@@ -103,7 +103,7 @@ void HammingDistanceHeuristic_1(size_t n, size_t m, size_t sigma, const std::vec
         auto cur_res = HAM(n, m, hA, hB);
         assert(cur_res.size() == dist.size());
 
-        std::cout << cur_res.front() << " ";
+        // std::cout << cur_res.front() << " ";
 
         for (size_t i = 0; i < cur_res.size(); i++) {
             dist[i] = std::max(dist[i], (uint32_t)cur_res[i]);
@@ -111,7 +111,7 @@ void HammingDistanceHeuristic_1(size_t n, size_t m, size_t sigma, const std::vec
     }
 
     // for (auto& val : dist) std::cout << val << " ";
-    std::cout << "\n";
+    // std::cout << "\n";
 
 }
 
