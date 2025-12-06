@@ -40,7 +40,7 @@ template <typename T>
 double test(int n, int m, int sigma, double eps, const vector<T> &A, const vector<T> &B,
 			const vector<T> &ref_answer, int id=0) {
 	cout << "\nTest name: " << get_test_name(id) << endl;
-	double total_time = 0;
+	double total_time = 0, total_ratio = 0;
 	for (int i = 0; i <= num_rounds; i++) {
 		vector<T> result(n-m+1, 0); // initialize result array to all 0
 		auto t1 = chrono::steady_clock::now();
@@ -75,11 +75,13 @@ double test(int n, int m, int sigma, double eps, const vector<T> &A, const vecto
 		else {
 			printf("Round %d time: %.6fs\n", i, dif_sec);
 			total_time += dif_sec;
+            total_ratio += approx_ratio;
 		}
 		printf("Round %d approximation ratio: %.6f\n", i, approx_ratio);
 	}
 	double average_time = total_time / num_rounds;
-	printf("Average time: %.6fs\n", total_time / num_rounds);
+    double average_ratio = total_ratio / num_rounds;
+	printf("Average time: %.6fs,   Average approximation ratio: %.6f", average_time, average_ratio);
 	return average_time;
 }
 
@@ -141,7 +143,7 @@ int main(int argc, char **argv){
 		// Run synth data tests
 		vector<uint32_t> A, B, reference_solution;
 		// std::tie(A, B) = generate_uniform_strings<uint32_t>(n, m, sigma, SEED);
-		std::tie(A, B) = generate_skewed_strings<uint32_t>(n, m, sigma, SEED);
+		std::tie(A, B) = generate_skewed_strings<uint32_t>(n, m, sigma, SEED, 0.9);
 		// std::tie(A, B) = generate_increasing_seq<uint32_t>(n, m, sigma, SEED);
 
 		string filename = "synth_" + to_string(n) + "_" + to_string(m) + "_"
