@@ -17,8 +17,7 @@ function<int(size_t)> generate_hash(size_t num_buckets) {
 }
 
 // For now we're using brute force, will replace with FFT later
-vector<int> HAM(size_t n, size_t m, const vector<uint32_t>& A, const vector<uint32_t>& B) {
-    vector<int> dist(n - m + 1);
+void HAM(size_t n, size_t m, const vector<uint32_t>& A, const vector<uint32_t>& B, vector<uint32_t>& dist) {
     // do brute force
     for (uint32_t i = 0; i < n - m + 1; i++) {
         uint32_t cur_dist = 0;
@@ -27,14 +26,13 @@ vector<int> HAM(size_t n, size_t m, const vector<uint32_t>& A, const vector<uint
                 cur_dist++;
             }
         }
-        dist[i] = cur_dist;
+        dist[i] = max(dist[i], cur_dist);
     }
-    return dist;
 }
 
 // choose the best h from k candidates
 // that minimizes sum(bucket mass)^2
-function<int(size_t)> choose_hash_heuristic_1(size_t num_buckets, int k, map<int, long long>& freq) {
+function<int(size_t)> choose_hash_heuristic_1(size_t num_buckets, int k, unordered_map<int, long long>& freq) {
     auto score_function = [&](function<int(size_t)> h) {
         map<int, long long> bucket_mass;
         for (const auto& [val, count] : freq) {
@@ -69,9 +67,9 @@ void HammingDistanceHeuristic_1(size_t n, size_t m, size_t sigma, const vector<u
     size_t num_rounds = max((size_t)1, (size_t)(c * log2(n)));
 
     size_t num_buckets = static_cast<size_t>(2 / eps);
-    int k = 5; // number of candidate hash functions
+    int k = 10; // number of candidate hash functions
 
-    map<int, long long> freq;
+    unordered_map<int, long long> freq;
     for (size_t i = 0; i < n; i++) {
         freq[A[i]]++;
     }
@@ -94,12 +92,7 @@ void HammingDistanceHeuristic_1(size_t n, size_t m, size_t sigma, const vector<u
         }
 
         // do brute force
-        auto cur_res = HAM(n, m, hA, hB);
-        assert(cur_res.size() == dist.size());
-
-        for (size_t i = 0; i < cur_res.size(); i++) {
-            dist[i] = max(dist[i], (uint32_t)cur_res[i]);
-        }
+        HAM(n, m, hA, hB, dist);
     }
 }
 
@@ -127,10 +120,6 @@ void HammingDistanceBase(size_t n, size_t m, size_t sigma, const vector<uint32_t
         }
 
         // do brute force
-        auto cur_res = HAM(n, m, hA, hB);
-        assert(cur_res.size() == dist.size());
-        for (size_t i = 0; i < cur_res.size(); i++) {
-            dist[i] = max(dist[i], (uint32_t)cur_res[i]);
-        }
+        HAM(n, m, hA, hB, dist);
     }
 }
