@@ -53,7 +53,7 @@ std::string get_test_name(int id){
 
 template <typename T>
 double test(size_t n, size_t m, size_t sigma, double eps,
-			const std::vector<T> &A, const std::vector<T> &B, 
+			const std::vector<T> &A, const std::vector<T> &B,
 			const std::optional<std::vector<T>> &ref_answer, int id=0) {
 	std::cout << "\nTest name: " << get_test_name(id) << std::endl;
 
