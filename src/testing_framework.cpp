@@ -8,39 +8,30 @@
 #include <cassert>
 #include <chrono>
 #include <iostream>
-#include <optional>
 #include <random>
 
 using namespace std;
 
-// constexpr size_t NUM_TESTS = 1;
-size_t num_rounds;
-const size_t SEED = 430298584;
+int num_rounds;
+const int SEED = 430298584;
 mt19937 alg_rng(SEED);
 
-// const auto FUNC = HammingDistanceBase;
-// const auto FUNC = HammingDistanceHeuristic_1;
-
 template <typename T>
-auto generate_strings(size_t n, size_t m, size_t sigma, size_t seed){
+auto generate_strings(int n, int m, int sigma, int seed){
     // Uniformly at random generate each character
 	mt19937 rng(seed);
     auto randInt = [&](int a, int b) {
         return uniform_int_distribution(a, b)(rng);
     };
 
-    printf("Generating test case... (n: %zu, m: %zu, sigma: %zu, seed: %zu)\n", n, m, sigma, seed);
+    printf("Generating test case... (n: %d, m: %d, sigma: %d, seed: %d)\n", n, m, sigma, seed);
     vector<T> A(n), B(m);
-    for (size_t i = 0; i < n; i++){
-        A[i] = randInt(0, sigma-1);
-    }
-    for (size_t i = 0; i < m; i++){
-        B[i] = randInt(0, sigma-1);
-    }
+    for (int i = 0; i < n; i++) A[i] = randInt(0, sigma-1);
+    for (int i = 0; i < m; i++) B[i] = randInt(0, sigma-1);
     return make_tuple(A, B);
 }
 
-std::string get_test_name(int id){
+string get_test_name(int id){
 	switch (id){
 		case 0:
 			return "Brute Force";
@@ -58,30 +49,13 @@ std::string get_test_name(int id){
 }
 
 template <typename T>
-double test(size_t n, size_t m, size_t sigma, double eps,
-			const std::vector<T> &A, const std::vector<T> &B,
-			const std::optional<std::vector<T>> &ref_answer, int id=0) {
-	std::cout << "\nTest name: " << get_test_name(id) << std::endl;
-
-	vector<T> reference_answer;
-	if (!ref_answer.has_value()) {
-		cout << "\nRecalculating reference answer with brute force... " << endl;
-		reference_answer = vector<T>(n-m+1, 0);
-		ham_dist_bf(n, m, A, B, reference_answer);
-	}
-	else {
-		reference_answer = ref_answer.value();
-	}
-
-	// for (int i=0; i<reference_answer.size(); i++){
-	//   cout << reference_answer[i] << " ";
-	// }
-	// cout << endl;
-
+double test(int n, int m, int sigma, double eps, const vector<T> &A, const vector<T> &B,
+			const vector<T> &ref_answer, int id=0) {
+	cout << "\nTest name: " << get_test_name(id) << endl;
 	double total_time = 0;
-	for (size_t i = 0; i <= num_rounds; i++) {
-		std::vector<T> result(n-m+1, 0); //initialize result array to all 0
-		auto t1 = std::chrono::steady_clock::now();
+	for (int i = 0; i <= num_rounds; i++) {
+		vector<T> result(n-m+1, 0); // initialize result array to all 0
+		auto t1 = chrono::steady_clock::now();
 
 		switch (id) {
 			case 0:
@@ -99,31 +73,36 @@ double test(size_t n, size_t m, size_t sigma, double eps,
             case 4:
                 HammingDistanceBase(n, m, sigma, A, B, result, alg_rng);
                 break;
+			default:
+				assert(false);
 		}
-		auto t2 = std::chrono::steady_clock::now();
+		auto t2 = chrono::steady_clock::now();
 
-		chrono::duration<double> dif_sec = t2 - t1;
+		double dif_sec = chrono::duration<double>(t2 - t1).count();
+		double approx_ratio = approximation_ratio(ref_answer, result);
 		if (i == 0) {
-			printf("Warmup round: %f\n", dif_sec.count());
+			printf("Warmup round: %.6fs\n", dif_sec);
 		}
 		else {
-			printf("Round %zu time: %f\n", i, dif_sec.count());
-			printf("Round %zu approximation ratio: %f\n", i, approximation_ratio(reference_answer, result));
-			total_time += dif_sec.count();
+			printf("Round %d time: %.6fs\n", i, dif_sec);
+			total_time += dif_sec;
 		}
+		printf("Round %d approximation ratio: %.6f\n", i, approx_ratio);
 	}
 	double average_time = total_time / num_rounds;
-	printf("Average time: %f\n", total_time / num_rounds);
+	printf("Average time: %.6fs\n", total_time / num_rounds);
 	return average_time;
 }
 
-void get_reference_solution(string filename, size_t n, size_t m, vector<uint32_t> &A,
-	vector<uint32_t> &B, vector<uint32_t> &reference_solution){
+void get_reference_solution(string filename, int n, int m, const vector<uint32_t> &A,
+							const vector<uint32_t> &B, vector<uint32_t> &reference_solution){
 	if (check_output_cached(filename)) {
+		cerr << "Found cached solution" << endl;
 		get_answer_from_cache(filename, reference_solution);
 	}
 	else {
-		reference_solution = vector<uint32_t>(n-m+1, 0);
+		cerr << "Did not find cached solution" << endl;
+		reference_solution.assign(n-m+1, 0);
 		ham_dist_bf(n, m, A, B, reference_solution);
 		write_output_to_cache(filename, reference_solution);
 	}
@@ -137,9 +116,8 @@ int main(int argc, char **argv){
 			"mode_args: arguments specific to mode\n");
 		exit(1);
 	}
-	std::string mode = argv[1];
+	string mode = argv[1];
 	int id = 0;
-	double eps = 0.01;
 	if (mode == "synth") {
 		if (argc < 7) {
 			printf(
@@ -152,24 +130,24 @@ int main(int argc, char **argv){
 				"id: algorithm to test\n");
 			exit(1);
 		}
-		size_t n = atoi(argv[2]);
-		size_t m = atoi(argv[3]);
+		int n = atoi(argv[2]);
+		int m = atoi(argv[3]);
 		assert(n >= m);
-		eps = atof(argv[4]);
-		size_t sigma = atoi(argv[5]);
+		double eps = atof(argv[4]);
+		int sigma = atoi(argv[5]);
 		num_rounds = atoi(argv[6]);
 		if (argc >= 8) id = atoi(argv[7]);
 
 		// Run synth data tests
 		vector<uint32_t> A, B, reference_solution;
-		std::tie(A, B) = generate_strings<uint32_t>(n, m, sigma, SEED);
+		tie(A, B) = generate_strings<uint32_t>(n, m, sigma, SEED);
 
 		string filename = "synth_" + to_string(n) + "_" + to_string(m) + "_"
 										+ to_string(sigma) + "_" + to_string(SEED);
 
 		get_reference_solution(filename, n, m, A, B, reference_solution);
 
-		test(n, m, sigma, eps, A, B, std::optional{reference_solution}, id);
+		test(n, m, sigma, eps, A, B, reference_solution, id);
 	}
 	else if (mode == "real") {
 		if (argc < 5) {
@@ -181,21 +159,21 @@ int main(int argc, char **argv){
 				"id: algorithm to test\n");
 			exit(1);
 		}
-		std::string filename = argv[2];
-		eps = atof(argv[3]);
+		string filename = argv[2];
+		double eps = atof(argv[3]);
 		num_rounds = atoi(argv[4]);
 		if (argc >= 6) id = atoi(argv[5]);
 
 		vector<uint32_t> A, B, reference_solution;
-		size_t n, m, sigma;
-		std::tie(n, m) = parse_input_file(filename, A, B);
-		assert(n == A.size());
-		assert(m == B.size());
+		int n, m, sigma;
+		tie(n, m) = parse_input_file(filename, A, B);
+		assert(n == (int) A.size());
+		assert(m == (int) B.size());
 		sigma = 1 + max(*max_element(A.begin(), A.end()), *max_element(B.begin(), B.end()));
 
 		get_reference_solution(filename, n, m, A, B, reference_solution);
 
-		test(n, m, sigma, eps, A, B, std::optional{reference_solution}, id);
+		test(n, m, sigma, eps, A, B, reference_solution, id);
 	}
 	else {
 		printf("Invalid mode. Should be 'synth' or 'real'.\n");
