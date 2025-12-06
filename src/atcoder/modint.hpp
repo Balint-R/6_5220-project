@@ -2,15 +2,14 @@
 #define ATCODER_MODINT_HPP 1
 
 #include <cassert>
-#include <numeric>
 #include <type_traits>
 
 #ifdef _MSC_VER
 #include <intrin.h>
 #endif
 
-#include "atcoder/internal_math.hpp"
-#include "atcoder/internal_type_traits.hpp"
+#include "internal_math.hpp"
+#include "internal_type_traits.hpp"
 
 namespace atcoder {
 

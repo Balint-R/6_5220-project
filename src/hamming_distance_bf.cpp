@@ -1,6 +1,7 @@
 #include "hamming_distance_bf.h"
 
-void HammingDistanceBF(size_t n, size_t m, const std::vector<uint32_t>& A, const std::vector<uint32_t>& B, std::vector<uint32_t>& dist) {
+void HammingDistanceBF(size_t n, size_t m, const std::vector<uint32_t> &A,
+                       const std::vector<uint32_t> &B, std::vector<uint32_t> &dist){
     for (uint32_t i = 0; i < n - m + 1; i++) {
         uint32_t cur_dist = 0;
         for (uint32_t j = 0; j < m; j++) {

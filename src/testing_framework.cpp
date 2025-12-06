@@ -184,6 +184,5 @@ int main(int argc, char **argv){
 	}
 	else {
 		printf("Invalid mode. Should be 'synth' or 'real'.");
-		assert(false);
 	}
 }
