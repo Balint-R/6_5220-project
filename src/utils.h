@@ -105,17 +105,19 @@ auto get_answer_from_cache(const string filename, vector<T> &ref_solution){
     fin.close();
 }
 
-// Calculate the approximation ratio between reference solution and the approximation, 
-// assuming the approximation achieves a lower than correct hamming distance for all matches
+// Calculate the approximation ratio between reference solution and the approximation
 inline double approximation_ratio(const vector<uint32_t> &ref_solution,
                                   const vector<uint32_t> &approx_solution){
     assert(ref_solution.size() == approx_solution.size());
-    size_t d = ref_solution.size();
-    double final_ratio = 1;
-    for(size_t i = 0; i < d; i++){
-        final_ratio = min(final_ratio, ((double) approx_solution[i]) / (ref_solution[i]));
+    int d = ref_solution.size();
+
+    double final_ratio = 0;
+    for(int i = 0; i < d; i++){
+        int ref = ref_solution[i];
+        int act = approx_solution[i];
+        final_ratio = max(final_ratio, (double) abs(act - ref)/ref);
     }
-    return 1 - final_ratio;
+    return final_ratio;
 }
 
 #endif
