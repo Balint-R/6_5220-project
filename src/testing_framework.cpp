@@ -17,9 +17,6 @@ int num_rounds;
 const int SEED = 430298584;
 mt19937 alg_rng(SEED);
 
-// const auto FUNC = HammingDistanceBase;
-// const auto FUNC = HammingDistanceHeuristic_1;
-
 string get_test_name(int id){
 	switch (id){
 		case 0:
@@ -86,16 +83,16 @@ double test(int n, int m, int sigma, double eps, const vector<T> &A, const vecto
 
 void get_reference_solution(string filename, int n, int m, const vector<uint32_t> &A,
 							const vector<uint32_t> &B, vector<uint32_t> &reference_solution){
-	// if (check_output_cached(filename)) {
-	// 	cerr << "Found cached solution" << endl;
-	// 	get_answer_from_cache(filename, reference_solution);
-	// }
-	// else {
+	if (check_output_cached(filename)) {
+		cerr << "Found cached solution" << endl;
+		get_answer_from_cache(filename, reference_solution);
+	}
+	else {
 		cerr << "Did not find cached solution" << endl;
 		reference_solution.assign(n-m+1, 0);
 		ham_dist_bf(n, m, A, B, reference_solution);
 		write_output_to_cache(filename, reference_solution);
-	// }
+	}
 }
 
 int main(int argc, char **argv){
@@ -130,8 +127,8 @@ int main(int argc, char **argv){
 
 		// Run synth data tests
 		vector<uint32_t> A, B, reference_solution;
-		// std::tie(A, B) = generate_strings<uint32_t>(n, m, sigma, SEED);
-		std::tie(A, B) = generate_increasing_seq<uint32_t>(n, m, sigma, SEED);
+		std::tie(A, B) = generate_strings<uint32_t>(n, m, sigma, SEED);
+		// std::tie(A, B) = generate_increasing_seq<uint32_t>(n, m, sigma, SEED);
 
 		string filename = "synth_" + to_string(n) + "_" + to_string(m) + "_"
 										+ to_string(sigma) + "_" + to_string(SEED);
