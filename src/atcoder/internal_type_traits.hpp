@@ -2,7 +2,6 @@
 #define ATCODER_INTERNAL_TYPE_TRAITS_HPP 1
 
 #include <cassert>
-#include <numeric>
 #include <type_traits>
 
 namespace atcoder {

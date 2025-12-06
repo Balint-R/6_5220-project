@@ -1,8 +1,7 @@
 #include "hamming_distance_proj.h"
 #include "atcoder/convolution.hpp"
-#include <cmath>
 #include <algorithm>
-#include <iostream>
+#include <cmath>
 
 
 struct ModPrimeHash {
@@ -24,7 +23,7 @@ struct ModPrimeHash {
 
 void HammingDistanceProj(size_t n, size_t m, size_t sigma, double eps,
                          const std::vector<uint32_t>& A, const std::vector<uint32_t>& B, 
-                        std::vector<uint32_t>& dist, std::mt19937& rng) {
+                         std::vector<uint32_t>& dist, std::mt19937& rng) {
     size_t reduced_sigma = std::ceil(std::min(2 / eps, (double) sigma));
     size_t c = 5; // run c * log n times
     size_t num_its = c * std::ceil(std::log2(n));
@@ -47,12 +46,12 @@ void HammingDistanceProj(size_t n, size_t m, size_t sigma, double eps,
 
             binOut = atcoder::convolution(binA, binB);
 
-            for (int i = 0; i<n-m+1; i++){
+            for (size_t i = 0; i<n-m+1; i++){
                 aggBinOut[i] += binOut[i+m-1];
             }
         }
         // update dist array
-        for (int i=0; i<n-m+1; i++){
+        for (size_t i = 0; i < n-m+1; i++){
             dist[i] = std::max(dist[i], aggBinOut[i]);
         }
     }
