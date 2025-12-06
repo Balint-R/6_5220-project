@@ -134,7 +134,7 @@ int main(int argc, char **argv){
 	int id = 0;
 	double eps = 0.01;
 	if (mode == "synth"){
-		if (argc < 6){
+		if (argc < 7){
 			printf(
 				"Usage: ./testing_framework synth <n> <m> <eps> <sigma> <rounds> <id>\n"
 				"n: length of the first string\n"
@@ -151,7 +151,7 @@ int main(int argc, char **argv){
 		eps = atof(argv[4]);
 		size_t sigma = atoi(argv[5]);
 		num_rounds = atoi(argv[6]);
-		if (argc >= 7){
+		if (argc >= 8){
 			id = atoi(argv[7]);
 		}
 
@@ -167,7 +167,7 @@ int main(int argc, char **argv){
 		test(n, m, sigma, eps, A, B, std::optional{reference_solution}, id);
 	}
 	else if (mode == "real"){
-		if (argc < 4){
+		if (argc < 5){
 		printf(
 			"Usage: ./testing_framework real <filename> <eps> <rounds> <id>\n"
 			"filename: name of input file\n"
@@ -179,7 +179,7 @@ int main(int argc, char **argv){
 		std::string filename = argv[2];
 		eps = atof(argv[3]);
 		num_rounds = atoi(argv[4]);
-		if (argc >= 5){
+		if (argc >= 6){
 			id = atoi(argv[5]);
 		}
 
