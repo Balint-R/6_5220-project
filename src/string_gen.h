@@ -4,14 +4,14 @@
 #include <numeric>
 
 template <typename T>
-auto generate_strings(size_t n, size_t m, size_t sigma, size_t seed){
+auto generate_uniform_strings(size_t n, size_t m, size_t sigma, size_t seed){
     // Uniformly at random generate each character
 	std::mt19937 rng(seed);
     auto randInt = [&](int a, int b) {
         return std::uniform_int_distribution(a, b)(rng);
     };
 
-    printf("Generating test case... (n: %zu, m: %zu, sigma: %zu, seed: %zu)\n", n, m, sigma, seed);
+    printf("Generating uniform test case... (n: %zu, m: %zu, sigma: %zu, seed: %zu)\n", n, m, sigma, seed);
     std::vector<T> A(n), B(m);
     for (size_t i = 0; i < n; i++){
         A[i] = randInt(0, sigma-1);
@@ -22,12 +22,45 @@ auto generate_strings(size_t n, size_t m, size_t sigma, size_t seed){
     return make_tuple(A, B);
 }
 
+template <typename T>
+auto generate_skewed_strings(size_t n, size_t m, size_t sigma, size_t seed, double big_prob = 0.8) {
+    std::mt19937 rng(seed);
+    std::uniform_real_distribution<double> uni01(0.0, 1.0);
+    auto randInt = [&](int a, int b) {
+        return std::uniform_int_distribution<int>(a, b)(rng);
+    };
+
+    printf("Generating SKEWED test case... (n: %zu, m: %zu, sigma: %zu, seed: %zu, big_prob: %.3f)\n",
+           n, m, sigma, seed, big_prob);
+
+    std::vector<T> A(n), B(m);
+
+    auto gen_symbol = [&]() -> T {
+        double u = uni01(rng);
+        if (u < big_prob || sigma == 1) {
+            return static_cast<T>(0); // generate the main symbol (0) with probability big_prob
+        } else {
+            // otherwsie pick uniformly from {1, 2, ..., sigma-1}
+            int x = randInt(1, (int)sigma - 1);
+            return static_cast<T>(x);
+        }
+    };
+
+    for (size_t i = 0; i < n; i++) {
+        A[i] = gen_symbol();
+    }
+    for (size_t i = 0; i < m; i++) {
+        B[i] = gen_symbol();
+    }
+
+    return std::make_tuple(A, B);
+}
 
 template <typename T>
 auto generate_increasing_seq(size_t n, size_t m, size_t sigma, size_t seed){
     // Text:    (sigma/2)(sigma/2+1)(sigma/2+2)..
     // Pattern: 012...
-    
+
     std::vector<T> A(n), B(m, 0);
     for (size_t i = 0; i < n-m; i+=1){
         // shuffle i to i+m-1

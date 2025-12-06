@@ -140,7 +140,8 @@ int main(int argc, char **argv){
 
 		// Run synth data tests
 		vector<uint32_t> A, B, reference_solution;
-		std::tie(A, B) = generate_strings<uint32_t>(n, m, sigma, SEED);
+		// std::tie(A, B) = generate_uniform_strings<uint32_t>(n, m, sigma, SEED);
+		std::tie(A, B) = generate_skewed_strings<uint32_t>(n, m, sigma, SEED);
 		// std::tie(A, B) = generate_increasing_seq<uint32_t>(n, m, sigma, SEED);
 
 		string filename = "synth_" + to_string(n) + "_" + to_string(m) + "_"
