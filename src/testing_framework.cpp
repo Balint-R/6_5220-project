@@ -29,7 +29,7 @@ auto generate_strings(size_t n, size_t m, size_t sigma, size_t seed){
         return uniform_int_distribution(a, b)(rng);
     };
 
-    printf("Generating test case... (n: %zu, k: %zu, alpha: %zu, seed: %zu)\n", n, m, sigma, seed);
+    printf("Generating test case... (n: %zu, m: %zu, sigma: %zu, seed: %zu)\n", n, m, sigma, seed);
     vector<T> A(n), B(m);
     for (size_t i = 0; i < n; i++){
         A[i] = randInt(0, sigma-1);
