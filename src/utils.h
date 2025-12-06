@@ -12,7 +12,7 @@
 
 using namespace std;
 
-constexpr string get_proj_dir(){
+string get_proj_dir(){
     string path = __FILE__;
     while(path.back() != '/') path.pop_back();
     path.pop_back();
@@ -105,7 +105,7 @@ auto get_answer_from_cache(const string filename, vector<T> &ref_solution){
     fin.close();
 }
 
-// Calculate the approximation ratio between reference solution and the approximation, 
+// Calculate the approximation ratio between reference solution and the approximation,
 // assuming the approximation achieves a lower than correct hamming distance for all matches
 inline double approximation_ratio(const vector<uint32_t> &ref_solution,
                                   const vector<uint32_t> &approx_solution){
