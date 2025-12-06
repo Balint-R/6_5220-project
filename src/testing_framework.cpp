@@ -13,13 +13,13 @@
 
 using namespace std;
 
-constexpr size_t NUM_TESTS = 1;
+// constexpr size_t NUM_TESTS = 1;
 size_t num_rounds;
 const size_t SEED = 430298584;
 mt19937 alg_rng(SEED);
 
 // const auto FUNC = HammingDistanceBase;
-const auto FUNC = HammingDistanceHeuristic_1;
+// const auto FUNC = HammingDistanceHeuristic_1;
 
 template <typename T>
 auto generate_strings(size_t n, size_t m, size_t sigma, size_t seed){
