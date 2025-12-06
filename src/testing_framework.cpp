@@ -67,7 +67,7 @@ double test(int n, int m, int sigma, double eps, const vector<T> &A, const vecto
 		double dif_sec = chrono::duration<double>(t2 - t1).count();
 		double approx_ratio = approximation_ratio(ref_answer, result);
 		if (i == 0) {
-			printf("Warmup round: %f\n", dif_sec.count());
+			printf("Warmup round: %f\n", dif_sec);
 			printf("Warmup round approximation ratio: %.6f\n", approx_ratio);
 		}
 		else {
