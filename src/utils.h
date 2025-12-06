@@ -1,7 +1,16 @@
-#include <vector>
-#include <fstream>
-#include <cassert>
+#ifndef HEADER_UTILS
+#define HEADER_UTILS
 
+#include <cassert>
+#include <cstdint>
+#include <fstream>
+#include <limits>
+#include <string>
+#include <vector>
+
+const std::string FILE_STR = std::string(__FILE__);
+const std::string DATA_DIR = FILE_STR.substr(0, FILE_STR.rfind('/')) + "/data";
+const std::string CACHE_DIR = FILE_STR.substr(0, FILE_STR.rfind('/')) + "/cache";
 
 // Function to parse a file with a text file to
 // std::vector variable, blank lines and
@@ -47,7 +56,7 @@ auto parse_input_file(const std::string filename, std::vector<T>& A, std::vector
 // if file doesn't exist, write answer to cache
 // return answer from cache
 std::string get_cache_name(const std::string filename){
-    return std::string(CACHE_DIR) + "/" + filename + ".ans";
+    return CACHE_DIR + "/" + filename + ".ans";
 }
 
 bool check_output_cached(const std::string filename){
@@ -70,18 +79,20 @@ auto get_answer_from_cache(const std::string filename, std::vector<T>& ref_solut
     uint32_t num;
     std::fstream fin(cache_filename, std::fstream::in);
     while (fin >> num) {
-        ref_solution.push_back((T)num);
+        ref_solution.push_back((T) num);
     }
 }
 
 // Calculate the approximation ratio between reference solution and the approximation, 
 // assuming the approximation achieves a lower than correct hamming distance for all matches
 double approximation_ratio(const std::vector<uint32_t>& ref_solution, const std::vector<uint32_t>& approx_solution){
-  assert(ref_solution.size() == approx_solution.size());
-  size_t d = ref_solution.size();
-  double final_ratio = 1;
-  for (size_t i=0; i<d; i++){
-    final_ratio = std::min(final_ratio, ((double) approx_solution[i]) / (ref_solution[i]));
-  }
-  return 1-final_ratio;
+    assert(ref_solution.size() == approx_solution.size());
+    size_t d = ref_solution.size();
+    double final_ratio = 1;
+    for(size_t i = 0; i < d; i++){
+        final_ratio = std::min(final_ratio, ((double) approx_solution[i]) / (ref_solution[i]));
+    }
+    return 1 - final_ratio;
 }
+
+#endif
