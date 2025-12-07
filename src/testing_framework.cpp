@@ -18,7 +18,7 @@ int num_rounds;
 const int SEED = 430298584;
 mt19937 alg_rng(SEED);
 
-const int NUM_ALGORITHMS = 5;
+const int NUM_ALGORITHMS = 6;
 const bool SKEWED = true; // whether to generate skewed test case
 const double BIG_PROB = 0.8;
 
@@ -33,6 +33,8 @@ string get_test_name(int id){
         case 3:
             return "Heuristic 1: sum(bucket_mass)^2";
         case 4:
+            return "Heuristic 2: sum(max freq over windows)^2";
+        case 5:
             return "Base Algorithm";
 		default:
 			return "N/A";
@@ -62,6 +64,9 @@ double test(int n, int m, int sigma, double eps, const vector<T> &A, const vecto
                 HammingDistanceHeuristic_1(n, m, sigma, eps, A, B, result, alg_rng);
                 break;
             case 4:
+                HammingDistanceHeuristic_2(n, m, sigma, eps, A, B, result, alg_rng);
+                break;
+            case 5:
                 HammingDistanceBase(n, m, sigma, eps, A, B, result, alg_rng);
                 break;
 			default:
