@@ -25,18 +25,22 @@ HashFunction choose_hash_random(size_t num_buckets) {
 // choose the best h from k candidates
 // that minimizes sum(bucket_mass)^2
 HashFunction choose_hash_heuristic_1(size_t num_buckets, int k, const vector<uint32_t>&, const vector<uint32_t>&, const unordered_map<int, long long>& freq) {
+    vector<long long> bucket_mass(num_buckets);
+
     auto score_function = [&](HashFunction h) {
-        map<uint32_t, long long> bucket_mass;
+        fill(bucket_mass.begin(), bucket_mass.end(), 0);
         for (const auto& [val, count] : freq) {
-            uint32_t bucket = h(val);
+            uint32_t bucket = h((size_t)val);
             bucket_mass[bucket] += count;
         }
         long long score = 0;
-        for (const auto& [bucket, mass] : bucket_mass) {
+        for (size_t b = 0; b < num_buckets; b++) {
+            long long mass = bucket_mass[b];
             score += mass * mass;
         }
         return score;
     };
+
 
     auto best_h = choose_hash_random(num_buckets);
     long long min_score = score_function(best_h);
@@ -98,6 +102,14 @@ HashFunction choose_hash_heuristic_2 (size_t num_buckets, int k, const vector<ui
     return best_h;
 }
 
+// choose c = O(1/eps) but capped to [MIN, MAX]
+double choose_c(double eps) {
+    double MIN = 0.2, MAX = 2.0;
+    double c = 0.1 / eps;
+    if (c < MIN) return MIN;
+    if (c > MAX) return MAX;
+    return c;
+}
 
 // main function to test various hash function choosing heuristics
 void HammingDistanceHeuristic(size_t n, size_t m, size_t sigma, double eps, const vector<uint32_t> &A,
@@ -105,11 +117,12 @@ void HammingDistanceHeuristic(size_t n, size_t m, size_t sigma, double eps, cons
                                 HashChooser choose_hash,
                                 vector<uint32_t> &dist, mt19937 &rng1) {
     // parameters
-    double c = 2; // run c * log n times
+    double c = choose_c(eps); // run c * log n times
+    // cout << "c = " << c << endl;
     size_t num_rounds = max((size_t)1, (size_t)(c * log2(n)));
 
     size_t num_buckets = static_cast<size_t>(2 / eps);
-    int k = 10; // number of candidate hash functions
+    int k = 5; // number of candidate hash functions
 
     unordered_map<int, long long> freq;
     for (size_t i = 0; i < n; i++) {

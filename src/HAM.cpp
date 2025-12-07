@@ -1,5 +1,6 @@
 #include "HAM.h"
 #include "atcoder/convolution.hpp"
+#include "ham_dist_sqrt.h"
 
 using namespace std;
 
@@ -57,15 +58,18 @@ int alphabet_size(const vector<uint32_t>& A, const vector<uint32_t>& B) {
 
 // HAM is the inner fucntion that computes exact Hamming distance in the paper
 void HAM(size_t n, size_t m, size_t sigma, const vector<uint32_t>& A, const vector<uint32_t>& B, vector<uint32_t>& dist) {
-    double cost_bf = 1.0 * n * m;
-    double fft_const = 10.0; // guess constant for FFT cost
-    double cost_fft = fft_const * (n + m) * log2(n + m) * sigma;
-    if (cost_bf < cost_fft) {
-        // cout << "Using brute force for sigma = " << sigma << "\n";
-        BRUTE(n, m, A, B, dist);
-        return;
-    } else {
-        // cout << "Using FFT for sigma = " << sigma << "\n";
-        HAM_fft(n, m, sigma, A, B, dist);
-    }
+    return ham_dist_sqrt(n, m, sigma, 0.1, A, B, dist);
+
+    // double cost_bf = 1.0 * n * m;
+    // double fft_const = 10.0; // guess constant for FFT cost
+
+    // double fft_one = fft_const * (n + m) * log2(n + m);
+    // double cost_fft = fft_one * sigma;
+    // if (cost_bf <= cost_fft) {
+    //     // cout << "Using BRUTE" << endl;
+    //     BRUTE(n, m, A, B, dist);
+    // } else {
+    //     // cout << "Using HAM_fft" << endl;
+    //     HAM_fft(n, m, sigma, A, B, dist);
+    // }
 }
