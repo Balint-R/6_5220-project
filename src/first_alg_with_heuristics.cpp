@@ -79,7 +79,6 @@ void HammingDistanceHeuristic_1(size_t n, size_t m, size_t sigma, double eps, co
         }
 
         // do brute force / FFT
-        // HAM(n, m, num_buckets, hA, hB, dist);
         vector<uint32_t> cur(n - m + 1);
         HAM((int)n, (int)m, (int)num_buckets, hA, hB, cur);
         for (size_t i = 0; i < cur.size(); i++) {
@@ -111,6 +110,10 @@ void HammingDistanceBase(size_t n, size_t m, size_t sigma, double eps, const vec
         }
 
         // do brute force / FFT
-        HAM(n, m, num_buckets, hA, hB, dist);
+        vector<uint32_t> cur(n - m + 1);
+        HAM((int)n, (int)m, (int)num_buckets, hA, hB, cur);
+        for (size_t i = 0; i < cur.size(); i++) {
+            dist[i] = max(dist[i], cur[i]);
+        }
     }
 }
