@@ -4,6 +4,7 @@
 #include "first_alg_with_heuristics.h"
 #include "string_gen.h"
 #include "utils.h"
+#include "HAM.h"
 
 #include <algorithm>
 #include <cassert>

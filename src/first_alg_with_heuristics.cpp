@@ -1,4 +1,5 @@
 #include "first_alg_with_heuristics.h"
+#include "HAM.h"
 
 using namespace std;
 
@@ -10,26 +11,11 @@ mt19937 rng(SEED);
 uniform_int_distribution<int> dist(1, PRIME - 1);
 
 function<long long(size_t)> generate_hash(size_t num_buckets) {
-    // uniform_int_distribution<int> dist(1, PRIME - 1);
     int a = dist(rng);
     int b = dist(rng);
     return [=](size_t x) {
         return ((a * x + b) % PRIME) % num_buckets;
     };
-}
-
-// For now we're using brute force, will replace with FFT later
-void HAM(size_t n, size_t m, const vector<uint32_t>& A, const vector<uint32_t>& B, vector<uint32_t>& dist) {
-    // do brute force
-    for (uint32_t i = 0; i < n - m + 1; i++) {
-        uint32_t cur_dist = 0;
-        for (uint32_t j = 0; j < m; j++) {
-            if (A[i + j] != B[j]) {
-                cur_dist++;
-            }
-        }
-        dist[i] = max(dist[i], cur_dist);
-    }
 }
 
 // choose the best h from k candidates
@@ -92,8 +78,13 @@ void HammingDistanceHeuristic_1(size_t n, size_t m, size_t sigma, double eps, co
             val = h(val);
         }
 
-        // do brute force
-        HAM(n, m, hA, hB, dist);
+        // do brute force / FFT
+        // HAM(n, m, num_buckets, hA, hB, dist);
+        vector<uint32_t> cur(n - m + 1);
+        HAM((int)n, (int)m, (int)num_buckets, hA, hB, cur);
+        for (size_t i = 0; i < cur.size(); i++) {
+            dist[i] = max(dist[i], cur[i]);
+        }
     }
 }
 
@@ -119,7 +110,7 @@ void HammingDistanceBase(size_t n, size_t m, size_t sigma, double eps, const vec
             val = h(val);
         }
 
-        // do brute force
-        HAM(n, m, hA, hB, dist);
+        // do brute force / FFT
+        HAM(n, m, num_buckets, hA, hB, dist);
     }
 }
