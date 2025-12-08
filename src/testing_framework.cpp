@@ -18,9 +18,9 @@ int num_rounds;
 const int SEED = 430298584;
 mt19937 alg_rng(SEED);
 
-const int NUM_ALGORITHMS = 7;
-const bool SKEWED = false; // whether to generate skewed test case
-const double BIG_PROB = 0.8;
+const int NUM_ALGORITHMS = 6;
+// const bool SKEWED = false; // whether to generate skewed test case
+// const double BIG_PROB = 0.8;
 
 string get_test_name(int id){
 	switch (id){
@@ -34,6 +34,8 @@ string get_test_name(int id){
             return "Heuristic 1: sum(bucket_mass)^2";
         case 4:
             return "Heuristic 2: sum(max freq over windows)^2";
+        case 5:
+            return "Heuristic 3: sum(weighted_bucket_mass)^2";
 		default:
 			return "N/A";
 	}
@@ -45,6 +47,7 @@ double test(int n, int m, int sigma, double eps, const vector<T> &A, const vecto
 
 	cout << "\nTest name: " << get_test_name(id) << endl;
 	double total_time = 0, total_ratio = 0;
+    double max_ratio = 0;
 
 	for (int i = 0; i <= num_rounds; i++) {
 		vector<T> result(n-m+1, 0); // initialize result array to all 0
@@ -69,9 +72,6 @@ double test(int n, int m, int sigma, double eps, const vector<T> &A, const vecto
             case 5:
                 HammingDistanceHeuristic_3(n, m, sigma, eps, A, B, result, alg_rng);
                 break;
-            case 6:
-                HammingDistanceBase(n, m, sigma, eps, A, B, result, alg_rng);
-                break;
 			default:
 				assert(false);
 		}
@@ -79,6 +79,7 @@ double test(int n, int m, int sigma, double eps, const vector<T> &A, const vecto
 
 		double dif_sec = chrono::duration<double>(t2 - t1).count();
 		double approx_ratio = approximation_ratio(ref_answer, result);
+        max_ratio = max(max_ratio, approx_ratio);
 		if (i == 0) {
 			printf("Warmup round: %f\n", dif_sec);
 			printf("Warmup round approximation ratio: %.6f\n", approx_ratio);
@@ -93,7 +94,7 @@ double test(int n, int m, int sigma, double eps, const vector<T> &A, const vecto
 
 	double average_time = total_time / num_rounds;
     double average_ratio = total_ratio / num_rounds;
-	printf("Average time: %.6fs, Average approximation ratio: %.6f\n", average_time, average_ratio);
+	printf("Average time: %.6fs, Average approx ratio: %.6f, Max approx ratio: %.6f\n", average_time, average_ratio, max_ratio);
 	return average_time;
 }
 

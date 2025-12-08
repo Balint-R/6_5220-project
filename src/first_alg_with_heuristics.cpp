@@ -4,7 +4,7 @@
 using namespace std;
 
 typedef function<uint32_t(int)> HashFunction;
-typedef function<HashFunction(int, int, const vector<uint32_t>&, const vector<uint32_t>&, const vector<uint32_t>&)> HashChooser;
+typedef function<HashFunction(int, int, const vector<uint32_t>&, const vector<uint32_t>&, vector<uint32_t>&)> HashChooser;
 
 const int PRIME = 1e9+7;
 
@@ -24,7 +24,7 @@ inline HashFunction choose_hash_random(size_t num_buckets) {
 
 // choose the best h from k candidates
 // that minimizes sum(bucket_mass)^2
-HashFunction choose_hash_heuristic_1(int num_buckets, int k, const vector<uint32_t>&, const vector<uint32_t>&, const vector<uint32_t>& freq) {
+HashFunction choose_hash_heuristic_1(int num_buckets, int k, const vector<uint32_t>&, const vector<uint32_t>&, vector<uint32_t>& freq) {
     vector<long long> bucket_mass(num_buckets);
 
     auto score_function = [&](HashFunction h) {
@@ -57,7 +57,7 @@ HashFunction choose_hash_heuristic_1(int num_buckets, int k, const vector<uint32
 
 // choose the best h from k candidates
 // that minimize sum(max freq over windows)^2
-HashFunction choose_hash_heuristic_2 (int num_buckets, int k, const vector<uint32_t>& A, const vector<uint32_t>& B, const vector<uint32_t>& ) {
+HashFunction choose_hash_heuristic_2 (int num_buckets, int k, const vector<uint32_t>& A, const vector<uint32_t>& B, vector<uint32_t>& ) {
     int n = A.size(), m = B.size();
     if (n < m) return choose_hash_random(num_buckets);
 
@@ -106,7 +106,7 @@ HashFunction choose_hash_heuristic_2 (int num_buckets, int k, const vector<uint3
 // choose the best h from k candidates
 // that minimize sum(weighted_bucket_mass)^2,
 // where each symbol is re-weighted based on previous hash choices
-inline HashFunction choose_hash_heuristic_3(size_t num_buckets, int k, const vector<uint32_t>&, const vector<uint32_t>&, vector<uint32_t>& weights) {
+HashFunction choose_hash_heuristic_3(int num_buckets, int k, const vector<uint32_t>&, const vector<uint32_t>&, vector<uint32_t>& weights) {
     vector<uint32_t> bucket_mass(num_buckets);
 
     auto score_function = [&](HashFunction h) {
@@ -172,7 +172,8 @@ void HammingDistanceHeuristic(int n, int m, int sigma, double eps, const vector<
                                 HashChooser choose_hash,
                                 vector<uint32_t> &dist, mt19937 &rng1) {
     // parameters
-    double c = choose_c(eps); // run c * log n times
+    // double c = choose_c(eps); // run c * log n times
+    double c = 0.5;
     int num_rounds = max((int)1, (int)(c * log2(n)));
     // printf("c = %.4f, num_rounds = %d\n", c, (int)num_rounds);
 
@@ -221,7 +222,7 @@ void HammingDistanceHeuristic_2(int n, int m, int sigma, double eps, const vecto
     HammingDistanceHeuristic(n, m, sigma, eps, A, B, choose_hash, dist, rng);
 }
 
-void HammingDistanceHeuristic_3(size_t n, size_t m, size_t sigma, double eps, const vector<uint32_t>& A, const vector<uint32_t>& B, vector<uint32_t>& dist, mt19937& rng) {
+void HammingDistanceHeuristic_3(int n, int m, int sigma, double eps, const vector<uint32_t>& A, const vector<uint32_t>& B, vector<uint32_t>& dist, mt19937& rng) {
     HashChooser choose_hash = choose_hash_heuristic_3;
     HammingDistanceHeuristic(n, m, sigma, eps, A, B, choose_hash, dist, rng);
 }
