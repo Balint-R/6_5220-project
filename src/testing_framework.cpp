@@ -159,10 +159,13 @@ int main(int argc, char **argv){
 		// Run synth data tests
 		vector<uint32_t> A, B, reference_solution;
 
-		string filename = "rand_" + to_string(n) + "_" + to_string(m) + "_"
-										+ to_string(sigma) + "_" + to_string(SEED);
+		int k = min<double>(sigma, ceil(1/eps) - 1);
 
-		std::tie(A, B) = generate_uniform_strings<uint32_t>(n, m, sigma, SEED);
+		char buf[100];
+		snprintf(buf, 100, "k_edges_%d_%d_%d_%d_%d", n, m, sigma, k, SEED);
+		string filename(buf);
+
+		std::tie(A, B) = generate_k_difs<uint32_t>(n, m, sigma, k, SEED);
 
         // if (SKEWED) {
 		//     std::tie(A, B) = generate_skewed_strings<uint32_t>(n, m, sigma, SEED, BIG_PROB);

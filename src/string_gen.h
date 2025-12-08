@@ -7,13 +7,13 @@ using namespace std;
 template <typename T>
 pair<vector<T>, vector<T>> generate_uniform_strings(int n, int m, int sigma, int seed){
     // Uniformly at random generate each character
-	std::mt19937 rng(seed);
+	mt19937 rng(seed);
     auto randInt = [&](int a, int b) {
-        return std::uniform_int_distribution(a, b)(rng);
+        return uniform_int_distribution(a, b)(rng);
     };
 
     printf("Generating uniform test case... (n: %d, m: %d, sigma: %d, seed: %d)\n", n, m, sigma, seed);
-    std::vector<T> A(n), B(m);
+    vector<T> A(n), B(m);
     for (int i = 0; i < n; i++){
         A[i] = randInt(0, sigma-1);
     }
@@ -25,16 +25,16 @@ pair<vector<T>, vector<T>> generate_uniform_strings(int n, int m, int sigma, int
 
 template <typename T>
 pair<vector<T>, vector<T>> generate_skewed_strings(int n, int m, int sigma, int seed, double big_prob = 0.8) {
-    std::mt19937 rng(seed);
-    std::uniform_real_distribution<double> uni01(0.0, 1.0);
+    mt19937 rng(seed);
+    uniform_real_distribution<double> uni01(0.0, 1.0);
     auto randInt = [&](int a, int b) {
-        return std::uniform_int_distribution<int>(a, b)(rng);
+        return uniform_int_distribution<int>(a, b)(rng);
     };
 
     printf("Generating SKEWED test case... (n: %d, m: %d, sigma: %d, seed: %d, big_prob: %.3f)\n",
            n, m, sigma, seed, big_prob);
 
-    std::vector<T> A(n), B(m);
+    vector<T> A(n), B(m);
 
     auto gen_symbol = [&]() -> T {
         double u = uni01(rng);
@@ -62,12 +62,12 @@ pair<vector<T>, vector<T>> generate_increasing_seq(int n, int m, int sigma, int 
     // Text:    (sigma/2)(sigma/2+1)(sigma/2+2)..
     // Pattern: 012...
 
-    std::vector<T> A(n), B(m, 0);
+    vector<T> A(n), B(m, 0);
     for (int i = 0; i < n-m; i+=1){
         // shuffle i to i+m-1
         // Random ordering of the alphabet
-        // std::vector<int> ord(m);
-        // std::iota(begin(ord), end(ord), 0);
+        // vector<int> ord(m);
+        // iota(begin(ord), end(ord), 0);
 
         // for (int j = i; j < i+m; j++){
         //     A[j+ord[j-i]] = (j-i) % (sigma/2);
@@ -105,5 +105,62 @@ pair<vector<T>, vector<T>> generate_all_difs(int n, int m, int sigma, int seed){
         for(int j = 0; j < k; j++) A[i*m + old_char*k] = new_char;
     }
 
+    return {A, B};
+}
+
+#include <bits/stdc++.h>
+using namespace std;
+
+typedef unsigned uint;
+typedef long long ll;
+typedef unsigned long long ull;
+typedef pair<int, int> pii;
+typedef pair<ll, ll> pll;
+typedef vector<int> vi;
+typedef vector<pii> vpii;
+typedef complex<double> cpx;
+template <typename T> using minPq = priority_queue<T, vector<T>, greater<T>>;
+#define ms(a, x) memset(a, x, sizeof(a))
+#define pb push_back
+#define fs first
+#define sn second
+#define ALL(v) begin(v), end(v)
+#define SZ(v) ((int) (v).size())
+#define lbv(v, x) (lower_bound(ALL(v), x) - (v).begin())
+#define ubv(v, x) (upper_bound(ALL(v), x) - (v).begin())
+template <typename T> inline void UNIQUE(vector<T> &v){sort(ALL(v)); v.resize(unique(ALL(v)) - v.begin());}
+const int INF = 0x3f3f3f3f;
+const ll LLINF = 0x3f3f3f3f3f3f3f3f;
+const double PI = acos(-1);
+#define FR(i, n) for(int i = 0; i < (n); i++)
+#define FOR(i, a, b) for(int i = (a); i < (b); i++)
+#define FORR(i, a, b) for(int i = (a); i >= (b); i--)
+#define dbg(x) {cerr << #x << ' ' << x << endl;}
+#define dbgArr(arr, n) {cerr << #arr; FR(_i, n) cerr << ' ' << (arr)[_i]; cerr << endl;}
+template <typename T, typename U>
+ostream& operator<<(ostream &os, pair<T, U> p){return os << "(" << p.fs << ", " << p.sn << ")";}
+
+
+template <typename T>
+pair<vector<T>, vector<T>> generate_k_difs(int n, int m, int sigma, int k, int seed){
+    assert(0 < k && k <= sigma);
+    mt19937 rng(seed);
+    auto randInt = [&](int a, int b) {
+        return uniform_int_distribution<int>(a, b)(rng);
+    };
+    
+    vector<T> A(n), B(m);
+    for(int i = 0; i < m; i++) B[i] = i % k;
+
+    int bsz = m + k;
+    for(int blk = 0; blk < (n + bsz-1)/bsz; blk++){
+        vector<T> rand_arr(k);
+        for(int i = 0; i < k; i++) rand_arr[i] = randInt(0, sigma-1);
+        for(int j = 0; j < min(bsz, n - blk*bsz); j++) A[blk*bsz + j] = rand_arr[j % k];
+    }
+
+    dbgArr(A, n);
+    dbgArr(B, m);
+    
     return {A, B};
 }
