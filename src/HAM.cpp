@@ -19,7 +19,7 @@ void BRUTE(size_t n, size_t m, const vector<uint32_t>& A, const vector<uint32_t>
 }
 
 // Compute exact Hamming distance using FFT
-void HAM_fft(int n, int m, int sigma,
+inline void HAM_fft(int n, int m, int sigma,
                    const vector<uint32_t> &A, const vector<uint32_t> &B,
                    vector<uint32_t> &result) {
 
@@ -50,7 +50,7 @@ void HAM_fft(int n, int m, int sigma,
 }
 
 // Compute the alphabet size (number of distinct characters)
-int alphabet_size(const vector<uint32_t>& A, const vector<uint32_t>& B) {
+inline int alphabet_size(const vector<uint32_t>& A, const vector<uint32_t>& B) {
     set<uint32_t> unique_chars(A.begin(), A.end());
     unique_chars.insert(B.begin(), B.end());
     return unique_chars.size();
