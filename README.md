@@ -41,3 +41,4 @@ cmake --build .
 #### To test all algorithms at once:
 `
 ./testing_framework real <filename> <eps> <rounds>
+`

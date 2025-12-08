@@ -7,7 +7,7 @@ using namespace std;
 
 
 void ham_dist_proj(int n, int m, int sigma, double eps,
-                   const vector<uint32_t> &A, const vector<uint32_t> &B, 
+                   const vector<uint32_t> &A, const vector<uint32_t> &B,
                    vector<uint32_t> &result, mt19937 &rng) {
 
     int reduced_sigma = ceil(min(2 / eps, (double) sigma));

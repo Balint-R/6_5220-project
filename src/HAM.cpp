@@ -23,7 +23,7 @@ void HAM_fft(int n, int m, int sigma,
                    const vector<uint32_t> &A, const vector<uint32_t> &B,
                    vector<uint32_t> &result) {
 
-    vector<long long> binA(n), binB(m), binOut; // scratch arrays to run FFT on
+    vector<uint32_t> binA(n), binB(m), binOut; // scratch arrays to run FFT on
     vector<uint32_t> aggBinOut(n - m + 1, 0);
 
     // For each character in the FULL alphabet, assign corresponding binary value
@@ -58,7 +58,8 @@ int alphabet_size(const vector<uint32_t>& A, const vector<uint32_t>& B) {
 
 // HAM is the inner fucntion that computes exact Hamming distance in the paper
 void HAM(size_t n, size_t m, size_t sigma, const vector<uint32_t>& A, const vector<uint32_t>& B, vector<uint32_t>& dist) {
-    return ham_dist_sqrt(n, m, sigma, 0.1, A, B, dist);
+    // return ham_dist_sqrt(n, m, sigma, 0.1, A, B, dist);
+    return HAM_fft(n, m, sigma, A, B, dist);
 
     // double cost_bf = 1.0 * n * m;
     // double fft_const = 10.0; // guess constant for FFT cost
