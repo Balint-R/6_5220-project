@@ -1,5 +1,6 @@
 #include "ham_dist_bf.h"
 #include "ham_dist_proj.h"
+#include "ham_dist_proj_sc.h"
 #include "ham_dist_sqrt.h"
 #include "first_alg_with_heuristics.h"
 #include "string_gen.h"
@@ -25,16 +26,18 @@ const int NUM_ALGORITHMS = 6;
 string get_test_name(int id){
 	switch (id){
 		case 0:
-			return "Brute Force";
+			return "Brute force";
 		case 1:
-			return "Projection to Binary Alphabet";
+			return "Projection to 2/eps alphabet";
 		case 2:
+			return "Projection to 2/eps alphabet with short circuit";
+		case 3:
 			return "Sqrt";
-        case 3:
-            return "Heuristic 1: sum(bucket_mass)^2";
         case 4:
-            return "Heuristic 2: sum(max freq over windows)^2";
+            return "Heuristic 1: sum(bucket_mass)^2";
         case 5:
+            return "Heuristic 2: sum(max freq over windows)^2";
+        case 6:
             return "Heuristic 3: sum(weighted_bucket_mass)^2";
 		default:
 			return "N/A";
@@ -45,8 +48,8 @@ template <typename T>
 double test(int n, int m, int sigma, double eps, const vector<T> &A, const vector<T> &B,
 			const vector<T> &ref_answer, int id=0) {
 
-	cout << "\nTest name: " << get_test_name(id) << endl;
-	double total_time = 0, total_ratio = 0;
+	printf("\nTest name: %s\n\n", get_test_name(id).c_str());
+	double sum_time = 0, sum_ratio = 0;
     double max_ratio = 0;
 
 	for (int i = 0; i <= num_rounds; i++) {
@@ -61,15 +64,18 @@ double test(int n, int m, int sigma, double eps, const vector<T> &A, const vecto
 				ham_dist_proj(n, m, sigma, eps, A, B, result, alg_rng);
 				break;
 			case 2:
+				ham_dist_proj_sc(n, m, sigma, eps, A, B, result, alg_rng);
+				break;
+			case 3:
 				ham_dist_sqrt(n, m, sigma, eps, A, B, result);
 				break;
-            case 3:
+            case 4:
                 HammingDistanceHeuristic_1(n, m, sigma, eps, A, B, result, alg_rng);
                 break;
-            case 4:
+            case 5:
                 HammingDistanceHeuristic_2(n, m, sigma, eps, A, B, result, alg_rng);
                 break;
-            case 5:
+            case 6:
                 HammingDistanceHeuristic_3(n, m, sigma, eps, A, B, result, alg_rng);
                 break;
 			default:
@@ -79,22 +85,22 @@ double test(int n, int m, int sigma, double eps, const vector<T> &A, const vecto
 
 		double dif_sec = chrono::duration<double>(t2 - t1).count();
 		double approx_ratio = approximation_ratio(ref_answer, result);
-        max_ratio = max(max_ratio, approx_ratio);
 		if (i == 0) {
-			printf("Warmup round: %f\n", dif_sec);
+			printf("Warmup round: %fs\n", dif_sec);
 			printf("Warmup round approximation ratio: %.6f\n", approx_ratio);
 		}
 		else {
 			printf("Round %d time: %.6fs\n", i, dif_sec);
-			total_time += dif_sec;
-            total_ratio += approx_ratio;
+			sum_time += dif_sec;
+            sum_ratio += approx_ratio;
+        	max_ratio = max(max_ratio, approx_ratio);
 		}
-		printf("Round %d approximation ratio: %.6f\n", i, approx_ratio);
+		printf("Round %d approximation ratio: %.6f\n\n", i, approx_ratio);
 	}
 
-	double average_time = total_time / num_rounds;
-    double average_ratio = total_ratio / num_rounds;
-	printf("Average time: %.6fs, Average approx ratio: %.6f, Max approx ratio: %.6f\n", average_time, average_ratio, max_ratio);
+	double average_time = sum_time / num_rounds;
+    double average_ratio = sum_ratio / num_rounds;
+	printf("Average time: %.6fs, average approx ratio: %.6f, max approx ratio: %.6f\n", average_time, average_ratio, max_ratio);
 	return average_time;
 }
 
@@ -153,10 +159,10 @@ int main(int argc, char **argv){
 		// Run synth data tests
 		vector<uint32_t> A, B, reference_solution;
 
-		string filename = "all_difs_" + to_string(n) + "_" + to_string(m) + "_"
+		string filename = "rand_" + to_string(n) + "_" + to_string(m) + "_"
 										+ to_string(sigma) + "_" + to_string(SEED);
 
-		std::tie(A, B) = generate_all_difs<uint32_t>(n, m, sigma, SEED);
+		std::tie(A, B) = generate_uniform_strings<uint32_t>(n, m, sigma, SEED);
 
         // if (SKEWED) {
 		//     std::tie(A, B) = generate_skewed_strings<uint32_t>(n, m, sigma, SEED, BIG_PROB);
