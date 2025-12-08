@@ -3,12 +3,12 @@
 
 using namespace std;
 
-typedef function<uint32_t(size_t)> HashFunction;
-typedef function<HashFunction(size_t, int, const vector<uint32_t>&, const vector<uint32_t>&, vector<uint32_t>&)> HashChooser;
+typedef function<uint32_t(int)> HashFunction;
+typedef function<HashFunction(int, int, const vector<uint32_t>&, const vector<uint32_t>&, const vector<uint32_t>&)> HashChooser;
 
 const int PRIME = 1e9+7;
 
-const size_t SEED = 430298584;
+const int SEED = 430298584;
 mt19937 rng(SEED);
 
 uniform_int_distribution<int> dist(1, PRIME - 1);
@@ -16,7 +16,7 @@ uniform_int_distribution<int> dist(1, PRIME - 1);
 inline HashFunction choose_hash_random(size_t num_buckets) {
     int a = dist(rng);
     int b = dist(rng);
-    return [=](size_t x) -> uint32_t {
+    return [=](int x) -> uint32_t {
         long long val = (1LL * a * x + b) % PRIME;
         return (uint32_t)(val % num_buckets);
     };
@@ -24,17 +24,17 @@ inline HashFunction choose_hash_random(size_t num_buckets) {
 
 // choose the best h from k candidates
 // that minimizes sum(bucket_mass)^2
-inline HashFunction choose_hash_heuristic_1(size_t num_buckets, int k, const vector<uint32_t>&, const vector<uint32_t>&, vector<uint32_t>& freq) {
+HashFunction choose_hash_heuristic_1(int num_buckets, int k, const vector<uint32_t>&, const vector<uint32_t>&, const vector<uint32_t>& freq) {
     vector<long long> bucket_mass(num_buckets);
 
     auto score_function = [&](HashFunction h) {
         fill(bucket_mass.begin(), bucket_mass.end(), 0);
-        for (size_t val = 0; val < freq.size(); val++) {
-            uint32_t bucket = h((size_t)val);
+        for (int val = 0; val < (int) freq.size(); val++) {
+            uint32_t bucket = h((int)val);
             bucket_mass[bucket] += freq[val];
         }
         long long score = 0;
-        for (size_t b = 0; b < num_buckets; b++) {
+        for (int b = 0; b < num_buckets; b++) {
             long long mass = bucket_mass[b];
             score += mass * mass;
         }
@@ -57,19 +57,19 @@ inline HashFunction choose_hash_heuristic_1(size_t num_buckets, int k, const vec
 
 // choose the best h from k candidates
 // that minimize sum(max freq over windows)^2
-inline HashFunction choose_hash_heuristic_2(size_t num_buckets, int k, const vector<uint32_t>& A, const vector<uint32_t>& B, vector<uint32_t>& ) {
-    size_t n = A.size(), m = B.size();
+HashFunction choose_hash_heuristic_2 (int num_buckets, int k, const vector<uint32_t>& A, const vector<uint32_t>& B, const vector<uint32_t>& ) {
+    int n = A.size(), m = B.size();
     if (n < m) return choose_hash_random(num_buckets);
 
     vector<uint32_t> hA(n), window_freq(num_buckets), max_window_freq(num_buckets);
 
     auto score_function = [&](HashFunction h) {
-        for (size_t i = 0; i < n; i++) hA[i] = h(A[i]);
+        for (int i = 0; i < n; i++) hA[i] = h(A[i]);
 
         fill(window_freq.begin(), window_freq.end(), 0);
         fill(max_window_freq.begin(), max_window_freq.end(), 0);
 
-        for (size_t i = 0; i < n; i++) {
+        for (int i = 0; i < n; i++) {
             uint32_t in = hA[i];
             window_freq[in]++;
 
@@ -83,7 +83,7 @@ inline HashFunction choose_hash_heuristic_2(size_t num_buckets, int k, const vec
         }
 
         long long score = 0;
-        for (size_t b = 0; b < num_buckets; b++) {
+        for (int b = 0; b < num_buckets; b++) {
             long long mass = max_window_freq[b];
             score += mass * mass;
         }
@@ -167,39 +167,30 @@ inline double choose_c(double eps) {
 }
 
 // main function to test various hash function choosing heuristics
-void HammingDistanceHeuristic(size_t n, size_t m, size_t sigma, double eps, const vector<uint32_t> &A,
+void HammingDistanceHeuristic(int n, int m, int sigma, double eps, const vector<uint32_t> &A,
                                 const vector<uint32_t> &B,
                                 HashChooser choose_hash,
                                 vector<uint32_t> &dist, mt19937 &rng1) {
     // parameters
     double c = choose_c(eps); // run c * log n times
-    size_t num_rounds = max((size_t)1, (size_t)(ceil(c * log2(n))));
-    printf("c = %.4f, num_rounds = %d\n", c, (int)num_rounds);
+    int num_rounds = max((int)1, (int)(c * log2(n)));
+    // printf("c = %.4f, num_rounds = %d\n", c, (int)num_rounds);
 
-    size_t num_buckets = min(size_t(2 / eps), sigma);
-    if (num_rounds * num_buckets >= sigma) {
-        // run exact FFT on small sigma
-        cout << "Running exact FFT on small sigma: " << sigma << " <= " << num_rounds * num_buckets << endl;
-        HAM_fft(n, m, sigma, A, B, dist);
-        return;
-    }
-
-    cout << "Running approx FFT with sigma' = " << num_buckets << endl;
-
+    int num_buckets = min(int(2 / eps), (int)sigma);
     int k = 4; // number of candidate hash functions
 
     vector<uint32_t> freq(sigma, 0);
-    for (size_t i = 0; i < n; i++) {
+    for (int i = 0; i < n; i++) {
         freq[A[i]]++;
     }
-    for (size_t i = 0; i < m; i++) {
+    for (int i = 0; i < m; i++) {
         freq[B[i]]++;
     }
 
     vector<uint32_t> hA(n);
     vector<uint32_t> hB(m);
 
-    for (size_t round = 0; round < num_rounds; round++){ // run for c log n rounds
+    for (int round = 0; round < num_rounds; round++){ // run for c log n rounds
         // pick 2-universal hash function
         auto h = choose_hash(num_buckets, k, A, B, freq);
 
@@ -209,8 +200,8 @@ void HammingDistanceHeuristic(size_t n, size_t m, size_t sigma, double eps, cons
 
         // do brute force / FFT
         vector<uint32_t> cur(n - m + 1);
-        HAM_fft(n, m, num_buckets, hA, hB, cur);
-        for (size_t i = 0; i < cur.size(); i++) {
+        HAM(n, m, num_buckets, hA, hB, cur);
+        for (int i = 0; i < (int) cur.size(); i++) {
             dist[i] = max(dist[i], cur[i]);
         }
     }
@@ -218,14 +209,14 @@ void HammingDistanceHeuristic(size_t n, size_t m, size_t sigma, double eps, cons
 
 // choose the best h from k candidates
 // that minimize sum(bucket_mass)^2
-void HammingDistanceHeuristic_1(size_t n, size_t m, size_t sigma, double eps, const vector<uint32_t>& A, const vector<uint32_t>& B, vector<uint32_t>& dist, mt19937& rng) {
+void HammingDistanceHeuristic_1(int n, int m, int sigma, double eps, const vector<uint32_t>& A, const vector<uint32_t>& B, vector<uint32_t>& dist, mt19937& rng) {
     HashChooser choose_hash = choose_hash_heuristic_1;
     HammingDistanceHeuristic(n, m, sigma, eps, A, B, choose_hash, dist, rng);
 }
 
 // choose the best h from k candidates
 // that minimize sum(max freq over windows)^2
-void HammingDistanceHeuristic_2(size_t n, size_t m, size_t sigma, double eps, const vector<uint32_t>& A, const vector<uint32_t>& B, vector<uint32_t>& dist, mt19937& rng) {
+void HammingDistanceHeuristic_2(int n, int m, int sigma, double eps, const vector<uint32_t>& A, const vector<uint32_t>& B, vector<uint32_t>& dist, mt19937& rng) {
     HashChooser choose_hash = choose_hash_heuristic_2;
     HammingDistanceHeuristic(n, m, sigma, eps, A, B, choose_hash, dist, rng);
 }
@@ -235,14 +226,14 @@ void HammingDistanceHeuristic_3(size_t n, size_t m, size_t sigma, double eps, co
     HammingDistanceHeuristic(n, m, sigma, eps, A, B, choose_hash, dist, rng);
 }
 
-void HammingDistanceBase(size_t n, size_t m, size_t sigma, double eps, const vector<uint32_t> &A,
+void HammingDistanceBase(int n, int m, int sigma, double eps, const vector<uint32_t> &A,
                          const vector<uint32_t> &B, vector<uint32_t> &dist, mt19937 &rng1) {
     // parameters
     double c = 2; // run c * log n times
 
-    size_t num_buckets = static_cast<size_t>(2 / eps);
+    int num_buckets = static_cast<int>(2 / eps);
 
-    for (size_t round = 0; round < (size_t) (c * log2(n)); round++){ // run for c log n rounds
+    for (int round = 0; round < (int) (c * log2(n)); round++){ // run for c log n rounds
         // pick 2-universal hash function
         auto h = choose_hash_random(num_buckets);
 
