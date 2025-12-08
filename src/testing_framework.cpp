@@ -18,9 +18,9 @@ int num_rounds;
 const int SEED = 430298584;
 mt19937 alg_rng(SEED);
 
-const int NUM_ALGORITHMS = 6;
-const bool SKEWED = true; // whether to generate skewed test case
-const double BIG_PROB = 0.8;
+const int NUM_ALGORITHMS = 5;
+// const bool SKEWED = true; // whether to generate skewed test case
+// const double BIG_PROB = 0.8;
 
 string get_test_name(int id){
 	switch (id){
@@ -34,8 +34,6 @@ string get_test_name(int id){
             return "Heuristic 1: sum(bucket_mass)^2";
         case 4:
             return "Heuristic 2: sum(max freq over windows)^2";
-        case 5:
-            return "Base Algorithm";
 		default:
 			return "N/A";
 	}
@@ -44,8 +42,10 @@ string get_test_name(int id){
 template <typename T>
 double test(int n, int m, int sigma, double eps, const vector<T> &A, const vector<T> &B,
 			const vector<T> &ref_answer, int id=0) {
+
 	cout << "\nTest name: " << get_test_name(id) << endl;
 	double total_time = 0, total_ratio = 0;
+
 	for (int i = 0; i <= num_rounds; i++) {
 		vector<T> result(n-m+1, 0); // initialize result array to all 0
 		auto t1 = chrono::steady_clock::now();
@@ -66,9 +66,6 @@ double test(int n, int m, int sigma, double eps, const vector<T> &A, const vecto
             case 4:
                 HammingDistanceHeuristic_2(n, m, sigma, eps, A, B, result, alg_rng);
                 break;
-            case 5:
-                HammingDistanceBase(n, m, sigma, eps, A, B, result, alg_rng);
-                break;
 			default:
 				assert(false);
 		}
@@ -87,21 +84,19 @@ double test(int n, int m, int sigma, double eps, const vector<T> &A, const vecto
 		}
 		printf("Round %d approximation ratio: %.6f\n", i, approx_ratio);
 	}
+
 	double average_time = total_time / num_rounds;
     double average_ratio = total_ratio / num_rounds;
-	printf("Average time: %.6fs,   Average approximation ratio: %.6f", average_time, average_ratio);
+	printf("Average time: %.6fs, Average approximation ratio: %.6f\n", average_time, average_ratio);
 	return average_time;
 }
 
-double test_all(int n, int m, int sigma, double eps, const vector<uint32_t> &A, const vector<uint32_t> &B,
+void test_all(int n, int m, int sigma, double eps, const vector<uint32_t> &A, const vector<uint32_t> &B,
                            const vector<uint32_t> &ref_answer) {
-    double total_time = 0;
     for (int id = 0; id < NUM_ALGORITHMS; id++) {
-        cout << "\n==============================";
-        double avg_time = test<uint32_t>(n, m, sigma, eps, A, B, ref_answer, id);
-        total_time += avg_time;
+        cout << "==============================\n";
+        test<uint32_t>(n, m, sigma, eps, A, B, ref_answer, id);
     }
-    return total_time;
 }
 
 void get_reference_solution(string filename, int n, int m, const vector<uint32_t> &A,
@@ -151,15 +146,17 @@ int main(int argc, char **argv){
 		// Run synth data tests
 		vector<uint32_t> A, B, reference_solution;
 
-		string filename = "synth_" + to_string(n) + "_" + to_string(m) + "_"
+		string filename = "all_difs_" + to_string(n) + "_" + to_string(m) + "_"
 										+ to_string(sigma) + "_" + to_string(SEED);
 
-        if (SKEWED) {
-		    std::tie(A, B) = generate_skewed_strings<uint32_t>(n, m, sigma, SEED, BIG_PROB);
-            filename += "_skewed_" + to_string(static_cast<int>(BIG_PROB * 100));
-        } else {
-            std::tie(A, B) = generate_uniform_strings<uint32_t>(n, m, sigma, SEED);
-        }
+		std::tie(A, B) = generate_all_difs<uint32_t>(n, m, sigma, SEED);
+
+        // if (SKEWED) {
+		//     std::tie(A, B) = generate_skewed_strings<uint32_t>(n, m, sigma, SEED, BIG_PROB);
+        //     filename += "_skewed_" + to_string(static_cast<int>(BIG_PROB * 100));
+        // } else {
+        //     std::tie(A, B) = generate_uniform_strings<uint32_t>(n, m, sigma, SEED);
+        // }
 		// std::tie(A, B) = generate_increasing_seq<uint32_t>(n, m, sigma, SEED);
 
 
