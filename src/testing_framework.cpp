@@ -30,15 +30,15 @@ string get_test_name(int id){
 		case 1:
 			return "Projection to 2/eps alphabet";
 		case 2:
-			return "Projection to 2/eps alphabet with short circuit";
-		case 3:
 			return "Sqrt";
-        case 4:
+        case 3:
             return "Heuristic 1: sum(bucket_mass)^2";
-        case 5:
+        case 4:
             return "Heuristic 2: sum(max freq over windows)^2";
-        case 6:
+        case 5:
             return "Heuristic 3: sum(weighted_bucket_mass)^2";
+        case 6:
+			return "Projection to 2/eps alphabet with short circuit";
 		default:
 			return "N/A";
 	}
@@ -70,20 +70,20 @@ TestStats test(int n, int m, int sigma, double eps, const vector<T> &A, const ve
 				ham_dist_proj(n, m, sigma, eps, A, B, result, alg_rng);
 				break;
 			case 2:
-				ham_dist_proj_sc(n, m, sigma, eps, A, B, result, alg_rng);
-				break;
-			case 3:
 				ham_dist_sqrt(n, m, sigma, eps, A, B, result);
 				break;
-            case 4:
+            case 3:
                 HammingDistanceHeuristic_1(n, m, sigma, eps, A, B, result, alg_rng);
                 break;
-            case 5:
+            case 4:
                 HammingDistanceHeuristic_2(n, m, sigma, eps, A, B, result, alg_rng);
                 break;
-            case 6:
+            case 5:
                 HammingDistanceHeuristic_3(n, m, sigma, eps, A, B, result, alg_rng);
                 break;
+            case 6:
+				ham_dist_proj_sc(n, m, sigma, eps, A, B, result, alg_rng);
+				break;
 			default:
 				assert(false);
 		}
@@ -270,15 +270,15 @@ int main(int argc, char **argv){
 		snprintf(buf, 100, "k_edges_%d_%d_%d_%d_%d", n, m, sigma, k, SEED);
 		string filename(buf);
 
-		std::tie(A, B) = generate_k_difs<uint32_t>(n, m, sigma, k, SEED);
+		// std::tie(A, B) = generate_k_difs<uint32_t>(n, m, sigma, k, SEED);
 
-        // if (SKEWED) {
-		//     std::tie(A, B) = generate_skewed_strings<uint32_t>(n, m, sigma, SEED, BIG_PROB);
-        //     filename += "_skewed_" + to_string(static_cast<int>(BIG_PROB * 100));
-        // } else {
-        //     std::tie(A, B) = generate_uniform_strings<uint32_t>(n, m, sigma, SEED);
-        // }
-		// std::tie(A, B) = generate_increasing_seq<uint32_t>(n, m, sigma, SEED);
+        if (SKEWED) {
+		    std::tie(A, B) = generate_skewed_strings<uint32_t>(n, m, sigma, SEED, BIG_PROB);
+            filename += "_skewed_" + to_string(static_cast<int>(BIG_PROB * 100));
+        } else {
+            std::tie(A, B) = generate_uniform_strings<uint32_t>(n, m, sigma, SEED);
+        }
+		std::tie(A, B) = generate_increasing_seq<uint32_t>(n, m, sigma, SEED);
 
 
 		get_reference_solution(filename, n, m, A, B, reference_solution);
