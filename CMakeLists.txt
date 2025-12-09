@@ -13,11 +13,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 add_compile_options(-O3)
 add_compile_options(-Wall)
+add_compile_options(-Wshadow)
 
 add_executable(testing_framework
     src/testing_framework.cpp
     src/ham_dist_bf.cpp
     src/ham_dist_proj.cpp
+    src/ham_dist_proj_sc.cpp
     src/ham_dist_sqrt.cpp
     src/first_alg_with_heuristics.cpp
     src/HAM.cpp

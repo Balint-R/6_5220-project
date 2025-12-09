@@ -19,7 +19,7 @@ void BRUTE(size_t n, size_t m, const vector<uint32_t>& A, const vector<uint32_t>
 }
 
 // Compute exact Hamming distance using FFT
-inline void HAM_fft(int n, int m, int sigma,
+void HAM_fft(int n, int m, int sigma,
                    const vector<uint32_t> &A, const vector<uint32_t> &B,
                    vector<uint32_t> &result) {
 

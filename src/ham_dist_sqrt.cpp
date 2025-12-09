@@ -1,6 +1,7 @@
 #include "ham_dist_sqrt.h"
 #include "atcoder/convolution.hpp"
 #include <cmath>
+#include <cstdio>
 
 using namespace std;
 
@@ -29,26 +30,28 @@ void ham_dist_sqrt(int n, int m, int sigma, double eps,
         freq_b[B[i]]++;
     }
 
-    int cut = n * log(n) * 20;
+    int cut = n * log2(n) * 8;
+    if(n >= 3e5) cut = n * log2(n) * 4;
+    if(n >= 6e5) cut = n * log2(n) * 3;
 
     vector<int> a_ls;
     a_ls.reserve(n);
 
-    // Number of matches per position, padded at start so no index out of bounds
+    // Number of matches per position, padded at start and end so no index out of bounds
     vector<int> big_result(n+m-1);
 
     // Vectors to pass to FFT
     vector<int> in_a(n), in_b(m), out_fft(n+m-1);
 
-    // dbg(cut);
+    // fprintf(stderr, "cut %d\n", cut);
 
     for(int s = 0; s < sigma; s++){
-        // cerr << freq_a[s] << ' ' << freq_b[s] << ' ' << (ll) freq_a[s] * freq_b[s] << endl;
+        // fprintf(stderr, "%d %d %lld\n", freq_a[s], freq_b[s], (ll) freq_a[s] * freq_b[s]);
 
         if((ll) freq_a[s] * freq_b[s] < cut){
             for(int i = head_a[s]; i != -1; i = nxt_a[i]) a_ls.push_back(i);
             for(int j = head_b[s]; j != -1; j = nxt_b[j]){
-                for(int i : a_ls) big_result[i-j+m-1]++;
+                for(int i : a_ls){big_result[i-j+m-1]++;}
             }
             a_ls.clear();
         }
