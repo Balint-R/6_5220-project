@@ -19,7 +19,7 @@ int num_rounds;
 const int SEED = 430298584;
 mt19937 alg_rng(SEED);
 
-const int NUM_ALGORITHMS = 6;
+const int NUM_ALGORITHMS = 7;
 const bool SKEWED = false; // whether to generate skewed test case
 const double BIG_PROB = 0.8;
 
@@ -104,8 +104,8 @@ TestStats test(int n, int m, int sigma, double eps, const vector<T> &A, const ve
 		printf("Round %d approximation ratio: %.6f\n\n", i, approx_ratio);
 	}
 
-    double average_time = total_time / num_rounds;
-    double average_ratio = total_ratio / num_rounds;
+    double average_time = sum_time / num_rounds;
+    double average_ratio = sum_ratio / num_rounds;
     printf("Average time: %.6fs, Average approx ratio: %.6f, Max approx ratio: %.6f\n",
            average_time, average_ratio, max_ratio);
 
@@ -144,7 +144,7 @@ void run_synth_grid_to_csv(const std::string &csv_filename) {
     const int ns[] = {10000, 100000, 1000000};
     const double m_fracs[] = {0.05, 0.10, 0.20, 0.50};
     const int sigmas[] = {10, 100, 1000};
-    const double epsilons[] = {0.05, 0.10, 0.20, 0.50};
+    const double epsilons[] = {0.10, 0.20, 0.50};
 
     const int num_ns = sizeof(ns) / sizeof(ns[0]);
     const int num_m_fracs = sizeof(m_fracs) / sizeof(m_fracs[0]);
@@ -229,8 +229,8 @@ void run_synth_grid_to_csv(const std::string &csv_filename) {
 }
 
 int main(int argc, char **argv){
-    run_synth_grid_to_csv("results_all.csv");
-    return 0;
+    // run_synth_grid_to_csv("results_all.csv");
+    // return 0;
 
 	if (argc < 2) {
 		printf(

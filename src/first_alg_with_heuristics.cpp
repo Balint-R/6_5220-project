@@ -9,13 +9,13 @@ typedef function<HashFunction(int, int, const vector<uint32_t>&, const vector<ui
 const int PRIME = 1e9+7;
 
 const int SEED = 430298584;
-mt19937 rng(SEED);
+mt19937 rng_global(SEED);
 
-uniform_int_distribution<int> dist(1, PRIME - 1);
+uniform_int_distribution<int> uni_dist(1, PRIME - 1);
 
 inline HashFunction choose_hash_random(size_t num_buckets) {
-    int a = dist(rng);
-    int b = dist(rng);
+    int a = uni_dist(rng_global);
+    int b = uni_dist(rng_global);
     return [=](int x) -> uint32_t {
         long long val = (1LL * a * x + b) % PRIME;
         return (uint32_t)(val % num_buckets);

@@ -186,3 +186,20 @@ fig2.legend(handles2, labels2, loc="upper center", ncol=len(approx_algos))
 fig2.suptitle("Approximate Algorithms: Approximation Ratio Panels", y=1.03)
 fig2.tight_layout()
 plt.show()
+
+
+# exact algorithms
+fig3, axes3 = plt.subplots(1, 2, figsize=(11, 4))
+
+plot_group_on_ax(
+    axes3[0], sub_m, exact_algos,
+    x_col="m", metric="avg_time",
+    x_label="m",
+    title="Runtime vs m (exact algorithms)",
+    log_x=True, log_y=True,
+)
+
+fig3.legend(loc="upper center", ncol=len(exact_algos))
+fig3.suptitle("Exact Algorithms: Runtime Panel", y=1.03)
+fig3.tight_layout()
+plt.show()
