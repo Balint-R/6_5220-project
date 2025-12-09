@@ -108,39 +108,6 @@ pair<vector<T>, vector<T>> generate_all_difs(int n, int m, int sigma, int seed){
     return {A, B};
 }
 
-#include <bits/stdc++.h>
-using namespace std;
-
-typedef unsigned uint;
-typedef long long ll;
-typedef unsigned long long ull;
-typedef pair<int, int> pii;
-typedef pair<ll, ll> pll;
-typedef vector<int> vi;
-typedef vector<pii> vpii;
-typedef complex<double> cpx;
-template <typename T> using minPq = priority_queue<T, vector<T>, greater<T>>;
-#define ms(a, x) memset(a, x, sizeof(a))
-#define pb push_back
-#define fs first
-#define sn second
-#define ALL(v) begin(v), end(v)
-#define SZ(v) ((int) (v).size())
-#define lbv(v, x) (lower_bound(ALL(v), x) - (v).begin())
-#define ubv(v, x) (upper_bound(ALL(v), x) - (v).begin())
-template <typename T> inline void UNIQUE(vector<T> &v){sort(ALL(v)); v.resize(unique(ALL(v)) - v.begin());}
-const int INF = 0x3f3f3f3f;
-const ll LLINF = 0x3f3f3f3f3f3f3f3f;
-const double PI = acos(-1);
-#define FR(i, n) for(int i = 0; i < (n); i++)
-#define FOR(i, a, b) for(int i = (a); i < (b); i++)
-#define FORR(i, a, b) for(int i = (a); i >= (b); i--)
-#define dbg(x) {cerr << #x << ' ' << x << endl;}
-#define dbgArr(arr, n) {cerr << #arr; FR(_i, n) cerr << ' ' << (arr)[_i]; cerr << endl;}
-template <typename T, typename U>
-ostream& operator<<(ostream &os, pair<T, U> p){return os << "(" << p.fs << ", " << p.sn << ")";}
-
-
 template <typename T>
 pair<vector<T>, vector<T>> generate_k_difs(int n, int m, int sigma, int k, int seed){
     assert(0 < k && k <= sigma);
@@ -148,7 +115,7 @@ pair<vector<T>, vector<T>> generate_k_difs(int n, int m, int sigma, int k, int s
     auto randInt = [&](int a, int b) {
         return uniform_int_distribution<int>(a, b)(rng);
     };
-    
+
     vector<T> A(n), B(m);
     for(int i = 0; i < m; i++) B[i] = i % k;
 
@@ -159,8 +126,8 @@ pair<vector<T>, vector<T>> generate_k_difs(int n, int m, int sigma, int k, int s
         for(int j = 0; j < min(bsz, n - blk*bsz); j++) A[blk*bsz + j] = rand_arr[j % k];
     }
 
-    dbgArr(A, n);
-    dbgArr(B, m);
-    
+    // dbgArr(A, n);
+    // dbgArr(B, m);
+
     return {A, B};
 }
