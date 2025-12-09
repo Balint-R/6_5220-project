@@ -19,8 +19,8 @@ const int SEED = 430298584;
 mt19937 alg_rng(SEED);
 
 const int NUM_ALGORITHMS = 6;
-// const bool SKEWED = false; // whether to generate skewed test case
-// const double BIG_PROB = 0.8;
+const bool SKEWED = false; // whether to generate skewed test case
+const double BIG_PROB = 0.8;
 
 string get_test_name(int id){
 	switch (id){
@@ -41,28 +41,34 @@ string get_test_name(int id){
 	}
 }
 
+struct TestStats {
+    double avg_time;
+    double avg_ratio;
+    double max_ratio;
+};
+
 template <typename T>
-double test(int n, int m, int sigma, double eps, const vector<T> &A, const vector<T> &B,
-			const vector<T> &ref_answer, int id=0) {
+TestStats test(int n, int m, int sigma, double eps, const vector<T> &A, const vector<T> &B,
+               const vector<T> &ref_answer, int id = 0) {
 
-	cout << "\nTest name: " << get_test_name(id) << endl;
-	double total_time = 0, total_ratio = 0;
-    double max_ratio = 0;
+    cout << "\nTest name: " << get_test_name(id) << endl;
+    double total_time = 0.0, total_ratio = 0.0;
+    double max_ratio = 0.0;
 
-	for (int i = 0; i <= num_rounds; i++) {
-		vector<T> result(n-m+1, 0); // initialize result array to all 0
-		auto t1 = chrono::steady_clock::now();
+    for (int i = 0; i <= num_rounds; i++) {
+        vector<T> result(n - m + 1, 0); // initialize result array to all 0
+        auto t1 = chrono::steady_clock::now();
 
-		switch (id) {
-			case 0:
-				ham_dist_bf(n, m, A, B, result);
-				break;
-			case 1:
-				ham_dist_proj(n, m, sigma, eps, A, B, result, alg_rng);
-				break;
-			case 2:
-				ham_dist_sqrt(n, m, sigma, eps, A, B, result);
-				break;
+        switch (id) {
+            case 0:
+                ham_dist_bf(n, m, A, B, result);
+                break;
+            case 1:
+                ham_dist_proj(n, m, sigma, eps, A, B, result, alg_rng);
+                break;
+            case 2:
+                ham_dist_sqrt(n, m, sigma, eps, A, B, result);
+                break;
             case 3:
                 HammingDistanceHeuristic_1(n, m, sigma, eps, A, B, result, alg_rng);
                 break;
@@ -72,31 +78,38 @@ double test(int n, int m, int sigma, double eps, const vector<T> &A, const vecto
             case 5:
                 HammingDistanceHeuristic_3(n, m, sigma, eps, A, B, result, alg_rng);
                 break;
-			default:
-				assert(false);
-		}
-		auto t2 = chrono::steady_clock::now();
+            default:
+                assert(false);
+        }
 
-		double dif_sec = chrono::duration<double>(t2 - t1).count();
-		double approx_ratio = approximation_ratio(ref_answer, result);
+        auto t2 = chrono::steady_clock::now();
+        double dif_sec = chrono::duration<double>(t2 - t1).count();
+        double approx_ratio = approximation_ratio(ref_answer, result);
         max_ratio = max(max_ratio, approx_ratio);
-		if (i == 0) {
-			printf("Warmup round: %f\n", dif_sec);
-			printf("Warmup round approximation ratio: %.6f\n", approx_ratio);
-		}
-		else {
-			printf("Round %d time: %.6fs\n", i, dif_sec);
-			total_time += dif_sec;
-            total_ratio += approx_ratio;
-		}
-		printf("Round %d approximation ratio: %.6f\n", i, approx_ratio);
-	}
 
-	double average_time = total_time / num_rounds;
+        if (i == 0) {
+            printf("Warmup round: %f\n", dif_sec);
+            printf("Warmup round approximation ratio: %.6f\n", approx_ratio);
+        } else {
+            printf("Round %d time: %.6fs\n", i, dif_sec);
+            printf("Round %d approximation ratio: %.6f\n", i, approx_ratio);
+            total_time += dif_sec;
+            total_ratio += approx_ratio;
+        }
+    }
+
+    double average_time = total_time / num_rounds;
     double average_ratio = total_ratio / num_rounds;
-	printf("Average time: %.6fs, Average approx ratio: %.6f, Max approx ratio: %.6f\n", average_time, average_ratio, max_ratio);
-	return average_time;
+    printf("Average time: %.6fs, Average approx ratio: %.6f, Max approx ratio: %.6f\n",
+           average_time, average_ratio, max_ratio);
+
+    TestStats stats;
+    stats.avg_time = average_time;
+    stats.avg_ratio = average_ratio;
+    stats.max_ratio = max_ratio;
+    return stats;
 }
+
 
 void test_all(int n, int m, int sigma, double eps, const vector<uint32_t> &A, const vector<uint32_t> &B,
                            const vector<uint32_t> &ref_answer) {
@@ -108,19 +121,111 @@ void test_all(int n, int m, int sigma, double eps, const vector<uint32_t> &A, co
 
 void get_reference_solution(string filename, int n, int m, const vector<uint32_t> &A,
 							const vector<uint32_t> &B, vector<uint32_t> &reference_solution){
-	if (check_output_cached(filename)) {
-		cerr << "Found cached solution" << endl;
-		get_answer_from_cache(filename, reference_solution);
-	}
-	else {
+	// if (check_output_cached(filename)) {
+	// 	cerr << "Found cached solution" << endl;
+	// 	get_answer_from_cache(filename, reference_solution);
+	// }
+	// else {
 		cerr << "Did not find cached solution" << endl;
 		reference_solution.assign(n-m+1, 0);
 		ham_dist_bf(n, m, A, B, reference_solution);
 		write_output_to_cache(filename, reference_solution);
-	}
+	// }
+}
+
+#include <fstream>
+void run_synth_grid_to_csv(const std::string &csv_filename) {
+    const int ns[] = {10000, 100000, 1000000};
+    const double m_fracs[] = {0.05, 0.10, 0.20, 0.50};
+    const int sigmas[] = {10, 100, 1000};
+    const double epsilons[] = {0.05, 0.10, 0.20, 0.50};
+
+    const int num_ns = sizeof(ns) / sizeof(ns[0]);
+    const int num_m_fracs = sizeof(m_fracs) / sizeof(m_fracs[0]);
+    const int num_sigmas = sizeof(sigmas) / sizeof(sigmas[0]);
+    const int num_eps = sizeof(epsilons) / sizeof(epsilons[0]);
+
+    int old_rounds = num_rounds;
+    num_rounds = 3;
+
+    std::ofstream csv(csv_filename.c_str());
+    if (!csv.is_open()) {
+        std::cerr << "Failed to open CSV file: " << csv_filename << std::endl;
+        return;
+    }
+
+    // header
+    csv << "n,m,sigma,eps,algo_id,algo_name,rounds,avg_time,avg_ratio,max_ratio\n";
+
+    for (int ni = 0; ni < num_ns; ++ni) {
+        int n = ns[ni];
+
+        for (int si = 0; si < num_sigmas; ++si) {
+            int sigma = sigmas[si];
+
+            for (int mi = 0; mi < num_m_fracs; ++mi) {
+                int m = static_cast<int>(n * m_fracs[mi]);
+                if (m > n) continue;
+
+                std::cerr << "Generating test for n=" << n
+                          << " m=" << m
+                          << " sigma=" << sigma << std::endl;
+
+                std::vector<uint32_t> A, B, reference_solution;
+
+                // reference solution filename
+                std::string filename = "all_difs_" + std::to_string(n) + "_" +
+                                       std::to_string(m) + "_" +
+                                       std::to_string(sigma) + "_" +
+                                       std::to_string(SEED);
+
+                if (SKEWED) {
+                    std::tie(A, B) = generate_skewed_strings<uint32_t>(
+                        n, m, sigma, SEED, BIG_PROB);
+                } else {
+                    std::tie(A, B) = generate_uniform_strings<uint32_t>(
+                        n, m, sigma, SEED);
+                }
+
+                get_reference_solution(filename, n, m, A, B, reference_solution);
+
+                for (int ei = 0; ei < num_eps; ++ei) {
+                    double eps = epsilons[ei];
+
+                    for (int algo_id = 0; algo_id < NUM_ALGORITHMS; ++algo_id) {
+                        std::cout << "==============================\n";
+                        std::cout << "n=" << n << " m=" << m
+                                  << " sigma=" << sigma
+                                  << " eps=" << eps
+                                  << " algo=" << algo_id << std::endl;
+
+                        TestStats stats = test<uint32_t>(
+                            n, m, sigma, eps, A, B, reference_solution, algo_id);
+
+                        csv << n << ","
+                            << m << ","
+                            << sigma << ","
+                            << eps << ","
+                            << algo_id << ","
+                            << "\"" << get_test_name(algo_id) << "\"" << ","
+                            << num_rounds << ","
+                            << stats.avg_time << ","
+                            << stats.avg_ratio << ","
+                            << stats.max_ratio << "\n";
+                    }
+                }
+            }
+        }
+    }
+
+    csv.close();
+    num_rounds = old_rounds;
 }
 
 int main(int argc, char **argv){
+    run_synth_grid_to_csv("results_all.csv");
+    return 0;
+
 	if (argc < 2) {
 		printf(
 			"Usage: ./testing_framework <mode> <mode_args>\n"
@@ -156,15 +261,16 @@ int main(int argc, char **argv){
 		string filename = "all_difs_" + to_string(n) + "_" + to_string(m) + "_"
 										+ to_string(sigma) + "_" + to_string(SEED);
 
-		std::tie(A, B) = generate_all_difs<uint32_t>(n, m, sigma, SEED);
+		// std::tie(A, B) = generate_all_difs<uint32_t>(n, m, sigma, SEED);
+        // std::tie(A, B) = generate_uniform_strings<uint32_t>(n, m, sigma, SEED);
 
-        // if (SKEWED) {
-		//     std::tie(A, B) = generate_skewed_strings<uint32_t>(n, m, sigma, SEED, BIG_PROB);
-        //     filename += "_skewed_" + to_string(static_cast<int>(BIG_PROB * 100));
-        // } else {
-        //     std::tie(A, B) = generate_uniform_strings<uint32_t>(n, m, sigma, SEED);
-        // }
-		// std::tie(A, B) = generate_increasing_seq<uint32_t>(n, m, sigma, SEED);
+        if (SKEWED) {
+		    std::tie(A, B) = generate_skewed_strings<uint32_t>(n, m, sigma, SEED, BIG_PROB);
+            filename += "_skewed_" + to_string(static_cast<int>(BIG_PROB * 100));
+        } else {
+            std::tie(A, B) = generate_uniform_strings<uint32_t>(n, m, sigma, SEED);
+        }
+		std::tie(A, B) = generate_increasing_seq<uint32_t>(n, m, sigma, SEED);
 
 
 		get_reference_solution(filename, n, m, A, B, reference_solution);
@@ -209,4 +315,5 @@ int main(int argc, char **argv){
 		printf("Invalid mode. Should be 'synth' or 'real'.\n");
 		exit(1);
 	}
+    return 0;
 }

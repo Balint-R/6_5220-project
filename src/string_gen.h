@@ -82,14 +82,14 @@ pair<vector<T>, vector<T>> generate_increasing_seq(int n, int m, int sigma, int 
     //     // B[i] = i % sigma;
     //     B[i] = sigma/2 + ((i) % (sigma/2));
     // }
-    return make_tuple(A, B);
+    return make_pair(A, B);
 }
 
 template <typename T>
 pair<vector<T>, vector<T>> generate_all_difs(int n, int m, int sigma, int seed){
     assert(m % sigma == 0);
     int k = m/sigma;
-    
+
     vector<T> A(n), B(m);
     for(int i = 0; i < sigma; i++){
         for(int j = 0; j < k; j++){

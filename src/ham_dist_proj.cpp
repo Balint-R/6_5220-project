@@ -11,7 +11,7 @@ void ham_dist_proj(int n, int m, int sigma, double eps,
                    vector<uint32_t> &result, mt19937 &rng) {
 
     int reduced_sigma = ceil(min(2 / eps, (double) sigma));
-    double c = 0.4; // run c * log n times
+    double c = 0.5; // run c * log n times
     int num_its = c * ceil(log2(n));
 
     // if(num_its * reduced_sigma >= sigma){
