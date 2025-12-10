@@ -34,7 +34,7 @@ baseline_m_frac = 0.2
 # Helper to plot group on a given axis
 # -------------------------------------------------
 def plot_group_on_ax(ax, data, algos, x_col, metric,
-                     x_label, title, log_x=False, log_y=False, xticks=None):
+                     x_label, title, log_x=False, log_y=False, xticks=None, xticklabels=None):
 
     for algo in algos:
         cur = data[data["short_name"] == algo].sort_values(x_col)
@@ -42,13 +42,14 @@ def plot_group_on_ax(ax, data, algos, x_col, metric,
             continue
         ax.plot(cur[x_col], cur[metric], marker="o", label=algo)
 
-    if xticks is not None:
-            ax.set_xticks(xticks)
-
     if log_x:
         ax.set_xscale("log")
     if log_y:
         ax.set_yscale("log")
+
+    if xticks is not None:
+        ax.set_xticks(xticks)
+        ax.set_xticklabels(xticklabels)
 
     ax.set_xlabel(x_label)
 
@@ -90,7 +91,8 @@ LEGEND_LOC = "upper right"
 # FIGURE 1 — Approx algos: AVG TIME panels
 # =====================================================
 fig1, axes1 = plt.subplots(2, 2, figsize=(11, 8))
-
+custom_ticks = [5e4, 1e5, 5e5]
+custom_labels = [rf"$5\cdot10^{4}$", rf"$10^{5}$", rf"$5\cdot10^{5}$"]
 plot_group_on_ax(
     axes1[0, 0], sub_m, approx_algos,
     x_col="m",
@@ -98,6 +100,8 @@ plot_group_on_ax(
     x_label="m",
     title=f"Runtime vs m (n={baseline_n}, Sigma={baseline_sigma}, ε={baseline_eps})",
     log_x=True, log_y=True,
+    xticks=custom_ticks,
+    xticklabels=custom_labels
 )
 
 plot_group_on_ax(
@@ -156,6 +160,8 @@ plot_group_on_ax(
     x_label="m",
     title=f"Approx ratio vs m (n={baseline_n}, Sigma={baseline_sigma}, ε={baseline_eps})",
     log_x=True, log_y=False,
+    xticks=custom_ticks,
+    xticklabels=custom_labels
 )
 
 plot_group_on_ax(
@@ -212,6 +218,8 @@ plot_group_on_ax(
     x_label="m",
     title=f"Exact runtime vs m (n={baseline_n}, Sigma={baseline_sigma}, ε={baseline_eps})",
     log_x=True, log_y=True,
+    xticks=custom_ticks,
+    xticklabels=custom_labels
 )
 
 plot_group_on_ax(
@@ -253,4 +261,4 @@ fig3.legend(
 )
 
 fig3.savefig("../figures/exact_runtime.png", dpi=300, bbox_inches="tight")
-# plt.show()
+plt.show()
