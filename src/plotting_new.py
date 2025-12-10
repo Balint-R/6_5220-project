@@ -5,14 +5,15 @@ import matplotlib.pyplot as plt
 # -------------------------------------------------
 # Load data and define short algorithm names
 # -------------------------------------------------
-df = pd.read_csv("../results/results_all_v1_no_outliers.csv").copy()
+FILENAME = "all_skewed"
+df = pd.read_csv("../results/" + FILENAME + ".csv").copy()
 
 name_map = {
-    "Projection to Binary Alphabet": "KP Projection",
+    "Projection to 2/eps alphabet": "KP Projection",
     "Heuristic 1: sum(bucket_mass)^2": "Heuristic 1",
     "Heuristic 2: sum(max freq over windows)^2": "Heuristic 2",
     "Heuristic 3: sum(weighted_bucket_mass)^2": "Heuristic 3",
-    "Brute Force": "Brute Force",
+    "Brute force": "Brute Force",
     "Sqrt": "Sqrt",
 }
 
@@ -96,7 +97,7 @@ custom_labels = [rf"$5\cdot10^{4}$", rf"$10^{5}$", rf"$5\cdot10^{5}$"]
 plot_group_on_ax(
     axes1[0, 0], sub_m, approx_algos,
     x_col="m",
-    metric="avg_time",
+    metric="median_time",
     x_label="m",
     title=f"Runtime vs m (n={baseline_n}, Sigma={baseline_sigma}, ε={baseline_eps})",
     log_x=True, log_y=True,
@@ -107,7 +108,7 @@ plot_group_on_ax(
 plot_group_on_ax(
     axes1[0, 1], sub_n, approx_algos,
     x_col="n",
-    metric="avg_time",
+    metric="median_time",
     x_label="n",
     title=f"Runtime vs n (m={baseline_m_frac}n, Sigma={baseline_sigma}, ε={baseline_eps})",
     log_x=True, log_y=True,
@@ -116,7 +117,7 @@ plot_group_on_ax(
 plot_group_on_ax(
     axes1[1, 0], sub_sigma, approx_algos,
     x_col="sigma",
-    metric="avg_time",
+    metric="median_time",
     x_label="Sigma",
     title=f"Runtime vs Sigma (n={baseline_n}, m={baseline_m_frac}n, ε={baseline_eps})",
     log_x=True, log_y=True,
@@ -125,7 +126,7 @@ plot_group_on_ax(
 plot_group_on_ax(
     axes1[1, 1], sub_eps, approx_algos,
     x_col="eps",
-    metric="avg_time",
+    metric="median_time",
     x_label="ε",
     title=f"Runtime vs ε (n={baseline_n}, m={baseline_m_frac}n, Sigma={baseline_sigma})",
     log_x=False, log_y=True,
@@ -143,7 +144,7 @@ fig1.legend(
     ncol=1,
 )
 
-fig1.savefig("../figures/approx_runtime.png", dpi=300, bbox_inches="tight")
+fig1.savefig("../figures/approx_runtime_" + FILENAME + ".png", dpi=300, bbox_inches="tight")
 # plt.show()
 
 
@@ -156,7 +157,7 @@ fig2, axes2 = plt.subplots(2, 2, figsize=(11, 8))
 plot_group_on_ax(
     axes2[0, 0], sub_m, approx_algos,
     x_col="m",
-    metric="avg_ratio",
+    metric="median_ratio",
     x_label="m",
     title=f"Approx ratio vs m (n={baseline_n}, Sigma={baseline_sigma}, ε={baseline_eps})",
     log_x=True, log_y=False,
@@ -167,7 +168,7 @@ plot_group_on_ax(
 plot_group_on_ax(
     axes2[0, 1], sub_n, approx_algos,
     x_col="n",
-    metric="avg_ratio",
+    metric="median_ratio",
     x_label="n",
     title=f"Approx ratio vs n (m={baseline_m_frac}n, Sigma={baseline_sigma}, ε={baseline_eps})",
     log_x=True, log_y=False,
@@ -176,7 +177,7 @@ plot_group_on_ax(
 plot_group_on_ax(
     axes2[1, 0], sub_sigma, approx_algos,
     x_col="sigma",
-    metric="avg_ratio",
+    metric="median_ratio",
     x_label="Sigma",
     title=f"Approx ratio vs Sigma (n={baseline_n}, m={baseline_m_frac}n, ε={baseline_eps})",
     log_x=True, log_y=False,
@@ -185,7 +186,7 @@ plot_group_on_ax(
 plot_group_on_ax(
     axes2[1, 1], sub_eps, approx_algos,
     x_col="eps",
-    metric="avg_ratio",
+    metric="median_ratio",
     x_label="ε",
     title=f"Approx ratio vs ε (n={baseline_n}, m={baseline_m_frac}n, Sigma={baseline_sigma})",
     log_x=False, log_y=False,
@@ -202,7 +203,7 @@ fig2.legend(
     ncol=1,
 )
 
-fig2.savefig("../figures/approx_ratio.png", dpi=300, bbox_inches="tight")
+fig2.savefig("../figures/approx_ratio_" + FILENAME + ".png", dpi=300, bbox_inches="tight")
 # plt.show()
 
 
@@ -214,7 +215,7 @@ fig3, axes3 = plt.subplots(2, 2, figsize=(11, 8))
 plot_group_on_ax(
     axes3[0, 0], sub_m, exact_algos,
     x_col="m",
-    metric="avg_time",
+    metric="median_time",
     x_label="m",
     title=f"Exact runtime vs m (n={baseline_n}, Sigma={baseline_sigma}, ε={baseline_eps})",
     log_x=True, log_y=True,
@@ -225,7 +226,7 @@ plot_group_on_ax(
 plot_group_on_ax(
     axes3[0, 1], sub_n, exact_algos,
     x_col="n",
-    metric="avg_time",
+    metric="median_time",
     x_label="n",
     title=f"Exact runtime vs n (m={baseline_m_frac}n, Sigma={baseline_sigma}, ε={baseline_eps})",
     log_x=True, log_y=True,
@@ -234,7 +235,7 @@ plot_group_on_ax(
 plot_group_on_ax(
     axes3[1, 0], sub_sigma, exact_algos,
     x_col="sigma",
-    metric="avg_time",
+    metric="median_time",
     x_label="Sigma",
     title=f"Exact runtime vs Sigma (n={baseline_n}, m={baseline_m_frac}n, ε={baseline_eps})",
     log_x=True, log_y=True,
@@ -243,7 +244,7 @@ plot_group_on_ax(
 plot_group_on_ax(
     axes3[1, 1], sub_eps, exact_algos,
     x_col="eps",
-    metric="avg_time",
+    metric="median_time",
     x_label="ε",
     title=f"Exact runtime vs ε (n={baseline_n}, m={baseline_m_frac}n, Sigma={baseline_sigma})",
     log_x=False, log_y=True,
@@ -260,5 +261,5 @@ fig3.legend(
     ncol=1,
 )
 
-fig3.savefig("../figures/exact_runtime.png", dpi=300, bbox_inches="tight")
-plt.show()
+fig3.savefig("../figures/exact_runtime_" + FILENAME + ".png", dpi=300, bbox_inches="tight")
+# plt.show()
