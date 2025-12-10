@@ -19,8 +19,8 @@ int num_rounds;
 const int SEED = 430298584;
 mt19937 alg_rng(SEED);
 
-const int NUM_ALGORITHMS = 7;
-const bool SKEWED = false; // whether to generate skewed test case
+const int NUM_ALGORITHMS = 6;
+const bool SKEWED = true; // whether to generate skewed test case
 const double BIG_PROB = 0.8;
 
 string get_test_name(int id){
@@ -46,7 +46,10 @@ string get_test_name(int id){
 
 struct TestStats {
     double avg_time;
+    double median_time;
+    double max_time;
     double avg_ratio;
+    double median_ratio;
     double max_ratio;
 };
 
@@ -56,6 +59,7 @@ TestStats test(int n, int m, int sigma, double eps, const vector<T> &A, const ve
 
 	printf("\nTest name: %s\n\n", get_test_name(id).c_str());
 	double sum_time = 0, sum_ratio = 0;
+    vector<double> times, ratios;
     double max_ratio = 0;
 
     for (int i = 0; i <= num_rounds; i++) {
@@ -98,20 +102,34 @@ TestStats test(int n, int m, int sigma, double eps, const vector<T> &A, const ve
 		else {
 			printf("Round %d time: %.6fs\n", i, dif_sec);
 			sum_time += dif_sec;
+            times.push_back(dif_sec);
+
             sum_ratio += approx_ratio;
         	max_ratio = max(max_ratio, approx_ratio);
+            ratios.push_back(approx_ratio);
 		}
 		printf("Round %d approximation ratio: %.6f\n\n", i, approx_ratio);
 	}
 
+    sort(times.begin(), times.end());
+    sort(ratios.begin(), ratios.end());
+
     double average_time = sum_time / num_rounds;
+    double median_time = times[times.size() / 2];
+
     double average_ratio = sum_ratio / num_rounds;
+    double median_ratio = ratios[ratios.size() / 2];
+
     printf("Average time: %.6fs, Average approx ratio: %.6f, Max approx ratio: %.6f\n",
            average_time, average_ratio, max_ratio);
 
     TestStats stats;
     stats.avg_time = average_time;
+    stats.median_time = median_time;
+    stats.max_time = times.back();
+
     stats.avg_ratio = average_ratio;
+    stats.median_ratio = median_ratio;
     stats.max_ratio = max_ratio;
     return stats;
 }
@@ -140,7 +158,7 @@ void get_reference_solution(string filename, int n, int m, const vector<uint32_t
 }
 
 #include <fstream>
-void run_synth_grid_to_csv(const std::string &csv_filename) {
+void run_synth_grid_to_csv_old(const std::string &csv_filename) {
     const int ns[] = {10000, 100000, 1000000};
     const double m_fracs[] = {0.05, 0.10, 0.20, 0.50};
     const int sigmas[] = {10, 100, 1000};
@@ -161,7 +179,7 @@ void run_synth_grid_to_csv(const std::string &csv_filename) {
     }
 
     // header
-    csv << "n,m,sigma,eps,algo_id,algo_name,rounds,avg_time,avg_ratio,max_ratio\n";
+    csv << "n,m,sigma,eps,algo_id,algo_name,rounds,avg_time,median_time,max_time,avg_ratio,median_ratio,max_ratio\n";
 
     for (int ni = 0; ni < num_ns; ++ni) {
         int n = ns[ni];
@@ -216,7 +234,11 @@ void run_synth_grid_to_csv(const std::string &csv_filename) {
                             << "\"" << get_test_name(algo_id) << "\"" << ","
                             << num_rounds << ","
                             << stats.avg_time << ","
+                            << stats.median_time << ","
+                            << stats.max_time << ","
+
                             << stats.avg_ratio << ","
+                            << stats.median_ratio << ","
                             << stats.max_ratio << "\n";
                     }
                 }
@@ -228,9 +250,123 @@ void run_synth_grid_to_csv(const std::string &csv_filename) {
     num_rounds = old_rounds;
 }
 
+#include <fstream>
+void run_synth_grid_to_csv(const std::string &csv_filename) {
+    // Baselines values
+    const int baseline_n = 1000000;
+    const double baseline_m_frac = 0.20;
+    const int baseline_sigma = 1000;
+    const double baseline_eps = 0.10;
+
+    // Values to test
+    const std::vector<int> ns = {10000, 100000, 1000000};
+    const std::vector<double> m_fracs = {0.05, 0.10, 0.20, 0.40, 0.50};
+    const std::vector<int> sigmas = {4, 10, 20, 40, 80, 160, 320, 640, 1280};
+    const std::vector<double> epsilons = {0.05, 0.10, 0.20, 0.50};
+
+    // const int baseline_n = 1000;
+    // const double baseline_m_frac = 0.10;
+    // const int baseline_sigma = 40;
+    // const double baseline_eps = 0.10;
+
+    // const std::vector<int> ns = {1000, 2000};
+    // const std::vector<double> m_fracs = {0.05, 0.10};
+    // const std::vector<int> sigmas = {10, 20, 40};
+    // const std::vector<double> epsilons = {0.10, 0.20};
+
+    int old_rounds = num_rounds;
+    num_rounds = 3; // or 5 if you want more stable averages
+
+    std::ofstream csv(csv_filename.c_str());
+    if (!csv.is_open()) {
+        std::cerr << "Failed to open CSV file: " << csv_filename << std::endl;
+        return;
+    }
+
+    // header
+    csv << "n,m,sigma,eps,algo_id,algo_name,rounds,avg_time,median_time,max_time,avg_ratio,median_ratio,max_ratio\n";
+
+    std::set<std::tuple<int,int,int,double>> seen;
+
+    // Helper lambda to run one configuration and append to CSV
+    auto run_config = [&](int n, double m_frac, int sigma, double eps) {
+        int m = static_cast<int>(n * m_frac);
+        if (m > n || m <= 0) return;
+
+        auto key = std::make_tuple(n, m, sigma, eps);
+        if (seen.count(key)) return;
+        seen.insert(key);
+
+        std::cerr << "Generating test for n=" << n
+                  << " m=" << m
+                  << " sigma=" << sigma
+                  << " eps=" << eps << std::endl;
+
+        std::vector<uint32_t> A, B, reference_solution;
+
+        // reference solution filename (doesn't depend on eps)
+        std::string filename = "all_difs_" + std::to_string(n) + "_" +
+                               std::to_string(m) + "_" +
+                               std::to_string(sigma) + "_" +
+                               std::to_string(SEED);
+
+        if (SKEWED) {
+            std::tie(A, B) = generate_skewed_strings<uint32_t>(
+                n, m, sigma, SEED, BIG_PROB);
+        } else {
+            std::tie(A, B) = generate_uniform_strings<uint32_t>(
+                n, m, sigma, SEED);
+        }
+
+        get_reference_solution(filename, n, m, A, B, reference_solution);
+
+        for (int algo_id = 0; algo_id < NUM_ALGORITHMS; ++algo_id) {
+            std::cout << "==============================\n";
+            std::cout << "n=" << n << " m=" << m
+                      << " sigma=" << sigma
+                      << " eps=" << eps
+                      << " algo=" << algo_id << std::endl;
+
+            TestStats stats = test<uint32_t>(
+                n, m, sigma, eps, A, B, reference_solution, algo_id);
+
+                csv << n << ","
+                    << m << ","
+                    << sigma << ","
+                    << eps << ","
+                    << algo_id << ","
+                    << "\"" << get_test_name(algo_id) << "\"" << ","
+                    << num_rounds << ","
+                    << stats.avg_time << ","
+                    << stats.median_time << ","
+                    << stats.max_time << ","
+
+                    << stats.avg_ratio << ","
+                    << stats.median_ratio << ","
+                    << stats.max_ratio << "\n";
+        }
+    };
+
+    for (int n : ns) {
+        run_config(n, baseline_m_frac, baseline_sigma, baseline_eps);
+    }
+    for (double mf : m_fracs) {
+        run_config(baseline_n, mf, baseline_sigma, baseline_eps);
+    }
+    for (int sigma : sigmas) {
+        run_config(baseline_n, baseline_m_frac, sigma, baseline_eps);
+    }
+    for (double eps : epsilons) {
+        run_config(baseline_n, baseline_m_frac, baseline_sigma, eps);
+    }
+
+    csv.close();
+    num_rounds = old_rounds;
+}
+
 int main(int argc, char **argv){
-    // run_synth_grid_to_csv("results_all.csv");
-    // return 0;
+    run_synth_grid_to_csv("../results/all_skewed.csv");
+    return 0;
 
 	if (argc < 2) {
 		printf(
