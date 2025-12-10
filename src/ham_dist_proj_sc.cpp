@@ -15,10 +15,10 @@ void ham_dist_proj_sc(int n, int m, int sigma, double eps,
     double c = 2; // run c * log n times
     int planned_its = c * ceil(log2(n));
 
-    if(ceil(2/eps) >= sigma){
-        reduced_sigma = sigma;
-        planned_its = 1;
-    }
+    // if(ceil(2/eps) >= sigma){
+    //     reduced_sigma = sigma;
+    //     planned_its = 1;
+    // }
 
     vector<uint32_t> binA(n), binB(m), binOut(n+m-1), aggBinOut(n-m+1); // scratch arrays to run FFT on
 
