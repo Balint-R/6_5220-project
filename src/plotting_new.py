@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 # -------------------------------------------------
 # Load data and define short algorithm names
 # -------------------------------------------------
-df = pd.read_csv("../build/results_all_v1_no_outliers.csv").copy()
+df = pd.read_csv("../results/results_all_v1_no_outliers.csv").copy()
 
 name_map = {
     "Projection to Binary Alphabet": "KP Projection",
@@ -28,19 +28,22 @@ df["m_frac"] = df["m"] / df["n"]
 baseline_n = 1_000_000
 baseline_sigma = 1000
 baseline_eps = 0.1
-baseline_m_frac = 0.1  # m = 0.1 n
+baseline_m_frac = 0.2
 
 # -------------------------------------------------
 # Helper to plot group on a given axis
 # -------------------------------------------------
 def plot_group_on_ax(ax, data, algos, x_col, metric,
-                     x_label, title, log_x=False, log_y=False):
+                     x_label, title, log_x=False, log_y=False, xticks=None):
 
     for algo in algos:
         cur = data[data["short_name"] == algo].sort_values(x_col)
         if cur.empty:
             continue
         ax.plot(cur[x_col], cur[metric], marker="o", label=algo)
+
+    if xticks is not None:
+            ax.set_xticks(xticks)
 
     if log_x:
         ax.set_xscale("log")
@@ -93,7 +96,7 @@ plot_group_on_ax(
     x_col="m",
     metric="avg_time",
     x_label="m",
-    title=f"Runtime vs m (n={baseline_n}, σ={baseline_sigma}, ε={baseline_eps})",
+    title=f"Runtime vs m (n={baseline_n}, Sigma={baseline_sigma}, ε={baseline_eps})",
     log_x=True, log_y=True,
 )
 
@@ -102,7 +105,7 @@ plot_group_on_ax(
     x_col="n",
     metric="avg_time",
     x_label="n",
-    title=f"Runtime vs n (m={baseline_m_frac}·n, σ={baseline_sigma}, ε={baseline_eps})",
+    title=f"Runtime vs n (m={baseline_m_frac}n, Sigma={baseline_sigma}, ε={baseline_eps})",
     log_x=True, log_y=True,
 )
 
@@ -110,8 +113,8 @@ plot_group_on_ax(
     axes1[1, 0], sub_sigma, approx_algos,
     x_col="sigma",
     metric="avg_time",
-    x_label="σ",
-    title=f"Runtime vs σ (n={baseline_n}, m={baseline_m_frac}·n, ε={baseline_eps})",
+    x_label="Sigma",
+    title=f"Runtime vs Sigma (n={baseline_n}, m={baseline_m_frac}n, ε={baseline_eps})",
     log_x=True, log_y=True,
 )
 
@@ -120,7 +123,7 @@ plot_group_on_ax(
     x_col="eps",
     metric="avg_time",
     x_label="ε",
-    title=f"Runtime vs ε (n={baseline_n}, m={baseline_m_frac}·n, σ={baseline_sigma})",
+    title=f"Runtime vs ε (n={baseline_n}, m={baseline_m_frac}n, Sigma={baseline_sigma})",
     log_x=False, log_y=True,
 )
 
@@ -151,7 +154,7 @@ plot_group_on_ax(
     x_col="m",
     metric="avg_ratio",
     x_label="m",
-    title=f"Approx ratio vs m (n={baseline_n}, σ={baseline_sigma}, ε={baseline_eps})",
+    title=f"Approx ratio vs m (n={baseline_n}, Sigma={baseline_sigma}, ε={baseline_eps})",
     log_x=True, log_y=False,
 )
 
@@ -160,7 +163,7 @@ plot_group_on_ax(
     x_col="n",
     metric="avg_ratio",
     x_label="n",
-    title=f"Approx ratio vs n (m={baseline_m_frac}·n, σ={baseline_sigma}, ε={baseline_eps})",
+    title=f"Approx ratio vs n (m={baseline_m_frac}n, Sigma={baseline_sigma}, ε={baseline_eps})",
     log_x=True, log_y=False,
 )
 
@@ -168,8 +171,8 @@ plot_group_on_ax(
     axes2[1, 0], sub_sigma, approx_algos,
     x_col="sigma",
     metric="avg_ratio",
-    x_label="σ",
-    title=f"Approx ratio vs σ (n={baseline_n}, m={baseline_m_frac}·n, ε={baseline_eps})",
+    x_label="Sigma",
+    title=f"Approx ratio vs Sigma (n={baseline_n}, m={baseline_m_frac}n, ε={baseline_eps})",
     log_x=True, log_y=False,
 )
 
@@ -178,7 +181,7 @@ plot_group_on_ax(
     x_col="eps",
     metric="avg_ratio",
     x_label="ε",
-    title=f"Approx ratio vs ε (n={baseline_n}, m={baseline_m_frac}·n, σ={baseline_sigma})",
+    title=f"Approx ratio vs ε (n={baseline_n}, m={baseline_m_frac}n, Sigma={baseline_sigma})",
     log_x=False, log_y=False,
 )
 
@@ -207,7 +210,7 @@ plot_group_on_ax(
     x_col="m",
     metric="avg_time",
     x_label="m",
-    title=f"Exact runtime vs m (n={baseline_n}, σ={baseline_sigma}, ε={baseline_eps})",
+    title=f"Exact runtime vs m (n={baseline_n}, Sigma={baseline_sigma}, ε={baseline_eps})",
     log_x=True, log_y=True,
 )
 
@@ -216,7 +219,7 @@ plot_group_on_ax(
     x_col="n",
     metric="avg_time",
     x_label="n",
-    title=f"Exact runtime vs n (m={baseline_m_frac}·n, σ={baseline_sigma}, ε={baseline_eps})",
+    title=f"Exact runtime vs n (m={baseline_m_frac}n, Sigma={baseline_sigma}, ε={baseline_eps})",
     log_x=True, log_y=True,
 )
 
@@ -224,8 +227,8 @@ plot_group_on_ax(
     axes3[1, 0], sub_sigma, exact_algos,
     x_col="sigma",
     metric="avg_time",
-    x_label="σ",
-    title=f"Exact runtime vs σ (n={baseline_n}, m={baseline_m_frac}·n, ε={baseline_eps})",
+    x_label="Sigma",
+    title=f"Exact runtime vs Sigma (n={baseline_n}, m={baseline_m_frac}n, ε={baseline_eps})",
     log_x=True, log_y=True,
 )
 
@@ -234,7 +237,7 @@ plot_group_on_ax(
     x_col="eps",
     metric="avg_time",
     x_label="ε",
-    title=f"Exact runtime vs ε (n={baseline_n}, m={baseline_m_frac}·n, σ={baseline_sigma})",
+    title=f"Exact runtime vs ε (n={baseline_n}, m={baseline_m_frac}n, Sigma={baseline_sigma})",
     log_x=False, log_y=True,
 )
 
