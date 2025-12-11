@@ -1,6 +1,7 @@
 #include "ham_dist_proj.h"
-#include "atcoder/convolution.hpp"
+#include "convolution.h"
 #include <algorithm>
+#include <bit>
 #include <cmath>
 #include <cstdio>
 
@@ -21,7 +22,8 @@ void ham_dist_proj_sc(int n, int m, int sigma, double in_eps,
         planned_its = 1;
     }
 
-    vector<uint32_t> binA(n), binB(m), binOut(n+m-1), aggBinOut(n-m+1); // scratch arrays to run FFT on
+    int sz = bit_ceil((unsigned) (n+m-1));
+    vector<int> a_fft(sz), b_fft(sz), sum_res(n-m+1);
 
     // Random ordering of the alphabet
     vector<int> ord(sigma), rng_map(sigma);
@@ -34,19 +36,18 @@ void ham_dist_proj_sc(int n, int m, int sigma, double in_eps,
         shuffle(begin(ord), end(ord), rng);
         for (int i = 0; i < sigma; i++) rng_map[ord[i]] = i % reduced_sigma;
 
-        fill(begin(aggBinOut), end(aggBinOut), 0);
-
+        fill(sum_res.begin(), sum_res.end(), 0);
         // Corollary 4: for each character in reduced alphabet, assign corresponding binary value
         for (int ch = 0; ch < reduced_sigma; ch++){
-            for (int i = 0; i < n; i++) binA[i] = rng_map[A[i]] == ch;
-            for (int i = 0; i < m; i++) binB[m-1-i] = rng_map[B[i]] != ch;
-            binOut = atcoder::convolution(binA, binB);
-            for (int i = 0; i < n-m+1; i++) aggBinOut[i] += binOut[i+m-1];
+            for (int i = 0; i < n; i++) a_fft[i] = rng_map[A[i]] == ch;
+            for (int i = 0; i < m; i++) b_fft[m-1-i] = rng_map[B[i]] != ch;
+            convolution(n, m, a_fft, b_fft);
+            for (int i = 0; i < n-m+1; i++) sum_res[i] += a_fft[i+m-1];
         }
 
         int num_bad = 0;
         for (int i = 0; i < n-m+1; i++){
-            result[i] = max(result[i], aggBinOut[i]);
+            result[i] = max<int>(result[i], sum_res[i]);
             num_bad += result[i] < m*(1 - eps);
         }
 

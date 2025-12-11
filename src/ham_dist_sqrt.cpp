@@ -1,5 +1,6 @@
 #include "ham_dist_sqrt.h"
-#include "atcoder/convolution.hpp"
+#include "convolution.h"
+#include <bit>
 #include <cmath>
 #include <cstdio>
 
@@ -40,17 +41,17 @@ void ham_dist_sqrt(int n, int m, int sigma,
         }
     }
 
-    vector<int> in_a(n), in_b(m), out_fft;
+    int sz = bit_ceil((unsigned) (n+m-1));
+    vector<int> a_fft(sz), b_fft(sz);
 
     // Compute heavy characters
     for(int ch = 0; ch < sigma; ch++){
         ll freq = (ll) freq_a[ch] * (ptrs_b[ch+1] - ptrs_b[ch]);
         if(freq <= cut) break;
-
-            for(int i = 0; i < n; i++) in_a[i] = (int) A[i] == ch;
-            for(int i = 0; i < m; i++) in_b[m-1-i] = (int) B[i] == ch;
-            out_fft = atcoder::convolution(in_a, in_b);
-            for(int i = m-1; i < n+m-1; i++) ans[i] += out_fft[i];
+        for(int i = 0; i < n; i++) a_fft[i] = (int) A[i] == ch;
+        for(int i = 0; i < m; i++) b_fft[m-1-i] = (int) B[i] == ch;
+        convolution(n, m, a_fft, b_fft);
+        for(int i = m-1; i < n+m-1; i++) ans[i] += a_fft[i];
     }
 
     for(int i = 0; i < n-m+1; i++) result[i] = m - ans[i+m-1];
