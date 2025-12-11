@@ -268,8 +268,8 @@ void run_synth_grid_to_csv(const string &csv_filename, int gen_id) {
 }
 
 int main(int argc, char **argv){
-    run_synth_grid_to_csv("../results/uniform.csv", 0);
-    return 0;
+    // run_synth_grid_to_csv("../results/uniform.csv", 0);
+    // return 0;
 
 	if (argc < 2) {
 		printf(
