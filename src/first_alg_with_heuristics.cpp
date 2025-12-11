@@ -180,6 +180,8 @@ void HammingDistanceHeuristic(int n, int m, int sigma, double eps, const vector<
     int num_buckets = min(int(2 / eps), (int)sigma);
     int k = 4; // number of candidate hash functions
 
+    fprintf(stderr, "num_rounds %d, num_buckets %d\n", num_rounds, num_buckets);
+
     vector<uint32_t> freq(sigma, 0);
     for (int i = 0; i < n; i++) {
         freq[A[i]]++;

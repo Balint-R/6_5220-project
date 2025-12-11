@@ -91,7 +91,7 @@ vector<TestCase> gen_cases(int n, int m, int sigma, int num_cases, int type, int
         switch (type) {
             case 0:
                 snprintf(filename, 100, "uniform_%d_%d_%d_%d", n, m, sigma, seed);
-                tie(cases[i].A, cases[i].B) = generate_uniform_strings<uint32_t>(n, m, sigma, seed);
+                tie(cases[i].A, cases[i].B) = generate_uniform<uint32_t>(n, m, sigma, seed);
                 break;
             default:
                 assert(false);
@@ -120,6 +120,7 @@ template <typename T>
 TestStats test(const vector<TestCase> &cases, double eps, int id) {
 	printf("\nAlg name: %s\n\n", get_alg_name(id).c_str());
     vector<double> times, ratios;
+    const vector<uint32_t> dummy_sol(cases[0].n - cases[0].m + 1, 1e9);
 
     int num_cases = cases.size();
     for (int i = 0; i < num_cases; i++) {
@@ -132,7 +133,7 @@ TestStats test(const vector<TestCase> &cases, double eps, int id) {
 				ham_dist_bf_fast(n, m, sigma, A, B, result);
 				break;
 			case 1:
-				ham_dist_proj(n, m, sigma, eps, A, B, result, alg_rng);
+				ham_dist_proj(n, m, sigma, eps, A, B, result, dummy_sol, alg_rng);
 				break;
 			case 2:
 				ham_dist_sqrt(n, m, sigma, A, B, result);
