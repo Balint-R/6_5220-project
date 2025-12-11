@@ -73,7 +73,7 @@ void get_reference_solution(string filename, TestCase &tc){
 	else {
 		cerr << "Did not find cached solution" << endl;
 		tc.ref_sol.assign(tc.n - tc.m + 1, 0);
-		ham_dist_bf(tc.n, tc.m, tc.A, tc.B, tc.ref_sol);
+		ham_dist_sqrt(tc.n, tc.m, tc.sigma, tc.A, tc.B, tc.ref_sol);
 		write_output_to_cache(filename, tc.ref_sol);
 	}
 }
@@ -134,7 +134,7 @@ TestStats test(const vector<TestCase> &cases, double eps, int id) {
 				ham_dist_proj(n, m, sigma, eps, A, B, result, alg_rng);
 				break;
 			case 2:
-				ham_dist_sqrt(n, m, sigma, eps, A, B, result);
+				ham_dist_sqrt(n, m, sigma, A, B, result);
 				break;
             case 3:
                 HammingDistanceHeuristic_1(n, m, sigma, eps, A, B, result, alg_rng);
@@ -172,6 +172,8 @@ TestStats test(const vector<TestCase> &cases, double eps, int id) {
     double avg_ratio = accumulate(ratios.begin(), ratios.end(), 0.0) / num_cases;
     double median_ratio = ratios[ratios.size() / 2];
     double max_ratio = ratios.back();
+
+    assert(max_ratio <= eps);
 
     printf("Average time: %.6fs, Average approx ratio: %.6f, Max approx ratio: %.6f\n",
            avg_time, avg_ratio, max_ratio);
