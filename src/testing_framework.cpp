@@ -1,4 +1,5 @@
 #include "ham_dist_bf.h"
+#include "ham_dist_bf_fast.h"
 #include "ham_dist_proj.h"
 #include "ham_dist_proj_sc.h"
 #include "ham_dist_sqrt.h"
@@ -128,7 +129,7 @@ TestStats test(const vector<TestCase> &cases, double eps, int id) {
 
 		switch (id) {
 			case 0:
-				ham_dist_bf(n, m, A, B, result);
+				ham_dist_bf_fast(n, m, sigma, A, B, result);
 				break;
 			case 1:
 				ham_dist_proj(n, m, sigma, eps, A, B, result, alg_rng);
@@ -267,8 +268,8 @@ void run_synth_grid_to_csv(const string &csv_filename, int gen_id) {
 }
 
 int main(int argc, char **argv){
-    run_synth_grid_to_csv("../results/uniform.csv", 0);
-    return 0;
+    // run_synth_grid_to_csv("../results/uniform.csv", 0);
+    // return 0;
 
 	if (argc < 2) {
 		printf(
