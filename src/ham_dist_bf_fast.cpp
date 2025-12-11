@@ -4,6 +4,7 @@
 using namespace std;
 
 #define USE_AVX __has_include(<immintrin.h>)
+// #define USE_AVX 0
 
 #if USE_AVX
     #include <immintrin.h>
@@ -33,6 +34,14 @@ void ham_dist_bf_fast(int n, int m, int sigma, const vector<uint32_t> &A,
         nth_element(freqs.begin(), freqs.begin() + sigma - 255, freqs.end());
         ll cut = freqs[sigma - 255]; // Remove all characters with freq <= cut
 
+        vector<uint8_t> mp(sigma);
+        int cur_s = 0;
+        for(int ch = 0; ch < sigma; ch++){
+            ll freq = (ll) freq_a[ch] * ptrs_b[ch];
+            if(freq > cut) mp[ch] = cur_s++;
+        }
+        assert(cur_s <= 254);
+
         // Convert to offset pointers
         for(int i = 0; i < sigma; i++) ptrs_b[i+1] += ptrs_b[i];
 
@@ -44,7 +53,7 @@ void ham_dist_bf_fast(int n, int m, int sigma, const vector<uint32_t> &A,
             int ch = A[i];
             ll freq = (ll) freq_a[ch] * (ptrs_b[ch+1] - ptrs_b[ch]);
             if(freq > cut){
-                arr[i] = ch;
+                arr[i] = mp[ch];
                 continue;
             }
             arr[i] = 254;
@@ -58,7 +67,7 @@ void ham_dist_bf_fast(int n, int m, int sigma, const vector<uint32_t> &A,
         for(int i = 0; i < m; i++){
             int ch = B[i];
             ll freq = (ll) freq_a[ch] * (ptrs_b[ch+1] - ptrs_b[ch]);
-            brr[i] = freq > cut ? ch : 255;
+            brr[i] = freq > cut ? mp[ch] : 255;
         }
         for(int i = m; i < new_m; i++) brr[i] = 255;
     }
