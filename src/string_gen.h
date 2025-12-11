@@ -138,8 +138,30 @@ pair<vector<T>, vector<T>> generate_mblocks(int n, int m, int sigma, int seed){
     printf("Generating m-blocks test case... (n: %d, m: %d, sigma: %d, seed: %d)\n", n, m, sigma, seed);
     vector<T> A(n), B(m, 0);
     for (int i = 0; i < n; i++) {
-        int block = n / m;
+        int block = i / m;
         A[i] = block % sigma;
+    }
+
+    return {A, B};
+}
+
+template <typename T>
+pair<vector<T>, vector<T>> generate_mblocks_with_perturbations(int n, int m, int sigma, int seed, double diff_prob = 0.1){
+    mt19937 rng(seed);
+    auto randInt = [&](int a, int b) {
+        return uniform_int_distribution<int>(a, b)(rng);
+    };
+    printf("Generating m-blocks with perturbations... (n: %d, m: %d, sigma: %d, seed: %d, diff_prob: %.3f)\n", n, m, sigma, seed, diff_prob);
+    vector<T> A(n), B(m, 0);
+
+    for (int i = 0; i < n; i++) {
+        int block = i / m;
+        if (((double)randInt(0, 1000) / 1000.0) < diff_prob) {
+            // perturbation
+            A[i] = randInt(0, sigma - 1);
+        } else {
+            A[i] = block % sigma;
+        }
     }
 
     return {A, B};

@@ -335,7 +335,7 @@ void run_synth_grid_to_csv(const std::string &csv_filename) {
         //     std::tie(A, B) = generate_uniform_strings<uint32_t>(
         //         n, m, sigma, SEED);
         // }
-        std::tie(A, B) = generate_mblocks<uint32_t>(n, m, sigma, SEED);
+        std::tie(A, B) = generate_mblocks_with_perturbations<uint32_t>(n, m, sigma, SEED);
 
         get_reference_solution(filename, n, m, A, B, reference_solution);
 
@@ -384,7 +384,7 @@ void run_synth_grid_to_csv(const std::string &csv_filename) {
 }
 
 int main(int argc, char **argv){
-    run_synth_grid_to_csv("../results/mblocks.csv");
+    run_synth_grid_to_csv("../results/mblocks_perturbation.csv");
     return 0;
 
 	if (argc < 2) {
@@ -427,13 +427,8 @@ int main(int argc, char **argv){
 
 		// std::tie(A, B) = generate_k_difs<uint32_t>(n, m, sigma, k, SEED);
 
-        if (SKEWED) {
-		    std::tie(A, B) = generate_skewed_strings<uint32_t>(n, m, sigma, SEED, BIG_PROB);
-            filename += "_skewed_" + to_string(static_cast<int>(BIG_PROB * 100));
-        } else {
-            std::tie(A, B) = generate_uniform_strings<uint32_t>(n, m, sigma, SEED);
-        }
-		std::tie(A, B) = generate_increasing_seq<uint32_t>(n, m, sigma, SEED);
+        // if (SKEWEr
+		std::tie(A, B) = generate_mblocks_with_perturbations<uint32_t>(n, m, sigma, SEED);
 
 
 		get_reference_solution(filename, n, m, A, B, reference_solution);
