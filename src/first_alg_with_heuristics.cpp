@@ -13,7 +13,7 @@ mt19937 rng_global(SEED);
 
 uniform_int_distribution<int> uni_dist(1, PRIME - 1);
 
-inline HashFunction choose_hash_random(size_t num_buckets) {
+inline HashFunction choose_hash_random(int num_buckets) {
     int a = uni_dist(rng_global);
     int b = uni_dist(rng_global);
     return [=](int x) -> uint32_t {
@@ -111,12 +111,12 @@ HashFunction choose_hash_heuristic_3(int num_buckets, int k, const vector<uint32
 
     auto score_function = [&](HashFunction h) {
         fill(bucket_mass.begin(), bucket_mass.end(), 0);
-        for (size_t val = 0; val < weights.size(); val++) {
-            uint32_t bucket = h((size_t)val);
+        for (int val = 0; val < weights.size(); val++) {
+            uint32_t bucket = h((int)val);
             bucket_mass[bucket] += weights[val];
         }
         uint64_t score = 0;
-        for (size_t b = 0; b < num_buckets; b++) {
+        for (int b = 0; b < num_buckets; b++) {
             uint32_t mass = bucket_mass[b];
             score += (uint64_t)mass * mass;
         }
@@ -126,14 +126,14 @@ HashFunction choose_hash_heuristic_3(int num_buckets, int k, const vector<uint32
     auto update_weights = [&](HashFunction h) {
         // fill the bucket_mass array according to the current h
         fill(bucket_mass.begin(), bucket_mass.end(), 0);
-        for (size_t val = 0; val < weights.size(); val++) {
-            uint32_t bucket = h((size_t)val);
+        for (int val = 0; val < weights.size(); val++) {
+            uint32_t bucket = h((int)val);
             bucket_mass[bucket] += weights[val];
         }
 
         // re-weight each symbol based on the total weight in its bucket
-        for (size_t val = 0; val < weights.size(); val++) {
-            uint32_t bucket = h((size_t)val);
+        for (int val = 0; val < weights.size(); val++) {
+            uint32_t bucket = h((int)val);
             uint32_t other = bucket_mass[bucket] - weights[val];
             // if (other) cout << "val: " << val << ", bucket: " << bucket << ", other: " << other << ", weight: " << weights[val] << endl;
             weights[val] += other * 2;
@@ -247,7 +247,7 @@ void HammingDistanceBase(int n, int m, int sigma, double eps, const vector<uint3
         // do brute force / FFT
         vector<uint32_t> cur(n - m + 1);
         HAM_fft(n, m, num_buckets, hA, hB, cur);
-        for (size_t i = 0; i < cur.size(); i++) {
+        for (int i = 0; i < cur.size(); i++) {
             dist[i] = max(dist[i], cur[i]);
         }
     }
