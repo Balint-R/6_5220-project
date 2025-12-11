@@ -131,3 +131,16 @@ pair<vector<T>, vector<T>> generate_k_difs(int n, int m, int sigma, int k, int s
 
     return {A, B};
 }
+
+
+template <typename T>
+pair<vector<T>, vector<T>> generate_mblocks(int n, int m, int sigma, int seed){
+    printf("Generating m-blocks test case... (n: %d, m: %d, sigma: %d, seed: %d)\n", n, m, sigma, seed);
+    vector<T> A(n), B(m, 0);
+    for (int i = 0; i < n; i++) {
+        int block = n / m;
+        A[i] = block % sigma;
+    }
+
+    return {A, B};
+}

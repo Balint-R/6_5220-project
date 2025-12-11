@@ -44,6 +44,23 @@ string get_test_name(int id){
 	}
 }
 
+string get_gen_name(int id){
+    switch (id){
+        case 0:
+            return "Uniform";
+        case 1:
+            return "Skewed";
+        case 2:
+            return "All diffs";
+        case 3:
+            return "k diffs";
+        case 4:
+            return "m-blocks";
+        default:
+            return "N/A";
+    }
+}
+
 struct TestStats {
     double avg_time;
     double median_time;
@@ -310,13 +327,15 @@ void run_synth_grid_to_csv(const std::string &csv_filename) {
                                std::to_string(sigma) + "_" +
                                std::to_string(SEED);
 
-        if (SKEWED) {
-            std::tie(A, B) = generate_skewed_strings<uint32_t>(
-                n, m, sigma, SEED, BIG_PROB);
-        } else {
-            std::tie(A, B) = generate_uniform_strings<uint32_t>(
-                n, m, sigma, SEED);
-        }
+
+        // if (SKEWED) {
+        //     std::tie(A, B) = generate_skewed_strings<uint32_t>(
+        //         n, m, sigma, SEED, BIG_PROB);
+        // } else {
+        //     std::tie(A, B) = generate_uniform_strings<uint32_t>(
+        //         n, m, sigma, SEED);
+        // }
+        std::tie(A, B) = generate_mblocks<uint32_t>(n, m, sigma, SEED);
 
         get_reference_solution(filename, n, m, A, B, reference_solution);
 
@@ -365,7 +384,7 @@ void run_synth_grid_to_csv(const std::string &csv_filename) {
 }
 
 int main(int argc, char **argv){
-    run_synth_grid_to_csv("../results/all_skewed.csv");
+    run_synth_grid_to_csv("../results/mblocks.csv");
     return 0;
 
 	if (argc < 2) {

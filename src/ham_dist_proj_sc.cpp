@@ -12,7 +12,7 @@ void ham_dist_proj_sc(int n, int m, int sigma, double eps,
                    vector<uint32_t> &result, mt19937 &rng) {
 
     int reduced_sigma = ceil(min(2 / eps, (double) sigma));
-    double c = 2; // run c * log n times
+    double c = 0.5; // run c * log n times
     int planned_its = c * ceil(log2(n));
 
     if(ceil(2/eps) >= sigma){
