@@ -19,7 +19,7 @@ int num_rounds;
 const int SEED = 430298584;
 mt19937 alg_rng(SEED);
 
-const int NUM_ALGORITHMS = 6;
+const int NUM_ALGORITHMS = 7;
 const bool SKEWED = true; // whether to generate skewed test case
 const double BIG_PROB = 0.8;
 

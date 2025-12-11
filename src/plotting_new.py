@@ -15,6 +15,7 @@ name_map = {
     "Heuristic 3: sum(weighted_bucket_mass)^2": "Heuristic 3",
     "Brute force": "Brute Force",
     "Sqrt": "Sqrt",
+    "Projection to 2/eps alphabet with short circuit": "KP w/ Short Circuit",
 }
 
 df["short_name"] = df["algo_name"].map(name_map)
