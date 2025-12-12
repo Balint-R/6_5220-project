@@ -6,7 +6,6 @@
 #include "first_alg_with_heuristics.h"
 #include "string_gen.h"
 #include "utils.h"
-#include "HAM.h"
 
 #include <algorithm>
 #include <cassert>
@@ -21,24 +20,26 @@ const int SEED = 430298584;
 mt19937 alg_rng(SEED);
 
 int num_rounds = 5;
-const int NUM_ALGORITHMS = 7;
+const int NUM_ALGORITHMS = 8;
 
 string get_alg_name(int id){
 	switch (id){
 		case 0:
 			return "Brute force";
 		case 1:
-			return "Projection to 2/eps alphabet";
+			return "Brute force fast";
 		case 2:
 			return "Sqrt";
-        case 3:
-            return "Heuristic 1: sum(bucket_mass)^2";
-        case 4:
-            return "Heuristic 2: sum(max freq over windows)^2";
-        case 5:
-            return "Heuristic 3: sum(weighted_bucket_mass)^2";
-        case 6:
+		case 3:
+			return "Projection to 2/eps alphabet";
+		case 4:
 			return "Projection to 2/eps alphabet with short circuit";
+		case 5:
+			return "Projection to 2/eps alphabet with magic short circuit";
+        case 6:
+            return "Heuristic 1: sum(bucket_mass)^2";
+        case 7:
+            return "Heuristic 1: sum(bucket_mass)^2 with magic short circuit";
 		default:
 			return "N/A";
 	}
@@ -49,13 +50,9 @@ string get_gen_name(int id){
         case 0:
             return "Uniform";
         case 1:
-            return "Skewed";
+            return "Cyclic";
         case 2:
-            return "All diffs";
-        case 3:
             return "k diffs";
-        case 4:
-            return "m-blocks";
         default:
             return "N/A";
     }
@@ -79,7 +76,7 @@ void get_reference_solution(string filename, TestCase &tc){
 	}
 }
 
-vector<TestCase> gen_cases(int n, int m, int sigma, int num_cases, int type, int seed){
+vector<TestCase> gen_cases(int n, int m, int sigma, double eps, int num_cases, int type, int seed){
     /*
     Generate `num_cases` test cases of generator type `type`.
     The seeds start from `seed` and get incremented by 1 for each case.
@@ -89,10 +86,23 @@ vector<TestCase> gen_cases(int n, int m, int sigma, int num_cases, int type, int
 
     for(int i = 0; i < num_cases; i++){
         switch (type) {
-            case 0:
+            case 0: {
                 snprintf(filename, 100, "uniform_%d_%d_%d_%d", n, m, sigma, seed);
                 tie(cases[i].A, cases[i].B) = generate_uniform<uint32_t>(n, m, sigma, seed);
                 break;
+            }
+            case 1: {
+                snprintf(filename, 100, "cyclic_%d_%d_%d", n, m, sigma);
+                tie(cases[i].A, cases[i].B) = generate_cyclic<uint32_t>(n, m, sigma);
+                break;
+            }
+            case 2: {
+                double act_eps = 1 - (1 - eps)/(1 + eps);
+                int k = ceil(2/act_eps) - 1;
+                snprintf(filename, 100, "k_difs_%d_%d_%d_%d_%d", n, m, sigma, k, seed);
+                tie(cases[i].A, cases[i].B) = generate_k_difs<uint32_t>(n, m, sigma, k, seed);
+                break;
+            }
             default:
                 assert(false);
         }
@@ -103,7 +113,7 @@ vector<TestCase> gen_cases(int n, int m, int sigma, int num_cases, int type, int
         get_reference_solution(string(filename), cases[i]);
         seed++;
     }
-    
+
     return cases;
 }
 
@@ -130,26 +140,29 @@ TestStats test(const vector<TestCase> &cases, double eps, int id) {
 
 		switch (id) {
 			case 0:
-				ham_dist_bf_fast(n, m, sigma, A, B, result);
+				ham_dist_bf(n, m, sigma, A, B, result);
 				break;
 			case 1:
-				ham_dist_proj(n, m, sigma, eps, A, B, result, dummy_sol, alg_rng);
+				ham_dist_bf_fast(n, m, sigma, A, B, result);
 				break;
 			case 2:
 				ham_dist_sqrt(n, m, sigma, A, B, result);
 				break;
-            case 3:
-                HammingDistanceHeuristic_1(n, m, sigma, eps, A, B, result, alg_rng);
-                break;
-            case 4:
-                HammingDistanceHeuristic_2(n, m, sigma, eps, A, B, result, alg_rng);
-                break;
-            case 5:
-                HammingDistanceHeuristic_3(n, m, sigma, eps, A, B, result, alg_rng);
-                break;
-            case 6:
+			case 3:
+				ham_dist_proj(n, m, sigma, eps, A, B, result, dummy_sol, alg_rng);
+				break;
+			case 4:
 				ham_dist_proj_sc(n, m, sigma, eps, A, B, result, alg_rng);
 				break;
+			case 5:
+				ham_dist_proj(n, m, sigma, eps, A, B, result, ref_sol, alg_rng);
+				break;
+            case 6:
+                HammingDistanceHeuristic_1(n, m, sigma, eps, A, B, result, dummy_sol, alg_rng);
+                break;
+            case 7:
+                HammingDistanceHeuristic_1(n, m, sigma, eps, A, B, result, ref_sol, alg_rng);
+                break;
 			default:
 				assert(false);
 		}
@@ -247,7 +260,7 @@ void run_synth_grid_to_csv(const string &csv_filename, int gen_id) {
 
     auto run_config = [&](int n, double m_frac, int sigma, double eps){
         int m = n * m_frac;
-        const vector<TestCase> cases = gen_cases(n, m, sigma, num_rounds, gen_id, seed);
+        const vector<TestCase> cases = gen_cases(n, m, sigma, eps, num_rounds, gen_id, seed);
         run_cases(cases, eps);
         seed += 1000;
     };
@@ -269,8 +282,8 @@ void run_synth_grid_to_csv(const string &csv_filename, int gen_id) {
 }
 
 int main(int argc, char **argv){
-    // run_synth_grid_to_csv("../results/uniform.csv", 0);
-    // return 0;
+    run_synth_grid_to_csv("../results/uniform.csv", 0);
+    return 0;
 
 	if (argc < 2) {
 		printf(
@@ -305,7 +318,7 @@ int main(int argc, char **argv){
 		if (argc >= 9) gen_id = atoi(argv[8]);
 
 		// Run synth data tests
-        vector<TestCase> cases = gen_cases(n, m, sigma, num_rounds, gen_id, SEED);
+        vector<TestCase> cases = gen_cases(n, m, sigma, eps, num_rounds, gen_id, SEED);
 
         if (id == -1) test_all(cases, eps);
         else test<uint32_t>(cases, eps, id);

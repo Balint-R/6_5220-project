@@ -14,13 +14,13 @@ void ham_dist_proj_sc(int n, int m, int sigma, double in_eps,
     // Use larger eps, then multiply by (1 + in_eps) at the end
     double eps = 1 - (1 - in_eps)/(1 + in_eps);
     int reduced_sigma = ceil(min(2 / eps, (double) sigma));
-    double c = 0.5; // run c * log n times
-    int planned_its = c * ceil(log2(n));
+    double c = 1; // run c * log n times
+    int planned_its = ceil(c * log2(n)), act_its = 0;
 
-    if(ceil(2/eps) >= sigma){
-        reduced_sigma = sigma;
-        planned_its = 1;
-    }
+    // if(ceil(2/eps) >= sigma){
+    //     reduced_sigma = sigma;
+    //     planned_its = 1;
+    // }
 
     int sz = bit_ceil((unsigned) (n+m-1));
     vector<int> a_fft(sz), b_fft(sz), sum_res(n-m+1);
@@ -29,7 +29,7 @@ void ham_dist_proj_sc(int n, int m, int sigma, double in_eps,
     vector<int> ord(sigma), rng_map(sigma);
     iota(begin(ord), end(ord), 0);
 
-    int rem_its = planned_its, act_its = 0;
+    int rem_its = planned_its;
 
     while(rem_its--){ // run for c log n rounds
         act_its++;
@@ -52,7 +52,7 @@ void ham_dist_proj_sc(int n, int m, int sigma, double in_eps,
         }
 
         if(!num_bad) break;
-        rem_its = min<int>(rem_its, ceil(log2(num_bad) + log2(n)));
+        rem_its = min<int>(rem_its, ceil(log2(num_bad) + 3));
     }
 
     for (int i = 0; i < n-m+1; i++) result[i] *= 1 + in_eps;

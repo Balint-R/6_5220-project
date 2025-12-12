@@ -1,20 +1,9 @@
-#include <iostream>
-#include <cmath>
-#include <vector>
 #include <cstdint>
 #include <random>
-#include <functional>
-#include <map>
-#include <unordered_map>
-#include <cassert>
-#include <algorithm>
+#include <vector>
 
-// using namespace std;
+void HammingDistanceHeuristic_1(int n, int m, int sigma, double eps,
+                                const std::vector<uint32_t> &A, const std::vector<uint32_t> &B,
+                                std::vector<uint32_t> &result, const std::vector<uint32_t> &ans_ub,
+                                std::mt19937& rng);
 
-void HammingDistanceBase(int n, int m, int sigma, double eps, const std::vector<uint32_t>& A, const std::vector<uint32_t>& B, std::vector<uint32_t>& dist, std::mt19937& rng);
-
-void HammingDistanceHeuristic_1(int n, int m, int sigma, double eps, const std::vector<uint32_t>& A, const std::vector<uint32_t>& B, std::vector<uint32_t>& dist, std::mt19937& rng);
-
-void HammingDistanceHeuristic_2(int n, int m, int sigma, double eps, const std::vector<uint32_t>& A, const std::vector<uint32_t>& B, std::vector<uint32_t>& dist, std::mt19937& rng);
-
-void HammingDistanceHeuristic_3(int n, int m, int sigma, double eps, const std::vector<uint32_t>& A, const std::vector<uint32_t>& B, std::vector<uint32_t>& dist, std::mt19937& rng);

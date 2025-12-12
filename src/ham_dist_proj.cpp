@@ -15,8 +15,8 @@ void ham_dist_proj(int n, int m, int sigma, double in_eps, const vector<uint32_t
     double eps = 1 - (1 - in_eps)/(1 + in_eps);
 
     int reduced_sigma = ceil(min(2 / eps, (double) sigma));
-    double c = 0.5; // run c * log n times
-    int num_its = ceil(c * log2(n)), act_its = 0;
+    double c = 1; // run c * log n times
+    int planned_its = ceil(c * log2(n)), act_its = 0;
 
     // if(num_its * reduced_sigma >= sigma){
     //     reduced_sigma = sigma;
@@ -30,9 +30,8 @@ void ham_dist_proj(int n, int m, int sigma, double in_eps, const vector<uint32_t
     vector<int> ord(sigma), rng_map(sigma);
     iota(begin(ord), end(ord), 0);
 
-    fprintf(stderr, "num_its: %d, reduced_sigma: %d\n", num_its, reduced_sigma);
 
-    for (int round = 0; round < num_its; round++){ // run for c log n rounds
+    for (int round = 0; round < planned_its; round++){ // run for c log n rounds
         act_its++;
         shuffle(begin(ord), end(ord), rng);
         for (int i = 0; i < sigma; i++) rng_map[ord[i]] = i % reduced_sigma;
@@ -56,4 +55,7 @@ void ham_dist_proj(int n, int m, int sigma, double in_eps, const vector<uint32_t
     }
 
     for (int i = 0; i < n-m+1; i++) result[i] *= 1 + in_eps;
+
+    fprintf(stderr, "planned_its: %d, act_its: %d, reduced_sigma: %d\n",
+            planned_its, act_its, reduced_sigma);
 }
