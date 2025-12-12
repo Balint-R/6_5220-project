@@ -28,11 +28,13 @@ void ham_dist_sqrt(int n, int m, int sigma,
     int cut = n * log2(n) * 8;
     if(n >= 3e5) cut = n * log2(n) * 4;
     if(n >= 6e5) cut = n * log2(n) * 3;
+    // fprintf(stderr, "cut %d\n", cut);
 
     // Compute light characters
     for(int i = 0; i < n; i++){
         int ch = A[i];
         ll freq = (ll) freq_a[ch] * (ptrs_b[ch+1] - ptrs_b[ch]);
+        // fprintf(stderr, "%d %d %lld\n", freq_a[ch], ptrs_b[ch+1] - ptrs_b[ch], freq);
         if(freq > cut) continue;
 
         for(int p = ptrs_b[ch]; p < ptrs_b[ch+1]; p++){
@@ -47,7 +49,7 @@ void ham_dist_sqrt(int n, int m, int sigma,
     // Compute heavy characters
     for(int ch = 0; ch < sigma; ch++){
         ll freq = (ll) freq_a[ch] * (ptrs_b[ch+1] - ptrs_b[ch]);
-        if(freq <= cut) break;
+        if(freq <= cut) continue;
         for(int i = 0; i < n; i++) a_fft[i] = (int) A[i] == ch;
         for(int i = 0; i < m; i++) b_fft[m-1-i] = (int) B[i] == ch;
         convolution(n, m, a_fft, b_fft);
