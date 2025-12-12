@@ -111,7 +111,7 @@ vector<TestCase> gen_cases(int n, int m, int sigma, double eps, int num_cases, i
             }
             case 2: {
                 double act_eps = 1 - (1 - eps)/(1 + eps);
-                int k = ceil(2/act_eps) - 1;
+                int k = ceil(1/act_eps) - 1;
                 snprintf(filename, 100, "k_difs_%d_%d_%d_%d_%d", n, m, sigma, k, seed);
                 tie(cases[i].A, cases[i].B) = generate_k_difs<uint32_t>(n, m, sigma, k, seed);
                 break;
