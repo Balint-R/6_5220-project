@@ -19,6 +19,7 @@ pair<vector<T>, vector<T>> generate_uniform(int n, int m, int sigma, int seed){
 
 template <typename T>
 pair<vector<T>, vector<T>> generate_cyclic(int n, int m, int sigma){
+    assert(sigma <= m);
     vector<T> A(n), B(m);
     for(int i = 0; i < n; i++) A[i] = i % sigma;
     for(int i = 0; i < m; i++) B[i] = i % sigma;
@@ -28,6 +29,7 @@ pair<vector<T>, vector<T>> generate_cyclic(int n, int m, int sigma){
 template <typename T>
 pair<vector<T>, vector<T>> generate_k_difs(int n, int m, int sigma, int k, int seed){
     assert(0 < k && k*2 <= sigma);
+    assert(sigma <= m);
     mt19937 rng(seed);
 
     vector<T> A(n), B(m);

@@ -20,7 +20,8 @@ const int SEED = 430298584;
 mt19937 alg_rng(SEED);
 
 int num_rounds = 5;
-const int NUM_ALGORITHMS = 8;
+const int NUM_ALGORITHMS = 0;
+const vector<int> ALG_IDS = {1, 2, 3, 4, 5};
 
 string get_alg_name(int id){
 	switch (id){
@@ -105,6 +106,7 @@ vector<TestCase> gen_cases(int n, int m, int sigma, double eps, int num_cases, i
                 break;
             }
             case 1: {
+                if(sigma > m) return {};
                 snprintf(filename, 100, "cyclic_%d_%d_%d", n, m, sigma);
                 tie(cases[i].A, cases[i].B) = generate_cyclic<uint32_t>(n, m, sigma);
                 break;
@@ -112,6 +114,7 @@ vector<TestCase> gen_cases(int n, int m, int sigma, double eps, int num_cases, i
             case 2: {
                 double act_eps = 1 - (1 - eps)/(1 + eps);
                 int k = ceil(1/act_eps) - 1;
+                if(sigma > m || sigma < k*2) return {};
                 snprintf(filename, 100, "k_difs_%d_%d_%d_%d_%d", n, m, sigma, k, seed);
                 tie(cases[i].A, cases[i].B) = generate_k_difs<uint32_t>(n, m, sigma, k, seed);
                 break;
@@ -210,24 +213,31 @@ TestStats test(const vector<TestCase> &cases, double eps, int id) {
 }
 
 void test_all(const vector<TestCase> &cases, double eps) {
-    for (int id = 0; id < NUM_ALGORITHMS; id++) {
+    for(int alg_id : ALG_IDS){
         cout << "==============================\n";
-        test<uint32_t>(cases, eps, id);
+        test<uint32_t>(cases, eps, alg_id);
     }
 }
 
 void run_synth_grid_to_csv(const string &csv_filename, int gen_id) {
     // Baselines values
-    const int base_n = 1e6;
-    const double base_m_frac = 0.20;
-    const int base_sigma = 200;
-    const double base_eps = 0.20;
+    int base_n = 1e6;
+    double base_m_frac = 0.20;
+    int base_sigma = 100;
+    double base_eps = 0.20;
 
     // Values to test
-    const vector<int> ns = {10000, 100000, 1000000};
-    const vector<double> m_fracs = {0.05, 0.10, 0.20, 0.40, 0.50};
-    const vector<int> sigmas = {4, 10, 20, 40, 80, 160, 320, 640, 1280};
-    const vector<double> epsilons = {0.05, 0.10, 0.20, 0.50};
+    vector<int> ns = {(int) 1e4, (int) 1e5, (int) 1e6};
+    vector<double> m_fracs = {0.05, 0.10, 0.20, 0.40, 0.60};
+    vector<int> sigmas = {4, 10, 20, 40, 80, 160, 320, 640, 1280};
+    vector<double> epsilons = {0.05, 0.10, 0.20, 0.50};
+
+    if(gen_id == 1 || gen_id == 2){
+        base_m_frac = 0.02;
+        ns = {(int) 5e5, (int) 1e6};
+        m_fracs = {0.01, 0.02, 0.04, 0.08};
+        sigmas = {40, 80, 160, 320, 640, 1280};
+    }
 
     ofstream csv(csv_filename.c_str());
     if (!csv.is_open()) {
@@ -236,29 +246,29 @@ void run_synth_grid_to_csv(const string &csv_filename, int gen_id) {
     }
 
     // header
-    csv << "n,m,sigma,eps,algo_id,algo_name,rounds,avg_time,median_time,max_time,";
+    csv << "n,m,sigma,eps,alg_id,algo_name,rounds,avg_time,median_time,max_time,";
     csv << "avg_ratio,median_ratio,max_ratio\n";
 
     // Helper lambda to run one configuration and append to CSV
     auto run_cases = [&](const vector<TestCase> &cases, double eps) {
         int num_cases = cases.size();
 
-        for (int algo_id = 0; algo_id < NUM_ALGORITHMS; algo_id++) {
+        for(int alg_id : ALG_IDS){
             int n = cases[0].n;
             int m = cases[0].m;
             int sigma = cases[0].sigma;
 
             printf("==============================\n");
-            printf("n = %d, m = %d, sigma = %d, eps = %.3f, algo = %d\n", n, m, sigma, eps, algo_id);
+            printf("n = %d, m = %d, sigma = %d, eps = %.3f, algo = %d\n", n, m, sigma, eps, alg_id);
 
-            TestStats stats = test<uint32_t>(cases, eps, algo_id);
+            TestStats stats = test<uint32_t>(cases, eps, alg_id);
 
             csv << n << ","
                 << m << ","
                 << sigma << ","
                 << eps << ","
-                << algo_id << ","
-                << "\"" << get_alg_name(algo_id) << "\"" << ","
+                << alg_id << ","
+                << "\"" << get_alg_name(alg_id) << "\"" << ","
                 << num_cases << ","
                 << stats.avg_time << ","
                 << stats.median_time << ","
@@ -274,6 +284,7 @@ void run_synth_grid_to_csv(const string &csv_filename, int gen_id) {
     auto run_config = [&](int n, double m_frac, int sigma, double eps){
         int m = n * m_frac;
         const vector<TestCase> cases = gen_cases(n, m, sigma, eps, num_rounds, gen_id, seed);
+        if(cases.empty()) return;
         run_cases(cases, eps);
         seed += 1000;
     };
