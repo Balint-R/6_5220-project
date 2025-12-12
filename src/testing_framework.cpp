@@ -21,7 +21,7 @@ mt19937 alg_rng(SEED);
 
 int num_rounds = 5;
 const int NUM_ALGORITHMS = 0;
-const vector<int> ALG_IDS = {1, 2, 3, 4, 5};
+const vector<int> ALG_IDS = {0, 2, 3, 4, 5, 6};
 
 string get_alg_name(int id){
 	switch (id){
@@ -38,7 +38,7 @@ string get_alg_name(int id){
 		case 5:
 			return "Projection to 2/eps alphabet with magic short circuit";
         case 6:
-            return "Heuristic 1: sum(bucket_mass)^2";
+            return "Heuristic 1: TP score";
         case 7:
             return "Heuristic 1: sum(bucket_mass)^2 with magic short circuit";
 		default:

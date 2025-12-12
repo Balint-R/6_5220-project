@@ -2,6 +2,7 @@
 #include "convolution.h"
 #include <bit>
 #include <functional>
+#include <algorithm>
 
 using namespace std;
 
@@ -173,42 +174,92 @@ void HAM_fft(int n, int m, int sigma, const vector<uint32_t> &A,
 }
 
 // main function to test various hash function choosing heuristics
-void HammingDistanceHeuristic(int n, int m, int sigma, double in_eps, const vector<uint32_t> &A,
-                              const vector<uint32_t> &B, HashChooser choose_hash,
-                              vector<uint32_t> &result, const vector<uint32_t> &ans_ub, mt19937 &rng1) {
+void HammingDistanceHeuristic(int n, int m, int sigma, double in_eps,
+                              const vector<uint32_t> &A,
+                              const vector<uint32_t> &B,
+                              HashChooser choose_hash,
+                              vector<uint32_t> &result,
+                              const vector<uint32_t> &ans_ub,
+                              mt19937 &rng1) {
 
     // Use larger eps, then multiply by (1 + in_eps) at the end
-    double eps = 1 - (1 - in_eps)/(1 + in_eps);
+    double eps = 1 - (1 - in_eps) / (1 + in_eps);
     int reduced_sigma = ceil(min(2 / eps, (double) sigma));
-    double c = 1;
-    int planned_its = ceil(c * log2(n)), act_its = 0;
-    int k = 4; // number of candidate hash functions
+    double c = 1.0;
 
-    vector<uint32_t> freq(sigma, 0);
-    for (int i = 0; i < n; i++) freq[A[i]]++;
-    for (int i = 0; i < m; i++) freq[B[i]]++;
+    int planned_its = ceil(c * log2(n)); // R = c log n
+    int act_its = 0;
+
+    // Global symbol frequencies in T and P
+    vector<uint32_t> freqA(sigma, 0), freqB(sigma, 0);
+    for (int i = 0; i < n; i++) freqA[A[i]]++;
+    for (int i = 0; i < m; i++) freqB[B[i]]++;
 
     vector<uint32_t> hA(n);
     vector<uint32_t> hB(m);
 
-    for (int round = 0; round < planned_its; round++){ // run for c log n rounds
+    int S = planned_its; // number of hash functions to sample
+    double S_frac = 0.5;
+
+    vector<pair<long long, HashFunction>> candidates;
+    candidates.reserve(S);
+
+    auto score_AB = [&](const HashFunction &h) -> long long {
+        vector<long long> bucketA(reduced_sigma, 0), bucketB(reduced_sigma, 0);
+
+        for (int s = 0; s < sigma; s++) {
+            uint32_t b = h(s);
+            if (b >= (uint32_t)reduced_sigma) b %= reduced_sigma;
+            bucketA[b] += freqA[s];
+            bucketB[b] += freqB[s];
+        }
+
+        long long score = 0;
+        for (int b = 0; b < reduced_sigma; b++) {
+            score += bucketA[b] * bucketB[b];
+        }
+        return score;
+    };
+
+    // Generate S random candidate hash functions and score them
+    for (int i = 0; i < S; i++) {
+        HashFunction h = choose_hash_random(reduced_sigma);
+        long long s = score_AB(h);
+        candidates.emplace_back(s, std::move(h));
+    }
+
+    // sort by score
+    sort(candidates.begin(), candidates.end(), [](const auto &a, const auto &b) {
+        return a.first < b.first;
+    });
+
+    int rounds = ceil(S_frac * candidates.size());
+
+    for (int round = 0; round < rounds; round++) {
         act_its++;
-        // pick 2-universal hash function
-        auto h = choose_hash(reduced_sigma, k, A, B, freq);
+
+        const HashFunction &h = candidates[round].second;
 
         // compute hash for input vectors
-        for (int i = 0; i < n; i++) hA[i] = h(A[i]);
-        for (int i = 0; i < m; i++) hB[i] = h(B[i]);
+        for (int i = 0; i < n; i++) {
+            hA[i] = h(A[i]);
+        }
+        for (int i = 0; i < m; i++) {
+            hB[i] = h(B[i]);
+        }
 
         // do FFT
         vector<uint32_t> cur(n - m + 1);
         HAM_fft(n, m, reduced_sigma, hA, hB, cur);
-        for (int i = 0; i < (int) cur.size(); i++) result[i] = max(result[i], cur[i]);
+        for (int i = 0; i < (int)cur.size(); i++) {
+            result[i] = max(result[i], cur[i]);
+        }
     }
 
     fprintf(stderr, "planned_its: %d, act_its: %d, reduced_sigma: %d\n",
             planned_its, act_its, reduced_sigma);
 }
+
 
 // choose the best h from k candidates
 // that minimize sum(bucket_mass)^2

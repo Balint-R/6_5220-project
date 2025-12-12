@@ -3,8 +3,8 @@
 #include <cassert>
 using namespace std;
 
-#define USE_AVX __has_include(<immintrin.h>)
-// #define USE_AVX 0
+// #define USE_AVX __has_include(<immintrin.h>)
+#define USE_AVX 0
 
 #if USE_AVX
     #include <immintrin.h>
