@@ -14,7 +14,6 @@
 !Makefile
 
 # Debug files
-*.out
 *.log
 *.data
 *.sh
@@ -52,7 +51,6 @@
 
 # Executables
 *.exe
-*.out
 *.app
 
 # Zip files

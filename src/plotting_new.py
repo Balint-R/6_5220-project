@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 # -------------------------------------------------
 # Load data and define short algorithm names
 # -------------------------------------------------
-FILENAME = "anna_cyclic"
+FILENAME = "cyclic"
 df = pd.read_csv("../results/" + FILENAME + ".csv").copy()
 
 name_map = {
