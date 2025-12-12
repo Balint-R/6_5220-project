@@ -5,22 +5,26 @@ import matplotlib.pyplot as plt
 # -------------------------------------------------
 # Load data and define short algorithm names
 # -------------------------------------------------
-FILENAME = "all_skewed"
+FILENAME = "anna_cyclic"
 df = pd.read_csv("../results/" + FILENAME + ".csv").copy()
 
 name_map = {
+    "Brute force": "Brute Force",
+    "Brute force fast": "AVX Optimized Brute Force",
     "Projection to 2/eps alphabet": "KP Projection",
+    "Sqrt": "Sqrt",
+    "Heuristic 1: TP score": "Heuristic 1",
     "Heuristic 1: sum(bucket_mass)^2": "Heuristic 1",
     "Heuristic 2: sum(max freq over windows)^2": "Heuristic 2",
     "Heuristic 3: sum(weighted_bucket_mass)^2": "Heuristic 3",
-    "Brute force": "Brute Force",
-    "Sqrt": "Sqrt",
     "Projection to 2/eps alphabet with short circuit": "KP w/ Short Circuit",
+    "Projection to 2/eps alphabet with magic short circuit": "KP w/ Magic Short Circuit",
 }
 
 df["short_name"] = df["algo_name"].map(name_map)
 
-approx_algos = ["KP Projection", "Heuristic 1", "Heuristic 2", "Heuristic 3"]
+# approx_algos = ["KP Projection", "Heuristic 1", "Heuristic 2", "Heuristic 3"]
+approx_algos = ["Heuristic 1", "KP Projection", "KP w/ Short Circuit", "KP w/ Magic Short Circuit"] # cyclic
 exact_algos  = ["Brute Force", "Sqrt"]
 
 # helpful: m/n
@@ -28,9 +32,9 @@ df["m_frac"] = df["m"] / df["n"]
 
 # Baseline settings for the slices
 baseline_n = 1_000_000
-baseline_sigma = 1000
-baseline_eps = 0.1
-baseline_m_frac = 0.2
+baseline_sigma = 100
+baseline_eps = 0.2
+baseline_m_frac = 0.02
 
 # -------------------------------------------------
 # Helper to plot group on a given axis
@@ -40,6 +44,7 @@ def plot_group_on_ax(ax, data, algos, x_col, metric,
 
     for algo in algos:
         cur = data[data["short_name"] == algo].sort_values(x_col)
+        # print(cur)
         if cur.empty:
             continue
         ax.plot(cur[x_col], cur[metric], marker="o", label=algo)
@@ -73,6 +78,7 @@ def plot_group_on_ax(ax, data, algos, x_col, metric,
 sub_m = df[(df["n"] == baseline_n) &
            (df["sigma"] == baseline_sigma) &
            (np.isclose(df["eps"], baseline_eps))]
+print(sub_m.head())
 
 sub_n = df[(np.isclose(df["m_frac"], baseline_m_frac)) &
            (df["sigma"] == baseline_sigma) &
@@ -93,8 +99,8 @@ LEGEND_LOC = "upper right"
 # FIGURE 1 — Approx algos: AVG TIME panels
 # =====================================================
 fig1, axes1 = plt.subplots(2, 2, figsize=(11, 8))
-custom_ticks = [5e4, 1e5, 5e5]
-custom_labels = [rf"$5\cdot10^{4}$", rf"$10^{5}$", rf"$5\cdot10^{5}$"]
+# custom_ticks = [5e4, 1e5, 5e5]
+# custom_labels = [rf"$5\cdot10^{4}$", rf"$10^{5}$", rf"$5\cdot10^{5}$"]
 plot_group_on_ax(
     axes1[0, 0], sub_m, approx_algos,
     x_col="m",
@@ -102,8 +108,8 @@ plot_group_on_ax(
     x_label="m",
     title=f"Runtime vs m (n={baseline_n}, Sigma={baseline_sigma}, ε={baseline_eps})",
     log_x=True, log_y=True,
-    xticks=custom_ticks,
-    xticklabels=custom_labels
+    # xticks=custom_ticks,
+    # xticklabels=custom_labels
 )
 
 plot_group_on_ax(
@@ -162,8 +168,8 @@ plot_group_on_ax(
     x_label="m",
     title=f"Approx ratio vs m (n={baseline_n}, Sigma={baseline_sigma}, ε={baseline_eps})",
     log_x=True, log_y=False,
-    xticks=custom_ticks,
-    xticklabels=custom_labels
+    # xticks=custom_ticks,
+    # xticklabels=custom_labels
 )
 
 plot_group_on_ax(
@@ -220,8 +226,8 @@ plot_group_on_ax(
     x_label="m",
     title=f"Exact runtime vs m (n={baseline_n}, Sigma={baseline_sigma}, ε={baseline_eps})",
     log_x=True, log_y=True,
-    xticks=custom_ticks,
-    xticklabels=custom_labels
+    # xticks=custom_ticks,
+    # xticklabels=custom_labels
 )
 
 plot_group_on_ax(
