@@ -1,0 +1,1050 @@
+==============================
+n = 500000, m = 10000, sigma = 100, eps = 0.200, algo = 1
+
+Alg name: Brute force fast
+
+Round 0 time: 0.087761s
+Round 0 approximation ratio: 0.000000
+
+Round 1 time: 0.087687s
+Round 1 approximation ratio: 0.000000
+
+Round 2 time: 0.087815s
+Round 2 approximation ratio: 0.000000
+
+Round 3 time: 0.087674s
+Round 3 approximation ratio: 0.000000
+
+Round 4 time: 0.087701s
+Round 4 approximation ratio: 0.000000
+
+Average time: 0.087728s, Average approx ratio: 0.000000, Max approx ratio: 0.000000
+==============================
+n = 500000, m = 10000, sigma = 100, eps = 0.200, algo = 2
+
+Alg name: Sqrt
+
+Round 0 time: 0.035063s
+Round 0 approximation ratio: 0.000000
+
+Round 1 time: 0.034051s
+Round 1 approximation ratio: 0.000000
+
+Round 2 time: 0.033909s
+Round 2 approximation ratio: 0.000000
+
+Round 3 time: 0.033948s
+Round 3 approximation ratio: 0.000000
+
+Round 4 time: 0.033970s
+Round 4 approximation ratio: 0.000000
+
+Average time: 0.034188s, Average approx ratio: 0.000000, Max approx ratio: 0.000000
+==============================
+n = 500000, m = 10000, sigma = 100, eps = 0.200, algo = 3
+
+Alg name: Projection to 2/eps alphabet
+
+Round 0 time: 2.032190s
+Round 0 approximation ratio: 0.200000
+
+Round 1 time: 2.028437s
+Round 1 approximation ratio: 0.200000
+
+Round 2 time: 2.028890s
+Round 2 approximation ratio: 0.200000
+
+Round 3 time: 2.028514s
+Round 3 approximation ratio: 0.200000
+
+Round 4 time: 2.029137s
+Round 4 approximation ratio: 0.200000
+
+Average time: 2.029434s, Average approx ratio: 0.200000, Max approx ratio: 0.200000
+==============================
+n = 500000, m = 10000, sigma = 100, eps = 0.200, algo = 4
+
+Alg name: Projection to 2/eps alphabet with short circuit
+
+Round 0 time: 1.814868s
+Round 0 approximation ratio: 0.200000
+
+Round 1 time: 1.812753s
+Round 1 approximation ratio: 0.200000
+
+Round 2 time: 1.812726s
+Round 2 approximation ratio: 0.200000
+
+Round 3 time: 1.813193s
+Round 3 approximation ratio: 0.200000
+
+Round 4 time: 1.815449s
+Round 4 approximation ratio: 0.200000
+
+Average time: 1.813798s, Average approx ratio: 0.200000, Max approx ratio: 0.200000
+==============================
+n = 500000, m = 10000, sigma = 100, eps = 0.200, algo = 5
+
+Alg name: Projection to 2/eps alphabet with magic short circuit
+
+Round 0 time: 0.430387s
+Round 0 approximation ratio: 0.200000
+
+Round 1 time: 0.642451s
+Round 1 approximation ratio: 0.200000
+
+Round 2 time: 0.215882s
+Round 2 approximation ratio: 0.200000
+
+Round 3 time: 0.535693s
+Round 3 approximation ratio: 0.200000
+
+Round 4 time: 0.429020s
+Round 4 approximation ratio: 0.200000
+
+Average time: 0.450687s, Average approx ratio: 0.200000, Max approx ratio: 0.200000
+==============================
+n = 1000000, m = 20000, sigma = 100, eps = 0.200, algo = 1
+
+Alg name: Brute force fast
+
+Round 0 time: 0.337437s
+Round 0 approximation ratio: 0.000000
+
+Round 1 time: 0.337035s
+Round 1 approximation ratio: 0.000000
+
+Round 2 time: 0.336563s
+Round 2 approximation ratio: 0.000000
+
+Round 3 time: 0.336611s
+Round 3 approximation ratio: 0.000000
+
+Round 4 time: 0.336775s
+Round 4 approximation ratio: 0.000000
+
+Average time: 0.336884s, Average approx ratio: 0.000000, Max approx ratio: 0.000000
+==============================
+n = 1000000, m = 20000, sigma = 100, eps = 0.200, algo = 2
+
+Alg name: Sqrt
+
+Round 0 time: 0.124062s
+Round 0 approximation ratio: 0.000000
+
+Round 1 time: 0.122537s
+Round 1 approximation ratio: 0.000000
+
+Round 2 time: 0.122242s
+Round 2 approximation ratio: 0.000000
+
+Round 3 time: 0.122357s
+Round 3 approximation ratio: 0.000000
+
+Round 4 time: 0.122367s
+Round 4 approximation ratio: 0.000000
+
+Average time: 0.122713s, Average approx ratio: 0.000000, Max approx ratio: 0.000000
+==============================
+n = 1000000, m = 20000, sigma = 100, eps = 0.200, algo = 3
+
+Alg name: Projection to 2/eps alphabet
+
+Round 0 time: 4.378412s
+Round 0 approximation ratio: 0.200000
+
+Round 1 time: 4.380749s
+Round 1 approximation ratio: 0.200000
+
+Round 2 time: 4.382754s
+Round 2 approximation ratio: 0.200000
+
+Round 3 time: 4.383305s
+Round 3 approximation ratio: 0.200000
+
+Round 4 time: 4.381308s
+Round 4 approximation ratio: 0.200000
+
+Average time: 4.381306s, Average approx ratio: 0.200000, Max approx ratio: 0.200000
+==============================
+n = 1000000, m = 20000, sigma = 100, eps = 0.200, algo = 4
+
+Alg name: Projection to 2/eps alphabet with short circuit
+
+Round 0 time: 3.936740s
+Round 0 approximation ratio: 0.200000
+
+Round 1 time: 3.939039s
+Round 1 approximation ratio: 0.200000
+
+Round 2 time: 3.935980s
+Round 2 approximation ratio: 0.200000
+
+Round 3 time: 3.936791s
+Round 3 approximation ratio: 0.200000
+
+Round 4 time: 3.936472s
+Round 4 approximation ratio: 0.200000
+
+Average time: 3.937004s, Average approx ratio: 0.200000, Max approx ratio: 0.200000
+==============================
+n = 1000000, m = 20000, sigma = 100, eps = 0.200, algo = 5
+
+Alg name: Projection to 2/eps alphabet with magic short circuit
+
+Round 0 time: 0.882251s
+Round 0 approximation ratio: 0.200000
+
+Round 1 time: 1.537835s
+Round 1 approximation ratio: 0.200000
+
+Round 2 time: 1.100642s
+Round 2 approximation ratio: 0.200000
+
+Round 3 time: 1.100406s
+Round 3 approximation ratio: 0.200000
+
+Round 4 time: 0.881568s
+Round 4 approximation ratio: 0.200000
+
+Average time: 1.100540s, Average approx ratio: 0.200000, Max approx ratio: 0.200000
+==============================
+n = 1000000, m = 10000, sigma = 100, eps = 0.200, algo = 1
+
+Alg name: Brute force fast
+
+Round 0 time: 0.177350s
+Round 0 approximation ratio: 0.000000
+
+Round 1 time: 0.176041s
+Round 1 approximation ratio: 0.000000
+
+Round 2 time: 0.176074s
+Round 2 approximation ratio: 0.000000
+
+Round 3 time: 0.175946s
+Round 3 approximation ratio: 0.000000
+
+Round 4 time: 0.175739s
+Round 4 approximation ratio: 0.000000
+
+Average time: 0.176230s, Average approx ratio: 0.000000, Max approx ratio: 0.000000
+==============================
+n = 1000000, m = 10000, sigma = 100, eps = 0.200, algo = 2
+
+Alg name: Sqrt
+
+Round 0 time: 0.069364s
+Round 0 approximation ratio: 0.000000
+
+Round 1 time: 0.067779s
+Round 1 approximation ratio: 0.000000
+
+Round 2 time: 0.067582s
+Round 2 approximation ratio: 0.000000
+
+Round 3 time: 0.067546s
+Round 3 approximation ratio: 0.000000
+
+Round 4 time: 0.067501s
+Round 4 approximation ratio: 0.000000
+
+Average time: 0.067954s, Average approx ratio: 0.000000, Max approx ratio: 0.000000
+==============================
+n = 1000000, m = 10000, sigma = 100, eps = 0.200, algo = 3
+
+Alg name: Projection to 2/eps alphabet
+
+Round 0 time: 4.255140s
+Round 0 approximation ratio: 0.200000
+
+Round 1 time: 4.251929s
+Round 1 approximation ratio: 0.200000
+
+Round 2 time: 4.254131s
+Round 2 approximation ratio: 0.200000
+
+Round 3 time: 4.252805s
+Round 3 approximation ratio: 0.200000
+
+Round 4 time: 4.254803s
+Round 4 approximation ratio: 0.200000
+
+Average time: 4.253762s, Average approx ratio: 0.200000, Max approx ratio: 0.200000
+==============================
+n = 1000000, m = 10000, sigma = 100, eps = 0.200, algo = 4
+
+Alg name: Projection to 2/eps alphabet with short circuit
+
+Round 0 time: 3.822439s
+Round 0 approximation ratio: 0.200000
+
+Round 1 time: 3.819658s
+Round 1 approximation ratio: 0.200000
+
+Round 2 time: 3.819836s
+Round 2 approximation ratio: 0.200000
+
+Round 3 time: 3.822544s
+Round 3 approximation ratio: 0.200000
+
+Round 4 time: 3.822823s
+Round 4 approximation ratio: 0.200000
+
+Average time: 3.821460s, Average approx ratio: 0.200000, Max approx ratio: 0.200000
+==============================
+n = 1000000, m = 10000, sigma = 100, eps = 0.200, algo = 5
+
+Alg name: Projection to 2/eps alphabet with magic short circuit
+
+Round 0 time: 0.856292s
+Round 0 approximation ratio: 0.200000
+
+Round 1 time: 1.067280s
+Round 1 approximation ratio: 0.200000
+
+Round 2 time: 1.279309s
+Round 2 approximation ratio: 0.200000
+
+Round 3 time: 1.916077s
+Round 3 approximation ratio: 0.200000
+
+Round 4 time: 1.066369s
+Round 4 approximation ratio: 0.200000
+
+Average time: 1.237065s, Average approx ratio: 0.200000, Max approx ratio: 0.200000
+==============================
+n = 1000000, m = 20000, sigma = 100, eps = 0.200, algo = 1
+
+Alg name: Brute force fast
+
+Round 0 time: 0.337129s
+Round 0 approximation ratio: 0.000000
+
+Round 1 time: 0.335967s
+Round 1 approximation ratio: 0.000000
+
+Round 2 time: 0.335669s
+Round 2 approximation ratio: 0.000000
+
+Round 3 time: 0.335654s
+Round 3 approximation ratio: 0.000000
+
+Round 4 time: 0.335595s
+Round 4 approximation ratio: 0.000000
+
+Average time: 0.336003s, Average approx ratio: 0.000000, Max approx ratio: 0.000000
+==============================
+n = 1000000, m = 20000, sigma = 100, eps = 0.200, algo = 2
+
+Alg name: Sqrt
+
+Round 0 time: 0.124346s
+Round 0 approximation ratio: 0.000000
+
+Round 1 time: 0.122823s
+Round 1 approximation ratio: 0.000000
+
+Round 2 time: 0.122704s
+Round 2 approximation ratio: 0.000000
+
+Round 3 time: 0.122618s
+Round 3 approximation ratio: 0.000000
+
+Round 4 time: 0.122872s
+Round 4 approximation ratio: 0.000000
+
+Average time: 0.123073s, Average approx ratio: 0.000000, Max approx ratio: 0.000000
+==============================
+n = 1000000, m = 20000, sigma = 100, eps = 0.200, algo = 3
+
+Alg name: Projection to 2/eps alphabet
+
+Round 0 time: 4.388964s
+Round 0 approximation ratio: 0.200000
+
+Round 1 time: 4.408836s
+Round 1 approximation ratio: 0.200000
+
+Round 2 time: 4.379493s
+Round 2 approximation ratio: 0.200000
+
+Round 3 time: 4.384537s
+Round 3 approximation ratio: 0.200000
+
+Round 4 time: 4.383607s
+Round 4 approximation ratio: 0.200000
+
+Average time: 4.389088s, Average approx ratio: 0.200000, Max approx ratio: 0.200000
+==============================
+n = 1000000, m = 20000, sigma = 100, eps = 0.200, algo = 4
+
+Alg name: Projection to 2/eps alphabet with short circuit
+
+Round 0 time: 3.942497s
+Round 0 approximation ratio: 0.200000
+
+Round 1 time: 3.937935s
+Round 1 approximation ratio: 0.200000
+
+Round 2 time: 3.941030s
+Round 2 approximation ratio: 0.200000
+
+Round 3 time: 3.944551s
+Round 3 approximation ratio: 0.200000
+
+Round 4 time: 3.934495s
+Round 4 approximation ratio: 0.200000
+
+Average time: 3.940102s, Average approx ratio: 0.200000, Max approx ratio: 0.200000
+==============================
+n = 1000000, m = 20000, sigma = 100, eps = 0.200, algo = 5
+
+Alg name: Projection to 2/eps alphabet with magic short circuit
+
+Round 0 time: 0.881784s
+Round 0 approximation ratio: 0.200000
+
+Round 1 time: 1.098499s
+Round 1 approximation ratio: 0.200000
+
+Round 2 time: 1.101980s
+Round 2 approximation ratio: 0.200000
+
+Round 3 time: 1.109080s
+Round 3 approximation ratio: 0.200000
+
+Round 4 time: 0.883005s
+Round 4 approximation ratio: 0.200000
+
+Average time: 1.014869s, Average approx ratio: 0.200000, Max approx ratio: 0.200000
+==============================
+n = 1000000, m = 40000, sigma = 100, eps = 0.200, algo = 1
+
+Alg name: Brute force fast
+
+Round 0 time: 1.135436s
+Round 0 approximation ratio: 0.000000
+
+Round 1 time: 1.136989s
+Round 1 approximation ratio: 0.000000
+
+Round 2 time: 1.135016s
+Round 2 approximation ratio: 0.000000
+
+Round 3 time: 1.137701s
+Round 3 approximation ratio: 0.000000
+
+Round 4 time: 1.135314s
+Round 4 approximation ratio: 0.000000
+
+Average time: 1.136091s, Average approx ratio: 0.000000, Max approx ratio: 0.000000
+==============================
+n = 1000000, m = 40000, sigma = 100, eps = 0.200, algo = 2
+
+Alg name: Sqrt
+
+Round 0 time: 0.236280s
+Round 0 approximation ratio: 0.000000
+
+Round 1 time: 0.234142s
+Round 1 approximation ratio: 0.000000
+
+Round 2 time: 0.234210s
+Round 2 approximation ratio: 0.000000
+
+Round 3 time: 0.234344s
+Round 3 approximation ratio: 0.000000
+
+Round 4 time: 0.234502s
+Round 4 approximation ratio: 0.000000
+
+Average time: 0.234696s, Average approx ratio: 0.000000, Max approx ratio: 0.000000
+==============================
+n = 1000000, m = 40000, sigma = 100, eps = 0.200, algo = 3
+
+Alg name: Projection to 2/eps alphabet
+
+Round 0 time: 4.784475s
+Round 0 approximation ratio: 0.200000
+
+Round 1 time: 4.785442s
+Round 1 approximation ratio: 0.200000
+
+Round 2 time: 4.787401s
+Round 2 approximation ratio: 0.200000
+
+Round 3 time: 4.785422s
+Round 3 approximation ratio: 0.200000
+
+Round 4 time: 4.787765s
+Round 4 approximation ratio: 0.200000
+
+Average time: 4.786101s, Average approx ratio: 0.200000, Max approx ratio: 0.200000
+==============================
+n = 1000000, m = 40000, sigma = 100, eps = 0.200, algo = 4
+
+Alg name: Projection to 2/eps alphabet with short circuit
+
+Round 0 time: 4.302607s
+Round 0 approximation ratio: 0.200000
+
+Round 1 time: 4.301699s
+Round 1 approximation ratio: 0.200000
+
+Round 2 time: 4.303302s
+Round 2 approximation ratio: 0.200000
+
+Round 3 time: 4.299517s
+Round 3 approximation ratio: 0.200000
+
+Round 4 time: 4.300602s
+Round 4 approximation ratio: 0.200000
+
+Average time: 4.301546s, Average approx ratio: 0.200000, Max approx ratio: 0.200000
+==============================
+n = 1000000, m = 40000, sigma = 100, eps = 0.200, algo = 5
+
+Alg name: Projection to 2/eps alphabet with magic short circuit
+
+Round 0 time: 0.724017s
+Round 0 approximation ratio: 0.200000
+
+Round 1 time: 0.722512s
+Round 1 approximation ratio: 0.200000
+
+Round 2 time: 2.157270s
+Round 2 approximation ratio: 0.200000
+
+Round 3 time: 0.962112s
+Round 3 approximation ratio: 0.200000
+
+Round 4 time: 0.961414s
+Round 4 approximation ratio: 0.200000
+
+Average time: 1.105465s, Average approx ratio: 0.200000, Max approx ratio: 0.200000
+==============================
+n = 1000000, m = 80000, sigma = 100, eps = 0.200, algo = 1
+
+Alg name: Brute force fast
+
+Round 0 time: 1.862809s
+Round 0 approximation ratio: 0.000000
+
+Round 1 time: 2.158871s
+Round 1 approximation ratio: 0.000000
+
+Round 2 time: 1.861214s
+Round 2 approximation ratio: 0.000000
+
+Round 3 time: 2.158667s
+Round 3 approximation ratio: 0.000000
+
+Round 4 time: 1.860661s
+Round 4 approximation ratio: 0.000000
+
+Average time: 1.980444s, Average approx ratio: 0.000000, Max approx ratio: 0.000000
+==============================
+n = 1000000, m = 80000, sigma = 100, eps = 0.200, algo = 2
+
+Alg name: Sqrt
+
+Round 0 time: 0.684351s
+Round 0 approximation ratio: 0.000000
+
+Round 1 time: 0.683116s
+Round 1 approximation ratio: 0.000000
+
+Round 2 time: 0.682675s
+Round 2 approximation ratio: 0.000000
+
+Round 3 time: 0.683452s
+Round 3 approximation ratio: 0.000000
+
+Round 4 time: 0.683656s
+Round 4 approximation ratio: 0.000000
+
+Average time: 0.683450s, Average approx ratio: 0.000000, Max approx ratio: 0.000000
+==============================
+n = 1000000, m = 80000, sigma = 100, eps = 0.200, algo = 3
+
+Alg name: Projection to 2/eps alphabet
+
+Round 0 time: 5.556675s
+Round 0 approximation ratio: 0.200000
+
+Round 1 time: 5.549455s
+Round 1 approximation ratio: 0.200000
+
+Round 2 time: 5.554167s
+Round 2 approximation ratio: 0.200000
+
+Round 3 time: 5.552825s
+Round 3 approximation ratio: 0.200000
+
+Round 4 time: 5.549658s
+Round 4 approximation ratio: 0.200000
+
+Average time: 5.552556s, Average approx ratio: 0.200000, Max approx ratio: 0.200000
+==============================
+n = 1000000, m = 80000, sigma = 100, eps = 0.200, algo = 4
+
+Alg name: Projection to 2/eps alphabet with short circuit
+
+Round 0 time: 4.993191s
+Round 0 approximation ratio: 0.200000
+
+Round 1 time: 4.992543s
+Round 1 approximation ratio: 0.200000
+
+Round 2 time: 4.998229s
+Round 2 approximation ratio: 0.200000
+
+Round 3 time: 4.998555s
+Round 3 approximation ratio: 0.200000
+
+Round 4 time: 4.996794s
+Round 4 approximation ratio: 0.200000
+
+Average time: 4.995862s, Average approx ratio: 0.200000, Max approx ratio: 0.200000
+==============================
+n = 1000000, m = 80000, sigma = 100, eps = 0.200, algo = 5
+
+Alg name: Projection to 2/eps alphabet with magic short circuit
+
+Round 0 time: 0.562762s
+Round 0 approximation ratio: 0.200000
+
+Round 1 time: 0.840730s
+Round 1 approximation ratio: 0.200000
+
+Round 2 time: 1.394959s
+Round 2 approximation ratio: 0.200000
+
+Round 3 time: 0.839970s
+Round 3 approximation ratio: 0.200000
+
+Round 4 time: 1.669637s
+Round 4 approximation ratio: 0.200000
+
+Average time: 1.061612s, Average approx ratio: 0.200000, Max approx ratio: 0.200000
+==============================
+n = 1000000, m = 20000, sigma = 40, eps = 0.200, algo = 1
+
+Alg name: Brute force fast
+
+Round 0 time: 0.335665s
+Round 0 approximation ratio: 0.000000
+
+Round 1 time: 0.335445s
+Round 1 approximation ratio: 0.000000
+
+Round 2 time: 0.335662s
+Round 2 approximation ratio: 0.000000
+
+Round 3 time: 0.335451s
+Round 3 approximation ratio: 0.000000
+
+Round 4 time: 0.335217s
+Round 4 approximation ratio: 0.000000
+
+Average time: 0.335488s, Average approx ratio: 0.000000, Max approx ratio: 0.000000
+==============================
+n = 1000000, m = 20000, sigma = 40, eps = 0.200, algo = 2
+
+Alg name: Sqrt
+
+Round 0 time: 0.299630s
+Round 0 approximation ratio: 0.000000
+
+Round 1 time: 0.295179s
+Round 1 approximation ratio: 0.000000
+
+Round 2 time: 0.297933s
+Round 2 approximation ratio: 0.000000
+
+Round 3 time: 0.294663s
+Round 3 approximation ratio: 0.000000
+
+Round 4 time: 0.295888s
+Round 4 approximation ratio: 0.000000
+
+Average time: 0.296659s, Average approx ratio: 0.000000, Max approx ratio: 0.000000
+==============================
+n = 1000000, m = 20000, sigma = 40, eps = 0.200, algo = 3
+
+Alg name: Projection to 2/eps alphabet
+
+Round 0 time: 4.384254s
+Round 0 approximation ratio: 0.200000
+
+Round 1 time: 4.380286s
+Round 1 approximation ratio: 0.200000
+
+Round 2 time: 4.378706s
+Round 2 approximation ratio: 0.200000
+
+Round 3 time: 4.380828s
+Round 3 approximation ratio: 0.200000
+
+Round 4 time: 4.381967s
+Round 4 approximation ratio: 0.200000
+
+Average time: 4.381208s, Average approx ratio: 0.200000, Max approx ratio: 0.200000
+==============================
+n = 1000000, m = 20000, sigma = 40, eps = 0.200, algo = 4
+
+Alg name: Projection to 2/eps alphabet with short circuit
+
+Round 0 time: 4.157089s
+Round 0 approximation ratio: 0.200000
+
+Round 1 time: 4.155656s
+Round 1 approximation ratio: 0.200000
+
+Round 2 time: 4.152807s
+Round 2 approximation ratio: 0.200000
+
+Round 3 time: 4.156174s
+Round 3 approximation ratio: 0.200000
+
+Round 4 time: 4.154321s
+Round 4 approximation ratio: 0.200000
+
+Average time: 4.155209s, Average approx ratio: 0.200000, Max approx ratio: 0.200000
+==============================
+n = 1000000, m = 20000, sigma = 40, eps = 0.200, algo = 5
+
+Alg name: Projection to 2/eps alphabet with magic short circuit
+
+Round 0 time: 1.319278s
+Round 0 approximation ratio: 0.200000
+
+Round 1 time: 0.662424s
+Round 1 approximation ratio: 0.200000
+
+Round 2 time: 0.881053s
+Round 2 approximation ratio: 0.200000
+
+Round 3 time: 0.661419s
+Round 3 approximation ratio: 0.200000
+
+Round 4 time: 0.661970s
+Round 4 approximation ratio: 0.200000
+
+Average time: 0.837229s, Average approx ratio: 0.200000, Max approx ratio: 0.200000
+==============================
+n = 1000000, m = 20000, sigma = 80, eps = 0.200, algo = 1
+
+Alg name: Brute force fast
+
+Round 0 time: 0.336137s
+Round 0 approximation ratio: 0.000000
+
+Round 1 time: 0.335767s
+Round 1 approximation ratio: 0.000000
+
+Round 2 time: 0.335592s
+Round 2 approximation ratio: 0.000000
+
+Round 3 time: 0.335735s
+Round 3 approximation ratio: 0.000000
+
+Round 4 time: 0.335649s
+Round 4 approximation ratio: 0.000000
+
+Average time: 0.335776s, Average approx ratio: 0.000000, Max approx ratio: 0.000000
+==============================
+n = 1000000, m = 20000, sigma = 80, eps = 0.200, algo = 2
+
+Alg name: Sqrt
+
+Round 0 time: 0.150600s
+Round 0 approximation ratio: 0.000000
+
+Round 1 time: 0.148358s
+Round 1 approximation ratio: 0.000000
+
+Round 2 time: 0.148197s
+Round 2 approximation ratio: 0.000000
+
+Round 3 time: 0.148112s
+Round 3 approximation ratio: 0.000000
+
+Round 4 time: 0.148132s
+Round 4 approximation ratio: 0.000000
+
+Average time: 0.148680s, Average approx ratio: 0.000000, Max approx ratio: 0.000000
+==============================
+n = 1000000, m = 20000, sigma = 80, eps = 0.200, algo = 3
+
+Alg name: Projection to 2/eps alphabet
+
+Round 0 time: 4.396548s
+Round 0 approximation ratio: 0.200000
+
+Round 1 time: 4.381593s
+Round 1 approximation ratio: 0.200000
+
+Round 2 time: 4.380640s
+Round 2 approximation ratio: 0.200000
+
+Round 3 time: 4.382801s
+Round 3 approximation ratio: 0.200000
+
+Round 4 time: 4.380093s
+Round 4 approximation ratio: 0.200000
+
+Average time: 4.384335s, Average approx ratio: 0.200000, Max approx ratio: 0.200000
+==============================
+n = 1000000, m = 20000, sigma = 80, eps = 0.200, algo = 4
+
+Alg name: Projection to 2/eps alphabet with short circuit
+
+Round 0 time: 3.937837s
+Round 0 approximation ratio: 0.200000
+
+Round 1 time: 3.936662s
+Round 1 approximation ratio: 0.200000
+
+Round 2 time: 3.941368s
+Round 2 approximation ratio: 0.200000
+
+Round 3 time: 3.940868s
+Round 3 approximation ratio: 0.200000
+
+Round 4 time: 3.937707s
+Round 4 approximation ratio: 0.200000
+
+Average time: 3.938888s, Average approx ratio: 0.200000, Max approx ratio: 0.200000
+==============================
+n = 1000000, m = 20000, sigma = 80, eps = 0.200, algo = 5
+
+Alg name: Projection to 2/eps alphabet with magic short circuit
+
+Round 0 time: 0.881377s
+Round 0 approximation ratio: 0.200000
+
+Round 1 time: 0.881033s
+Round 1 approximation ratio: 0.200000
+
+Round 2 time: 1.318656s
+Round 2 approximation ratio: 0.200000
+
+Round 3 time: 0.881008s
+Round 3 approximation ratio: 0.200000
+
+Round 4 time: 1.317800s
+Round 4 approximation ratio: 0.200000
+
+Average time: 1.055975s, Average approx ratio: 0.200000, Max approx ratio: 0.200000
+==============================
+n = 1000000, m = 20000, sigma = 160, eps = 0.200, algo = 1
+
+Alg name: Brute force fast
+
+Round 0 time: 0.335734s
+Round 0 approximation ratio: 0.000000
+
+Round 1 time: 0.335795s
+Round 1 approximation ratio: 0.000000
+
+Round 2 time: 0.335392s
+Round 2 approximation ratio: 0.000000
+
+Round 3 time: 0.335606s
+Round 3 approximation ratio: 0.000000
+
+Round 4 time: 0.335548s
+Round 4 approximation ratio: 0.000000
+
+Average time: 0.335615s, Average approx ratio: 0.000000, Max approx ratio: 0.000000
+==============================
+n = 1000000, m = 20000, sigma = 160, eps = 0.200, algo = 2
+
+Alg name: Sqrt
+
+Round 0 time: 0.081697s
+Round 0 approximation ratio: 0.000000
+
+Round 1 time: 0.079124s
+Round 1 approximation ratio: 0.000000
+
+Round 2 time: 0.079163s
+Round 2 approximation ratio: 0.000000
+
+Round 3 time: 0.079096s
+Round 3 approximation ratio: 0.000000
+
+Round 4 time: 0.079187s
+Round 4 approximation ratio: 0.000000
+
+Average time: 0.079654s, Average approx ratio: 0.000000, Max approx ratio: 0.000000
+==============================
+n = 1000000, m = 20000, sigma = 160, eps = 0.200, algo = 3
+
+Alg name: Projection to 2/eps alphabet
+
+Round 0 time: 4.383534s
+Round 0 approximation ratio: 0.200000
+
+Round 1 time: 4.382055s
+Round 1 approximation ratio: 0.200000
+
+Round 2 time: 4.380638s
+Round 2 approximation ratio: 0.200000
+
+Round 3 time: 4.381344s
+Round 3 approximation ratio: 0.200000
+
+Round 4 time: 4.383346s
+Round 4 approximation ratio: 0.200000
+
+Average time: 4.382183s, Average approx ratio: 0.200000, Max approx ratio: 0.200000
+==============================
+n = 1000000, m = 20000, sigma = 160, eps = 0.200, algo = 4
+
+Alg name: Projection to 2/eps alphabet with short circuit
+
+Round 0 time: 3.720945s
+Round 0 approximation ratio: 0.200000
+
+Round 1 time: 3.721452s
+Round 1 approximation ratio: 0.200000
+
+Round 2 time: 3.719368s
+Round 2 approximation ratio: 0.200000
+
+Round 3 time: 3.720747s
+Round 3 approximation ratio: 0.200000
+
+Round 4 time: 3.722246s
+Round 4 approximation ratio: 0.200000
+
+Average time: 3.720952s, Average approx ratio: 0.200000, Max approx ratio: 0.200000
+==============================
+n = 1000000, m = 20000, sigma = 160, eps = 0.200, algo = 5
+
+Alg name: Projection to 2/eps alphabet with magic short circuit
+
+Round 0 time: 1.758604s
+Round 0 approximation ratio: 0.200000
+
+Round 1 time: 1.318888s
+Round 1 approximation ratio: 0.200000
+
+Round 2 time: 1.099349s
+Round 2 approximation ratio: 0.200000
+
+Round 3 time: 1.099413s
+Round 3 approximation ratio: 0.200000
+
+Round 4 time: 0.881193s
+Round 4 approximation ratio: 0.200000
+
+Average time: 1.231489s, Average approx ratio: 0.200000, Max approx ratio: 0.200000
+==============================
+n = 1000000, m = 20000, sigma = 320, eps = 0.200, algo = 1
+
+Alg name: Brute force fast
+
+Round 0 time: 0.347329s
+Round 0 approximation ratio: 0.000000
+
+Round 1 time: 0.345366s
+Round 1 approximation ratio: 0.000000
+
+Round 2 time: 0.346894s
+Round 2 approximation ratio: 0.000000
+
+Round 3 time: 0.346968s
+Round 3 approximation ratio: 0.000000
+
+Round 4 time: 0.346154s
+Round 4 approximation ratio: 0.000000
+
+Average time: 0.346542s, Average approx ratio: 0.000000, Max approx ratio: 0.000000
+==============================
+n = 1000000, m = 20000, sigma = 320, eps = 0.200, algo = 2
+
+Alg name: Sqrt
+
+Round 0 time: 0.039733s
+Round 0 approximation ratio: 0.000000
+
+Round 1 time: 0.037519s
+Round 1 approximation ratio: 0.000000
+
+Round 2 time: 0.037664s
+Round 2 approximation ratio: 0.000000
+
+Round 3 time: 0.037423s
+Round 3 approximation ratio: 0.000000
+
+Round 4 time: 0.037388s
+Round 4 approximation ratio: 0.000000
+
+Average time: 0.037945s, Average approx ratio: 0.000000, Max approx ratio: 0.000000
+==============================
+n = 1000000, m = 20000, sigma = 320, eps = 0.200, algo = 3
+
+Alg name: Projection to 2/eps alphabet
+
+Round 0 time: 4.383120s
+Round 0 approximation ratio: 0.198925
+
+Round 1 time: 4.381807s
+Round 1 approximation ratio: 0.198925
+
+Round 2 time: 4.380222s
+Round 2 approximation ratio: 0.198925
+
+Round 3 time: 4.381934s
+Round 3 approximation ratio: 0.198925
+
+Round 4 time: 4.381068s
+Round 4 approximation ratio: 0.198925
+
+Average time: 4.381630s, Average approx ratio: 0.198925, Max approx ratio: 0.198925
+==============================
+n = 1000000, m = 20000, sigma = 320, eps = 0.200, algo = 4
+
+Alg name: Projection to 2/eps alphabet with short circuit
+
+Round 0 time: 3.501329s
+Round 0 approximation ratio: 0.198925
+
+Round 1 time: 3.500255s
+Round 1 approximation ratio: 0.198925
+
+Round 2 time: 3.498592s
+Round 2 approximation ratio: 0.198925
+
+Round 3 time: 3.502104s
+Round 3 approximation ratio: 0.198925
+
+Round 4 time: 3.501104s
+Round 4 approximation ratio: 0.198925
+
+Average time: 3.500677s, Average approx ratio: 0.198925, Max approx ratio: 0.198925
+==============================
+n = 1000000, m = 20000, sigma = 320, eps = 0.200, algo = 5
+
+Alg name: Projection to 2/eps alphabet with magic short circuit
+
+Round 0 time: 0.443768s
+Round 0 approximation ratio: 0.198925
+
+Round 1 time: 0.662011s
+Round 1 approximation ratio: 0.198925
+
+Round 2 time: 0.661949s
+Round 2 approximation ratio: 0.198925
+
+Round 3 time: 0.661435s
+Round 3 approximation ratio: 0.198925
+
+Round 4 time: 0.880935s
+Round 4 approximation ratio: 0.198925
+
+Average time: 0.662020s, Average approx ratio: 0.198925, Max approx ratio: 0.198925
