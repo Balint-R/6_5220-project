@@ -150,7 +150,7 @@ void HammingDistanceHeuristic(int n, int m, int sigma, double in_eps,
         HAM_fft(n, m, reduced_sigma, hA, hB, cur);
         for (int i = 0; i < n-m+1; i++) {
             result[i] = max(result[i], cur[i]);
-            num_bad += (int) (result[i] * (1 + in_eps)) < (1 - in_eps) * m;
+            num_bad += (int) (result[i] * (1 + in_eps)) < ans_ub[i] * (1 - in_eps);
         }
         if(!num_bad) break;
     }
