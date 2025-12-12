@@ -23,6 +23,7 @@ inline string get_proj_dir(){
 
 const string DATA_DIR = get_proj_dir() + "/data";
 const string CACHE_DIR = get_proj_dir() + "/cache";
+const string OUT_DIR = get_proj_dir() + "/results";
 
 // Function to parse a file with a text file to
 // vector variable, blank lines and

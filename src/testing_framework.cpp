@@ -52,9 +52,22 @@ string get_gen_name(int id){
         case 1:
             return "Cyclic";
         case 2:
-            return "k diffs";
+            return "k difs";
         default:
             return "N/A";
+    }
+}
+
+string get_gen_id_str(int id){
+    switch (id){
+        case 0:
+            return "uniform";
+        case 1:
+            return "cyclic";
+        case 2:
+            return "k_difs";
+        default:
+            assert(false);
     }
 }
 
@@ -282,28 +295,35 @@ void run_synth_grid_to_csv(const string &csv_filename, int gen_id) {
 }
 
 int main(int argc, char **argv){
-    run_synth_grid_to_csv("../results/uniform.csv", 0);
-    return 0;
-
 	if (argc < 2) {
 		printf(
 			"Usage: ./testing_framework <mode> <mode_args>\n"
-			"mode: real or synth\n"
+			"mode: real, synth, grid\n"
 			"mode_args: arguments specific to mode\n");
 		exit(1);
 	}
 	string mode = argv[1];
-	int id = -1;
-	if (mode == "synth") {
+
+    if (mode == "grid") {
+        if (argc < 3) {
+            printf("Usage: ./testing_framework grid <gen_id>\n");
+            exit(1);
+        }
+
+        int gen_id = atoi(argv[2]);
+        string filename = OUT_DIR + "/" + get_gen_id_str(gen_id);
+        run_synth_grid_to_csv(filename, gen_id);
+    }
+	else if (mode == "synth") {
 		if (argc < 7) {
 			printf(
-				"Usage: ./testing_framework synth <n> <m> <eps> <sigma> <rounds> <id>\n"
+				"Usage: ./testing_framework synth <n> <m> <eps> <sigma> <rounds> <alg_id> <gen_id>\n"
 				"n: length of the first string\n"
 				"m: length of the second(pattern) string\n"
 				"eps: desired approximation ratio\n"
 				"sigma: alphabet size\n"
 				"rounds: number of rounds\n"
-				"id: algorithm to test\n"
+				"alg_id: algorithm to test\n"
 				"gen_id: type of generator to use\n");
 			exit(1);
 		}
@@ -313,15 +333,17 @@ int main(int argc, char **argv){
 		double eps = atof(argv[4]);
 		int sigma = atoi(argv[5]);
 		num_rounds = atoi(argv[6]);
-		if (argc >= 8) id = atoi(argv[7]);
+
+        int alg_id = -1;
+		if (argc >= 8) alg_id = atoi(argv[7]);
         int gen_id = 0;
 		if (argc >= 9) gen_id = atoi(argv[8]);
 
 		// Run synth data tests
         vector<TestCase> cases = gen_cases(n, m, sigma, eps, num_rounds, gen_id, SEED);
 
-        if (id == -1) test_all(cases, eps);
-        else test<uint32_t>(cases, eps, id);
+        if (alg_id == -1) test_all(cases, eps);
+        else test<uint32_t>(cases, eps, alg_id);
 	}
 	else if (mode == "real") {
 		if (argc < 5) {
@@ -336,7 +358,9 @@ int main(int argc, char **argv){
 		string filename = argv[2];
 		double eps = atof(argv[3]);
 		num_rounds = atoi(argv[4]);
-		if (argc >= 6) id = atoi(argv[5]);
+
+        int alg_id = -1;
+		if (argc >= 6) alg_id = atoi(argv[5]);
 
 		vector<uint32_t> A, B;
 		int n, m, sigma;
@@ -349,8 +373,8 @@ int main(int argc, char **argv){
         get_reference_solution(filename, tc);
         vector<TestCase> cases = {tc};
 
-        if (id == -1) test_all(cases, eps);
-        else test<uint32_t>(cases, eps, id);
+        if (alg_id == -1) test_all(cases, eps);
+        else test<uint32_t>(cases, eps, alg_id);
 	}
 	else {
 		printf("Invalid mode. Should be 'synth' or 'real'.\n");
