@@ -51,7 +51,6 @@
 
 # Executables
 *.exe
-*.out
 *.app
 
 # Zip files
