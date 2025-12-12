@@ -1,5 +1,6 @@
 #include "ham_dist_proj.h"
 #include "convolution.h"
+#include "utils.h"
 #include <algorithm>
 #include <bit>
 #include <cmath>
@@ -13,7 +14,7 @@ void ham_dist_proj_sc(int n, int m, int sigma, double in_eps,
                    vector<uint32_t> &result, mt19937 &rng) {
     // Use larger eps, then multiply by (1 + in_eps) at the end
     double eps = 1 - (1 - in_eps)/(1 + in_eps);
-    int reduced_sigma = ceil(min(2 / eps, (double) sigma));
+    int reduced_sigma = ceil(min(2/eps - F_EPS, (double) sigma));
     double c = 1; // run c * log n times
     int planned_its = ceil(c * log2(n)), act_its = 0;
 

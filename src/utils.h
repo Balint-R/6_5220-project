@@ -12,6 +12,8 @@
 
 using namespace std;
 
+const double F_EPS = 1e-8;
+
 inline string get_proj_dir(){
     string path = __FILE__;
     while(path.back() != '/') path.pop_back();

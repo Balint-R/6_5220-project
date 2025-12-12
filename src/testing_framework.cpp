@@ -40,7 +40,7 @@ string get_alg_name(int id){
         case 6:
             return "Heuristic 1: TP score";
         case 7:
-            return "Heuristic 1: sum(bucket_mass)^2 with magic short circuit";
+            return "Heuristic 1: TP score with magic short circuit";
 		default:
 			return "N/A";
 	}

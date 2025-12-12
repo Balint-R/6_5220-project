@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 # -------------------------------------------------
 # Load data and define short algorithm names
 # -------------------------------------------------
-GEN_NAME = "uniform"
+GEN_NAME = "cyclic"
 df = pd.read_csv("../results/" + GEN_NAME + ".csv").copy()
 
 name_map = {
@@ -14,9 +14,6 @@ name_map = {
     "Projection to 2/eps alphabet": "KP Projection",
     "Sqrt": "Sqrt",
     "Heuristic 1: TP score": "Heuristic 1",
-    "Heuristic 1: sum(bucket_mass)^2": "Heuristic 1",
-    "Heuristic 2: sum(max freq over windows)^2": "Heuristic 2",
-    "Heuristic 3: sum(weighted_bucket_mass)^2": "Heuristic 3",
     "Projection to 2/eps alphabet with short circuit": "KP w/ Short Circuit",
     "Projection to 2/eps alphabet with magic short circuit": "KP w/ Magic Short Circuit",
 }
@@ -154,5 +151,5 @@ fig1.legend(
     ncol=1,
 )
 
-fig1.savefig("../figures/approx_runtime_" + GEN_NAME + ".png", dpi=300, bbox_inches="tight")
+fig1.savefig("../figures/runtime_" + GEN_NAME + ".png", dpi=300, bbox_inches="tight")
 plt.show()
