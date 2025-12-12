@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 # -------------------------------------------------
 # Load data and define short algorithm names
 # -------------------------------------------------
-FILENAME = "cyclic"
-df = pd.read_csv("../results/" + FILENAME + ".csv").copy()
+GEN_NAME = "uniform"
+df = pd.read_csv("../results/" + GEN_NAME + ".csv").copy()
 
 name_map = {
     "Brute force": "Brute Force",
@@ -24,8 +24,11 @@ name_map = {
 df["short_name"] = df["algo_name"].map(name_map)
 
 # approx_algos = ["KP Projection", "Heuristic 1", "Heuristic 2", "Heuristic 3"]
-approx_algos = ["Heuristic 1", "KP Projection", "KP w/ Short Circuit", "KP w/ Magic Short Circuit"] # cyclic
+approx_algos = ["Heuristic 1", "KP Projection", "KP w/ Short Circuit", "KP w/ Magic Short Circuit"]
 exact_algos  = ["Brute Force", "Sqrt"]
+
+# approx_algos = ["KP w/ Short Circuit", "KP w/ Magic Short Circuit"]
+# exact_algos  = []
 
 # helpful: m/n
 df["m_frac"] = df["m"] / df["n"]
@@ -34,7 +37,7 @@ df["m_frac"] = df["m"] / df["n"]
 baseline_n = 1_000_000
 baseline_sigma = 100
 baseline_eps = 0.2
-baseline_m_frac = 0.02
+baseline_m_frac = 0.2
 
 # -------------------------------------------------
 # Helper to plot group on a given axis
@@ -102,7 +105,7 @@ fig1, axes1 = plt.subplots(2, 2, figsize=(11, 8))
 # custom_ticks = [5e4, 1e5, 5e5]
 # custom_labels = [rf"$5\cdot10^{4}$", rf"$10^{5}$", rf"$5\cdot10^{5}$"]
 plot_group_on_ax(
-    axes1[0, 0], sub_m, approx_algos,
+    axes1[0, 0], sub_m, exact_algos + approx_algos,
     x_col="m",
     metric="median_time",
     x_label="m",
@@ -113,7 +116,7 @@ plot_group_on_ax(
 )
 
 plot_group_on_ax(
-    axes1[0, 1], sub_n, approx_algos,
+    axes1[0, 1], sub_n, exact_algos + approx_algos,
     x_col="n",
     metric="median_time",
     x_label="n",
@@ -122,7 +125,7 @@ plot_group_on_ax(
 )
 
 plot_group_on_ax(
-    axes1[1, 0], sub_sigma, approx_algos,
+    axes1[1, 0], sub_sigma, exact_algos + approx_algos,
     x_col="sigma",
     metric="median_time",
     x_label="Sigma",
@@ -131,7 +134,7 @@ plot_group_on_ax(
 )
 
 plot_group_on_ax(
-    axes1[1, 1], sub_eps, approx_algos,
+    axes1[1, 1], sub_eps, exact_algos + approx_algos,
     x_col="eps",
     metric="median_time",
     x_label="ε",
@@ -140,7 +143,7 @@ plot_group_on_ax(
 )
 
 handles, labels = axes1[0, 0].get_legend_handles_labels()
-fig1.suptitle("Approximate Algorithms: Runtime", y=0.98)
+fig1.suptitle(f"Runtime on {GEN_NAME}", y=0.98)
 
 fig1.tight_layout()
 
@@ -151,122 +154,5 @@ fig1.legend(
     ncol=1,
 )
 
-fig1.savefig("../figures/approx_runtime_" + FILENAME + ".png", dpi=300, bbox_inches="tight")
-# plt.show()
-
-
-
-# =====================================================
-# FIGURE 2 — Approx algos: AVG RATIO panels
-# =====================================================
-fig2, axes2 = plt.subplots(2, 2, figsize=(11, 8))
-
-plot_group_on_ax(
-    axes2[0, 0], sub_m, approx_algos,
-    x_col="m",
-    metric="median_ratio",
-    x_label="m",
-    title=f"Approx ratio vs m (n={baseline_n}, Sigma={baseline_sigma}, ε={baseline_eps})",
-    log_x=True, log_y=False,
-    # xticks=custom_ticks,
-    # xticklabels=custom_labels
-)
-
-plot_group_on_ax(
-    axes2[0, 1], sub_n, approx_algos,
-    x_col="n",
-    metric="median_ratio",
-    x_label="n",
-    title=f"Approx ratio vs n (m={baseline_m_frac}n, Sigma={baseline_sigma}, ε={baseline_eps})",
-    log_x=True, log_y=False,
-)
-
-plot_group_on_ax(
-    axes2[1, 0], sub_sigma, approx_algos,
-    x_col="sigma",
-    metric="median_ratio",
-    x_label="Sigma",
-    title=f"Approx ratio vs Sigma (n={baseline_n}, m={baseline_m_frac}n, ε={baseline_eps})",
-    log_x=True, log_y=False,
-)
-
-plot_group_on_ax(
-    axes2[1, 1], sub_eps, approx_algos,
-    x_col="eps",
-    metric="median_ratio",
-    x_label="ε",
-    title=f"Approx ratio vs ε (n={baseline_n}, m={baseline_m_frac}n, Sigma={baseline_sigma})",
-    log_x=False, log_y=False,
-)
-
-handles2, labels2 = axes2[0, 0].get_legend_handles_labels()
-fig2.suptitle("Approximate Algorithms: Approximation Ratio", y=0.98)
-fig2.tight_layout()
-
-fig2.subplots_adjust(right=RIGHT_MARGIN)
-fig2.legend(
-    handles2, labels2,
-    loc=LEGEND_LOC,
-    ncol=1,
-)
-
-fig2.savefig("../figures/approx_ratio_" + FILENAME + ".png", dpi=300, bbox_inches="tight")
-# plt.show()
-
-
-# =====================================================
-# FIGURE 3 — Exact algos: AVG TIME panels (Brute + Sqrt)
-# =====================================================
-fig3, axes3 = plt.subplots(2, 2, figsize=(11, 8))
-
-plot_group_on_ax(
-    axes3[0, 0], sub_m, exact_algos,
-    x_col="m",
-    metric="median_time",
-    x_label="m",
-    title=f"Exact runtime vs m (n={baseline_n}, Sigma={baseline_sigma}, ε={baseline_eps})",
-    log_x=True, log_y=True,
-    # xticks=custom_ticks,
-    # xticklabels=custom_labels
-)
-
-plot_group_on_ax(
-    axes3[0, 1], sub_n, exact_algos,
-    x_col="n",
-    metric="median_time",
-    x_label="n",
-    title=f"Exact runtime vs n (m={baseline_m_frac}n, Sigma={baseline_sigma}, ε={baseline_eps})",
-    log_x=True, log_y=True,
-)
-
-plot_group_on_ax(
-    axes3[1, 0], sub_sigma, exact_algos,
-    x_col="sigma",
-    metric="median_time",
-    x_label="Sigma",
-    title=f"Exact runtime vs Sigma (n={baseline_n}, m={baseline_m_frac}n, ε={baseline_eps})",
-    log_x=True, log_y=True,
-)
-
-plot_group_on_ax(
-    axes3[1, 1], sub_eps, exact_algos,
-    x_col="eps",
-    metric="median_time",
-    x_label="ε",
-    title=f"Exact runtime vs ε (n={baseline_n}, m={baseline_m_frac}n, Sigma={baseline_sigma})",
-    log_x=False, log_y=True,
-)
-
-handles3, labels3 = axes3[0, 0].get_legend_handles_labels()
-fig3.suptitle("Exact Algorithms (Brute Force & Sqrt): Runtime", y=0.98)
-fig3.tight_layout()
-
-fig3.subplots_adjust(right=RIGHT_MARGIN)
-fig3.legend(
-    handles3, labels3,
-    loc=LEGEND_LOC,
-    ncol=1,
-)
-
-fig3.savefig("../figures/exact_runtime_" + FILENAME + ".png", dpi=300, bbox_inches="tight")
-# plt.show()
+fig1.savefig("../figures/approx_runtime_" + GEN_NAME + ".png", dpi=300, bbox_inches="tight")
+plt.show()
