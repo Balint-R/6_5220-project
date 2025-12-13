@@ -13,6 +13,7 @@
 #include <fstream>
 #include <iostream>
 #include <random>
+#include <set>
 
 using namespace std;
 
@@ -20,7 +21,6 @@ const int SEED = 430298584;
 mt19937 alg_rng(SEED);
 
 int num_rounds = 5;
-const int NUM_ALGORITHMS = 0;
 const vector<int> ALG_IDS = {0, 2, 3, 4, 5, 6, 7};
 
 string get_alg_name(int id){
@@ -54,6 +54,14 @@ string get_gen_name(int id){
             return "Cyclic";
         case 2:
             return "k difs";
+        case 3:
+            return "m-blocks perturbed";
+        case 4:
+            return "Geometric";
+        case 5:
+            return "Half Skewed";
+        case 6:
+            return "Fake Binary";
         default:
             return "N/A";
     }
@@ -67,6 +75,14 @@ string get_gen_id_str(int id){
             return "cyclic";
         case 2:
             return "k_difs";
+        case 3:
+            return "m_blocks_perturbed";
+        case 4:
+            return "geometric";
+        case 5:
+            return "half_skewed";
+        case 6:
+            return "fake_binary";
         default:
             assert(false);
     }
@@ -117,6 +133,29 @@ vector<TestCase> gen_cases(int n, int m, int sigma, double eps, int num_cases, i
                 if(sigma > m || sigma < k*2) return {};
                 snprintf(filename, 100, "k_difs_%d_%d_%d_%d_%d", n, m, sigma, k, seed);
                 tie(cases[i].A, cases[i].B) = generate_k_difs<uint32_t>(n, m, sigma, k, seed);
+                break;
+            }
+            case 3: {
+                double diff_prob = 0.1;
+                snprintf(filename, 100, "m_blocks_perturbed_%d_%d_%d_%.3f_%d", n, m, sigma, diff_prob, seed);
+                tie(cases[i].A, cases[i].B) = generate_mblocks_perturbed<uint32_t>(n, m, sigma, seed, diff_prob);
+                break;
+            }
+            case 4: {
+                double prob = 0.5;
+                snprintf(filename, 100, "geometric_%d_%d_%d_%d", n, m, sigma, seed);
+                tie(cases[i].A, cases[i].B) = generate_geometric<uint32_t>(n, m, sigma, seed, prob);
+                break;
+            }
+            case 5: {
+                double big_prob = 0.8;
+                snprintf(filename, 100, "half_skewed_%d_%d_%d_%.3f_%d", n, m, sigma, big_prob, seed);
+                tie(cases[i].A, cases[i].B) = generate_half_skewed<uint32_t>(n, m, sigma, seed, big_prob);
+                break;
+            }
+            case 6: {
+                snprintf(filename, 100, "fake_binary_%d_%d_%d_%d", n, m, sigma, seed);
+                tie(cases[i].A, cases[i].B) = generate_fake_binary<uint32_t>(n, m, sigma, seed, 0.8);
                 break;
             }
             default:
@@ -232,9 +271,9 @@ void run_synth_grid_to_csv(const string &csv_filename, int gen_id) {
     vector<int> sigmas = {4, 10, 20, 40, 80, 160, 320, 640, 1280};
     vector<double> epsilons = {0.05, 0.10, 0.20, 0.50};
 
-    if(gen_id == 1 || gen_id == 2){
+    if(gen_id == 2){
         base_m_frac = 0.02;
-        ns = {(int) 5e5, (int) 1e6};
+        // ns = {(int) 5e5, (int) 1e6};
         m_fracs = {0.01, 0.02, 0.04, 0.08};
         sigmas = {40, 80, 160, 320, 640, 1280};
     }
@@ -285,12 +324,20 @@ void run_synth_grid_to_csv(const string &csv_filename, int gen_id) {
 
     int seed = 0;
 
+    typedef tuple<int, double, int, double> Config;
+    set<Config> done_configs;
+
     auto run_config = [&](int n, double m_frac, int sigma, double eps){
+        Config config(n, m_frac, sigma, eps);
+        if(done_configs.find(config)!= done_configs.end()) return;
+
         int m = n * m_frac;
         const vector<TestCase> cases = gen_cases(n, m, sigma, eps, num_rounds, gen_id, seed);
         if(cases.empty()) return;
         run_cases(cases, eps);
         seed += 1000;
+
+        done_configs.insert(config);
     };
 
     for (int n : ns) {

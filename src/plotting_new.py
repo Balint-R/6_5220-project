@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 # -------------------------------------------------
 # Load data and define short algorithm names
 # -------------------------------------------------
-GEN_NAME = "cyclic"
+GEN_NAME = "m_blocks_perturbed"
 df = pd.read_csv("../results/" + GEN_NAME + ".csv").copy()
 
 name_map = {
@@ -24,6 +24,7 @@ df["short_name"] = df["algo_name"].map(name_map)
 # approx_algos = ["KP Projection", "Heuristic 1", "Heuristic 2", "Heuristic 3"]
 approx_algos = ["Heuristic TP", "Heuristic TP w/ Magic Short Circuit", "KP Projection", "KP w/ Short Circuit", "KP w/ Magic Short Circuit"]
 exact_algos  = ["Brute Force", "Sqrt"]
+all_algos = exact_algos + approx_algos
 
 # approx_algos = ["KP w/ Short Circuit", "KP w/ Magic Short Circuit"]
 # exact_algos  = []
@@ -35,7 +36,7 @@ df["m_frac"] = df["m"] / df["n"]
 baseline_n      = 1000000
 baseline_sigma  = 100
 baseline_eps    = 0.2
-baseline_m_frac = 0.2 if GEN_NAME == "uniform" else 0.02
+baseline_m_frac = 0.02 if GEN_NAME == "k_difs" else 0.2
 
 
 # -------------------------------------------------
@@ -97,8 +98,9 @@ sub_eps = df[(df["n"] == baseline_n) &
              (np.isclose(df["m_frac"], baseline_m_frac)) &
              (df["sigma"] == baseline_sigma)]
 
-RIGHT_MARGIN = 0.85
-LEGEND_LOC = "upper right"
+RIGHT_MARGIN = 0.8
+BOTTOM_MARGIN = 0.12
+LEGEND_LOC = "lower center"
 
 # =====================================================
 # FIGURE 1 — Approx algos: AVG TIME panels
@@ -107,7 +109,7 @@ fig1, axes1 = plt.subplots(2, 2, figsize=(11, 8))
 # custom_ticks = [5e4, 1e5, 5e5]
 # custom_labels = [rf"$5\cdot10^{4}$", rf"$10^{5}$", rf"$5\cdot10^{5}$"]
 plot_group_on_ax(
-    axes1[0, 0], sub_m, exact_algos + approx_algos,
+    axes1[0, 0], sub_m, all_algos,
     x_col="m",
     metric="median_time",
     x_label="m",
@@ -118,7 +120,7 @@ plot_group_on_ax(
 )
 
 plot_group_on_ax(
-    axes1[0, 1], sub_n, exact_algos + approx_algos,
+    axes1[0, 1], sub_n, all_algos,
     x_col="n",
     metric="median_time",
     x_label="n",
@@ -127,7 +129,7 @@ plot_group_on_ax(
 )
 
 plot_group_on_ax(
-    axes1[1, 0], sub_sigma, exact_algos + approx_algos,
+    axes1[1, 0], sub_sigma, all_algos,
     x_col="sigma",
     metric="median_time",
     x_label="Sigma",
@@ -136,7 +138,7 @@ plot_group_on_ax(
 )
 
 plot_group_on_ax(
-    axes1[1, 1], sub_eps, exact_algos + approx_algos,
+    axes1[1, 1], sub_eps, all_algos,
     x_col="eps",
     metric="median_time",
     x_label="ε",
@@ -149,11 +151,14 @@ fig1.suptitle(f"Runtime on {GEN_NAME}", y=0.98)
 
 fig1.tight_layout()
 
-fig1.subplots_adjust(right=RIGHT_MARGIN)
+# fig1.subplots_adjust(right=RIGHT_MARGIN)
+fig1.subplots_adjust(bottom=BOTTOM_MARGIN)
+
 fig1.legend(
     handles, labels,
     loc=LEGEND_LOC,
-    ncol=1,
+    # ncol=1,
+    ncol=4,
 )
 
 fig1.savefig("../figures/runtime_" + GEN_NAME + ".png", dpi=300, bbox_inches="tight")
