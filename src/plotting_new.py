@@ -32,10 +32,11 @@ exact_algos  = ["Brute Force", "Sqrt"]
 df["m_frac"] = df["m"] / df["n"]
 
 # Baseline settings for the slices
-baseline_n = 1_000_000
-baseline_sigma = 100
-baseline_eps = 0.2
-baseline_m_frac = 0.2
+baseline_n      = 1000000
+baseline_sigma  = 100
+baseline_eps    = 0.2
+baseline_m_frac = 0.2 if GEN_NAME == "uniform" else 0.02
+
 
 # -------------------------------------------------
 # Helper to plot group on a given axis
@@ -63,7 +64,7 @@ def plot_group_on_ax(ax, data, algos, x_col, metric,
 
     if metric == "avg_time":
         ax.set_ylabel("Average runtime (s)")
-    if metric == "median_time":
+    elif metric == "median_time":
         ax.set_ylabel("Median runtime (s)")
     elif metric == "avg_ratio":
         ax.set_ylabel("Average approximation ratio")
@@ -81,11 +82,12 @@ def plot_group_on_ax(ax, data, algos, x_col, metric,
 sub_m = df[(df["n"] == baseline_n) &
            (df["sigma"] == baseline_sigma) &
            (np.isclose(df["eps"], baseline_eps))]
-print(sub_m.head())
+# print(sub_m.head())
 
 sub_n = df[(np.isclose(df["m_frac"], baseline_m_frac)) &
            (df["sigma"] == baseline_sigma) &
            (np.isclose(df["eps"], baseline_eps))]
+# print(sub_n.head())
 
 sub_sigma = df[(df["n"] == baseline_n) &
                (np.isclose(df["m_frac"], baseline_m_frac)) &
