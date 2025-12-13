@@ -13,7 +13,8 @@ name_map = {
     "Brute force fast": "AVX Optimized Brute Force",
     "Projection to 2/eps alphabet": "KP Projection",
     "Sqrt": "Sqrt",
-    "Heuristic 1: TP score": "Heuristic 1",
+    "Heuristic 1: TP score": "Heuristic TP",
+    "Heuristic 1: TP score with magic short circuit": "Heuristic TP w/ Magic Short Circuit",
     "Projection to 2/eps alphabet with short circuit": "KP w/ Short Circuit",
     "Projection to 2/eps alphabet with magic short circuit": "KP w/ Magic Short Circuit",
 }
@@ -21,7 +22,7 @@ name_map = {
 df["short_name"] = df["algo_name"].map(name_map)
 
 # approx_algos = ["KP Projection", "Heuristic 1", "Heuristic 2", "Heuristic 3"]
-approx_algos = ["Heuristic 1", "KP Projection", "KP w/ Short Circuit", "KP w/ Magic Short Circuit"]
+approx_algos = ["Heuristic TP", "Heuristic TP w/ Magic Short Circuit", "KP Projection", "KP w/ Short Circuit", "KP w/ Magic Short Circuit"]
 exact_algos  = ["Brute Force", "Sqrt"]
 
 # approx_algos = ["KP w/ Short Circuit", "KP w/ Magic Short Circuit"]
@@ -62,6 +63,8 @@ def plot_group_on_ax(ax, data, algos, x_col, metric,
 
     if metric == "avg_time":
         ax.set_ylabel("Average runtime (s)")
+    if metric == "median_time":
+        ax.set_ylabel("Median runtime (s)")
     elif metric == "avg_ratio":
         ax.set_ylabel("Average approximation ratio")
     else:

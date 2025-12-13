@@ -21,7 +21,7 @@ mt19937 alg_rng(SEED);
 
 int num_rounds = 5;
 const int NUM_ALGORITHMS = 0;
-const vector<int> ALG_IDS = {0, 2, 3, 4, 5, 6};
+const vector<int> ALG_IDS = {0, 2, 3, 4, 5, 6, 7};
 
 string get_alg_name(int id){
 	switch (id){
