@@ -123,7 +123,7 @@ pair<vector<T>, vector<T>> generate_geometric(int n, int m, int sigma, int seed,
 
     auto gen_symbol_inc = [&]() -> T {
         int cur_symbol = 0;
-        while (cur_symbol < sigma) {
+        while (cur_symbol < sigma - 1) {
             double u = uni01(rng);
             if (u < prob || sigma == 1) {
                 return static_cast<T>(cur_symbol);

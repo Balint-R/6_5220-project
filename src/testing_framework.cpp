@@ -154,8 +154,9 @@ vector<TestCase> gen_cases(int n, int m, int sigma, double eps, int num_cases, i
                 break;
             }
             case 6: {
-                snprintf(filename, 100, "fake_binary_%d_%d_%d_%d", n, m, sigma, seed);
-                tie(cases[i].A, cases[i].B) = generate_fake_binary<uint32_t>(n, m, sigma, seed, 0.8);
+                double big_prob = 0.6;
+                snprintf(filename, 100, "fake_binary_%d_%d_%d_%d_%.3f", n, m, sigma, seed, big_prob);
+                tie(cases[i].A, cases[i].B) = generate_fake_binary<uint32_t>(n, m, sigma, seed, big_prob);
                 break;
             }
             default:

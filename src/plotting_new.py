@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 # -------------------------------------------------
 # Load data and define short algorithm names
 # -------------------------------------------------
-GEN_NAME = "m_blocks_perturbed"
+GEN_NAME = "fake_binary_0.8"
 df = pd.read_csv("../results/" + GEN_NAME + ".csv").copy()
 
 name_map = {
@@ -101,6 +101,8 @@ sub_eps = df[(df["n"] == baseline_n) &
 RIGHT_MARGIN = 0.8
 BOTTOM_MARGIN = 0.12
 LEGEND_LOC = "lower center"
+TIME = "avg_time"
+RATIO = "avg_ratio"
 
 # =====================================================
 # FIGURE 1 — Approx algos: AVG TIME panels
@@ -111,7 +113,7 @@ fig1, axes1 = plt.subplots(2, 2, figsize=(11, 8))
 plot_group_on_ax(
     axes1[0, 0], sub_m, all_algos,
     x_col="m",
-    metric="median_time",
+    metric=TIME,
     x_label="m",
     title=f"Runtime vs m (n={baseline_n}, Sigma={baseline_sigma}, ε={baseline_eps})",
     log_x=True, log_y=True,
@@ -122,7 +124,7 @@ plot_group_on_ax(
 plot_group_on_ax(
     axes1[0, 1], sub_n, all_algos,
     x_col="n",
-    metric="median_time",
+    metric=TIME,
     x_label="n",
     title=f"Runtime vs n (m={baseline_m_frac}n, Sigma={baseline_sigma}, ε={baseline_eps})",
     log_x=True, log_y=True,
@@ -131,7 +133,7 @@ plot_group_on_ax(
 plot_group_on_ax(
     axes1[1, 0], sub_sigma, all_algos,
     x_col="sigma",
-    metric="median_time",
+    metric=TIME,
     x_label="Sigma",
     title=f"Runtime vs Sigma (n={baseline_n}, m={baseline_m_frac}n, ε={baseline_eps})",
     log_x=True, log_y=True,
@@ -140,7 +142,7 @@ plot_group_on_ax(
 plot_group_on_ax(
     axes1[1, 1], sub_eps, all_algos,
     x_col="eps",
-    metric="median_time",
+    metric=TIME,
     x_label="ε",
     title=f"Runtime vs ε (n={baseline_n}, m={baseline_m_frac}n, Sigma={baseline_sigma})",
     log_x=False, log_y=True,
