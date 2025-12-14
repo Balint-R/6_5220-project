@@ -25,9 +25,9 @@ void ham_dist_sqrt(int n, int m, int sigma,
     vector<int> b_inds(m);
     for(int i = 0; i < m; i++) b_inds[--ptrs_b[B[i]]] = i;
 
-    int cut = n * log2(n) * 8;
-    if(n >= 3e5) cut = n * log2(n) * 4;
-    if(n >= 6e5) cut = n * log2(n) * 3;
+    int cut = n * log2(m) * 8;
+    if(n >= 3e5) cut = n * log2(m) * 4;
+    if(n >= 6e5) cut = n * log2(m) * 3;
     // fprintf(stderr, "cut %d\n", cut);
 
     // Compute light characters
