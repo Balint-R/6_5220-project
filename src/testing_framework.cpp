@@ -360,7 +360,7 @@ void run_synth_grid_to_csv(const string &csv_filename, int gen_id) {
 void run_real_grid_to_csv(const string &csv_filename, const string &input_file) {
     vector<double> epsilons = {0.05, 0.10, 0.20, 0.50};
 
-    if (num_rounds <= 0) num_rounds = 5;
+    num_rounds = 3;
 
     ofstream csv(csv_filename.c_str());
     if (!csv.is_open()) {
