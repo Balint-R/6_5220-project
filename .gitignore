@@ -61,4 +61,7 @@ cache/*
 
 build/
 .vscode
+
+# large files
 real_world_data/titin/input.in.ans
+real_world_data/**/*.ans
