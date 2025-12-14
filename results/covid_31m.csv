@@ -1,0 +1,29 @@
+dataset,n,m,sigma,eps,alg_id,algo_name,rounds,avg_time,median_time,max_time,avg_ratio,median_ratio,max_ratio
+covid_31m.in,31168785,1273,22,0.05,0,"Brute force",3,2.32995,2.3271,2.34292,0,0,0
+covid_31m.in,31168785,1273,22,0.05,2,"Sqrt",3,1.04463,1.03043,1.07435,0,0,0
+covid_31m.in,31168785,1273,22,0.05,3,"Projection to 2/eps alphabet",3,271.742,271.54,274.228,0.05,0.05,0.05
+covid_31m.in,31168785,1273,22,0.05,4,"Projection to 2/eps alphabet with short circuit",3,79.6138,86.4999,86.9385,0.05,0.05,0.05
+covid_31m.in,31168785,1273,22,0.05,5,"Projection to 2/eps alphabet with magic short circuit",3,10.9378,10.9329,10.959,0.05,0.05,0.05
+covid_31m.in,31168785,1273,22,0.05,6,"Heuristic 1: TP score",3,140.563,140.605,140.631,0.00784363,0.00829876,0.00932994
+covid_31m.in,31168785,1273,22,0.05,7,"Heuristic 1: TP score with magic short circuit",3,10.7773,10.7886,10.8135,0.0181714,0.0200501,0.0236486
+covid_31m.in,31168785,1273,22,0.1,0,"Brute force",3,2.29976,2.29991,2.29994,0,0,0
+covid_31m.in,31168785,1273,22,0.1,2,"Sqrt",3,1.02223,1.02154,1.02439,0,0,0
+covid_31m.in,31168785,1273,22,0.1,3,"Projection to 2/eps alphabet",3,143.143,143.015,143.546,0.0925407,0.0925926,0.0942761
+covid_31m.in,31168785,1273,22,0.1,4,"Projection to 2/eps alphabet with short circuit",3,5.7648,5.75669,5.78221,0.0831146,0.0864094,0.0865225
+covid_31m.in,31168785,1273,22,0.1,5,"Projection to 2/eps alphabet with magic short circuit",3,5.75207,5.75314,5.75358,0.0790051,0.080402,0.0815308
+covid_31m.in,31168785,1273,22,0.1,6,"Heuristic 1: TP score",3,74.2366,74.2129,74.313,0.0556264,0.0561983,0.0572139
+covid_31m.in,31168785,1273,22,0.1,7,"Heuristic 1: TP score with magic short circuit",3,5.72071,5.72031,5.7222,0.0886488,0.0896382,0.102142
+covid_31m.in,31168785,1273,22,0.2,0,"Brute force",3,2.29917,2.29912,2.29959,0,0,0
+covid_31m.in,31168785,1273,22,0.2,2,"Sqrt",3,1.02303,1.02185,1.02607,0,0,0
+covid_31m.in,31168785,1273,22,0.2,3,"Projection to 2/eps alphabet",3,78.2488,78.2245,78.3176,0.130214,0.130508,0.131776
+covid_31m.in,31168785,1273,22,0.2,4,"Projection to 2/eps alphabet with short circuit",3,3.12406,3.14245,3.14339,0.110346,0.115544,0.116162
+covid_31m.in,31168785,1273,22,0.2,5,"Projection to 2/eps alphabet with magic short circuit",3,3.15421,3.15422,3.1547,0.108653,0.107679,0.113367
+covid_31m.in,31168785,1273,22,0.2,6,"Heuristic 1: TP score",3,40.9012,40.9026,40.9028,0.130975,0.130795,0.131732
+covid_31m.in,31168785,1273,22,0.2,7,"Heuristic 1: TP score with magic short circuit",3,3.16192,3.16227,3.16263,0.173308,0.17285,0.17972
+covid_31m.in,31168785,1273,22,0.5,0,"Brute force",3,2.3035,2.30234,2.30922,0,0,0
+covid_31m.in,31168785,1273,22,0.5,2,"Sqrt",3,1.02248,1.02227,1.02422,0,0,0
+covid_31m.in,31168785,1273,22,0.5,3,"Projection to 2/eps alphabet",3,39.3074,39.3039,39.3327,0.222183,0.2225,0.22651
+covid_31m.in,31168785,1273,22,0.5,4,"Projection to 2/eps alphabet with short circuit",3,1.589,1.58848,1.59014,0.151234,0.155058,0.159802
+covid_31m.in,31168785,1273,22,0.5,5,"Projection to 2/eps alphabet with magic short circuit",3,1.59919,1.599,1.59962,0.171911,0.170976,0.176962
+covid_31m.in,31168785,1273,22,0.5,6,"Heuristic 1: TP score",3,20.9715,20.9791,20.9847,0.306317,0.306224,0.309645
+covid_31m.in,31168785,1273,22,0.5,7,"Heuristic 1: TP score with magic short circuit",3,1.63435,1.63478,1.63589,0.364415,0.363636,0.367399
