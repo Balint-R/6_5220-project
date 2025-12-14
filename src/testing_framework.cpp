@@ -357,25 +357,120 @@ void run_synth_grid_to_csv(const string &csv_filename, int gen_id) {
     csv.close();
 }
 
+void run_real_grid_to_csv(const string &csv_filename, const string &input_file) {
+    vector<double> epsilons = {0.05, 0.10, 0.20, 0.50};
+
+    if (num_rounds <= 0) num_rounds = 5;
+
+    ofstream csv(csv_filename.c_str());
+    if (!csv.is_open()) {
+        cerr << "Failed to open CSV file: " << csv_filename << endl;
+        return;
+    }
+
+    // header
+    csv << "dataset,n,m,sigma,eps,alg_id,algo_name,rounds,"
+           "avg_time,median_time,max_time,"
+           "avg_ratio,median_ratio,max_ratio\n";
+
+    // Helper lambda to run one configuration and append to CSV
+    auto run_cases = [&](const string &dataset_name,
+                         const vector<TestCase> &cases,
+                         double eps) {
+        int num_cases = cases.size();
+        int n = cases[0].n;
+        int m = cases[0].m;
+        int sigma = cases[0].sigma;
+
+        for (int alg_id : ALG_IDS) {
+            printf("==============================\n");
+            printf("dataset = %s, n = %d, m = %d, sigma = %d, eps = %.3f, algo = %d\n",
+                   dataset_name.c_str(), n, m, sigma, eps, alg_id);
+
+            TestStats stats = test<uint32_t>(cases, eps, alg_id);
+
+            csv << dataset_name << ","
+                << n << ","
+                << m << ","
+                << sigma << ","
+                << eps << ","
+                << alg_id << ","
+                << "\"" << get_alg_name(alg_id) << "\"" << ","
+                << num_cases << ","
+                << stats.avg_time << ","
+                << stats.median_time << ","
+                << stats.max_time << ","
+                << stats.avg_ratio << ","
+                << stats.median_ratio << ","
+                << stats.max_ratio << "\n";
+        }
+
+        csv << flush;
+        fflush(stdout);
+        fflush(stderr);
+    };
+
+    // read input file
+    vector<uint32_t> A, B;
+    int n, m;
+    tie(n, m) = parse_aa_input_file(input_file, A, B);
+    assert(n == (int)A.size());
+    assert(m == (int)B.size());
+
+    int maxA = *max_element(A.begin(), A.end());
+    int maxB = *max_element(B.begin(), B.end());
+    int sigma = 1 + max(maxA, maxB);
+
+    TestCase tc = {n, m, sigma, A, B, {}};
+    get_reference_solution(input_file, tc);
+
+    // repeat the same testcase num_rounds times
+    vector<TestCase> cases(num_rounds, tc);
+
+    string dataset_name = input_file;
+    {
+        size_t pos = dataset_name.find_last_of("/\\");
+        if (pos != string::npos) dataset_name = dataset_name.substr(pos + 1);
+    }
+
+    for (double eps : epsilons) {
+        run_cases(dataset_name, cases, eps);
+    }
+
+    csv.close();
+}
+
+
+
 int main(int argc, char **argv){
 	if (argc < 2) {
 		printf(
 			"Usage: ./testing_framework <mode> <mode_args>\n"
-			"mode: real, synth, grid\n"
+			"mode: real, synth, synth_grid, real_grid\n"
 			"mode_args: arguments specific to mode\n");
 		exit(1);
 	}
 	string mode = argv[1];
 
-    if (mode == "grid") {
+    if (mode == "synth_grid") {
         if (argc < 3) {
-            printf("Usage: ./testing_framework grid <gen_id>\n");
+            printf("Usage: ./testing_framework synth_grid <gen_id>\n");
             exit(1);
         }
 
         int gen_id = atoi(argv[2]);
         string filename = OUT_DIR + "/" + get_gen_id_str(gen_id) + ".csv";
         run_synth_grid_to_csv(filename, gen_id);
+    }
+    else if (mode == "real_grid") {
+        if (argc < 4) {
+            printf("Usage: ./testing_framework real_grid <input_file> <output_file>\n");
+            printf("e.g. ./testing_framework real_grid ../real_world_data/titin/input.in ../results/titin.csv\n");
+            exit(1);
+        }
+        string input_file = argv[2];
+        string output_file = argv[3];
+        run_real_grid_to_csv(output_file, input_file);
     }
 	else if (mode == "synth") {
 		if (argc < 7) {

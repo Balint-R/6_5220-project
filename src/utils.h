@@ -9,6 +9,7 @@
 #include <limits>
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 using namespace std;
 
@@ -63,6 +64,37 @@ pair<int, int> parse_input_file(const string filename, vector<T>& A, vector<T>& 
     for (char ch : line) {
         B.push_back((T)(unsigned char)ch);
     }
+    return {n, m};
+}
+
+static unordered_map<char, int> aa_map = {
+    {'A', 0}, {'C', 1}, {'D', 2}, {'E', 3}, {'F', 4},
+    {'G', 5}, {'H', 6}, {'I', 7}, {'K', 8}, {'L', 9},
+    {'M',10}, {'N',11}, {'P',12}, {'Q',13}, {'R',14},
+    {'S',15}, {'T',16}, {'U',17}, {'V',18}, {'W',19},
+    {'X',20}, {'Y',21}
+};
+
+template <typename T>
+pair<int, int> parse_aa_input_file(const string filename, vector<T>& A, vector<T>& B) {
+    A.clear(); B.clear();
+    int n, m;
+    string line;
+    string mod_filename = string(DATA_DIR) + "/" + filename;
+    ifstream fin(mod_filename);
+    fin >> n >> m;
+    fin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+    getline(fin, line);
+    for (char ch : line) {
+        A.push_back( aa_map.at(ch) );
+    }
+
+    getline(fin, line);
+    for (char ch : line) {
+        B.push_back( aa_map.at(ch) );
+    }
+
     return {n, m};
 }
 
