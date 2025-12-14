@@ -1,2 +1,0 @@
-text: https://www.uniprot.org/proteomes/UP000005640
-pattern: https://rest.uniprot.org/uniprotkb/Q8WZ42.fasta
