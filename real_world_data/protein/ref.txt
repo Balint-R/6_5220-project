@@ -1,6 +1,0 @@
-text: https://www.uniprot.org/proteomes/UP000005640
-patterns:
-    titin (longest protein, good for approx): https://rest.uniprot.org/uniprotkb/Q8WZ42.fasta
-    nebulin (repetitive motifs, good (?) for approx): https://rest.uniprot.org/uniprotkb/P20929.fasta
-    MUC16 (low complexity, bad for hashing): https://rest.uniprot.org/uniprotkb/Q8WXI7.fasta
-    SARS-CoV-2 Spike protein (practical): https://rest.uniprot.org/uniprotkb/P0DTC2.fasta

@@ -22,7 +22,6 @@ add_executable(testing_framework
     src/ham_dist_proj.cpp
     src/ham_dist_proj_sc.cpp
     src/ham_dist_sqrt.cpp
-    src/first_alg_with_heuristics.cpp
     src/convolution.cpp
 )
 

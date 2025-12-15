@@ -8,6 +8,7 @@
 
 using namespace std;
 
+typedef long long ll;
 
 void ham_dist_proj_sc(int n, int m, int sigma, double in_eps,
                    const vector<uint32_t> &A, const vector<uint32_t> &B,
@@ -54,6 +55,18 @@ void ham_dist_proj_sc(int n, int m, int sigma, double in_eps,
 
         if(!num_bad) break;
         rem_its = min<int>(rem_its, ceil(log2(num_bad) + 3));
+
+        // Set the constant a bit lower than optimal, so it doesn't trigger other
+        // than on real_world_data
+        if((ll) num_bad * m < 4 * n * log2(m)){
+            fprintf(stderr, "Doing brute force for last %d indices\n", num_bad);
+            for(int i = 0; i < n-m+1; i++) if(result[i] < m*(1 - eps)){
+                int res = 0;
+                for(int j = 0; j < m; j++) res += A[i+j] != B[j];
+                result[i] = res;
+            }
+            break;
+        }
     }
 
     for (int i = 0; i < n-m+1; i++) result[i] *= 1 + in_eps;

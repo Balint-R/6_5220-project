@@ -3,7 +3,6 @@
 #include "ham_dist_proj.h"
 #include "ham_dist_proj_sc.h"
 #include "ham_dist_sqrt.h"
-#include "first_alg_with_heuristics.h"
 #include "string_gen.h"
 #include "utils.h"
 
@@ -20,8 +19,10 @@ using namespace std;
 const int SEED = 430298584;
 mt19937 alg_rng(SEED);
 
-int num_rounds = 5;
-const vector<int> ALG_IDS = {0, 2, 3, 4, 5, 6, 7};
+const vector<int> ALG_IDS = {1, 2, 3, 4, 5};
+const int NUM_ROUNDS[6] = {3, 3, 3, 3, 5, 5};
+const int MAX_ROUNDS = *max_element(begin(NUM_ROUNDS), end(NUM_ROUNDS));
+int override_rounds = -1;
 
 string get_alg_name(int id){
 	switch (id){
@@ -37,10 +38,6 @@ string get_alg_name(int id){
 			return "Projection to 2/eps alphabet with short circuit";
 		case 5:
 			return "Projection to 2/eps alphabet with magic short circuit";
-        case 6:
-            return "Heuristic 1: TP score";
-        case 7:
-            return "Heuristic 1: TP score with magic short circuit";
 		default:
 			return "N/A";
 	}
@@ -54,14 +51,6 @@ string get_gen_name(int id){
             return "Cyclic";
         case 2:
             return "k difs";
-        case 3:
-            return "m-blocks perturbed";
-        case 4:
-            return "Geometric";
-        case 5:
-            return "Half Skewed";
-        case 6:
-            return "Fake Binary";
         default:
             return "N/A";
     }
@@ -75,14 +64,6 @@ string get_gen_id_str(int id){
             return "cyclic";
         case 2:
             return "k_difs";
-        case 3:
-            return "m_blocks_perturbed";
-        case 4:
-            return "geometric";
-        case 5:
-            return "half_skewed";
-        case 6:
-            return "fake_binary";
         default:
             assert(false);
     }
@@ -123,40 +104,16 @@ vector<TestCase> gen_cases(int n, int m, int sigma, double eps, int num_cases, i
             }
             case 1: {
                 if(sigma > m) return {};
-                snprintf(filename, 100, "cyclic_%d_%d_%d", n, m, sigma);
-                tie(cases[i].A, cases[i].B) = generate_cyclic<uint32_t>(n, m, sigma);
+                snprintf(filename, 100, "cyclic_%d_%d_%d_%d", n, m, sigma, seed);
+                tie(cases[i].A, cases[i].B) = generate_cyclic<uint32_t>(n, m, sigma, seed);
                 break;
             }
             case 2: {
                 double act_eps = 1 - (1 - eps)/(1 + eps);
-                int k = ceil(1/act_eps) - 1;
+                int k = ceil(1/act_eps - F_EPS) - 1;
                 if(sigma > m || sigma < k*2) return {};
                 snprintf(filename, 100, "k_difs_%d_%d_%d_%d_%d", n, m, sigma, k, seed);
                 tie(cases[i].A, cases[i].B) = generate_k_difs<uint32_t>(n, m, sigma, k, seed);
-                break;
-            }
-            case 3: {
-                double diff_prob = 0.1;
-                snprintf(filename, 100, "m_blocks_perturbed_%d_%d_%d_%.3f_%d", n, m, sigma, diff_prob, seed);
-                tie(cases[i].A, cases[i].B) = generate_mblocks_perturbed<uint32_t>(n, m, sigma, seed, diff_prob);
-                break;
-            }
-            case 4: {
-                double prob = 0.5;
-                snprintf(filename, 100, "geometric_%d_%d_%d_%d", n, m, sigma, seed);
-                tie(cases[i].A, cases[i].B) = generate_geometric<uint32_t>(n, m, sigma, seed, prob);
-                break;
-            }
-            case 5: {
-                double big_prob = 0.8;
-                snprintf(filename, 100, "half_skewed_%d_%d_%d_%.3f_%d", n, m, sigma, big_prob, seed);
-                tie(cases[i].A, cases[i].B) = generate_half_skewed<uint32_t>(n, m, sigma, seed, big_prob);
-                break;
-            }
-            case 6: {
-                double big_prob = 0.6;
-                snprintf(filename, 100, "fake_binary_%d_%d_%d_%d_%.3f", n, m, sigma, seed, big_prob);
-                tie(cases[i].A, cases[i].B) = generate_fake_binary<uint32_t>(n, m, sigma, seed, big_prob);
                 break;
             }
             default:
@@ -183,18 +140,21 @@ struct TestStats {
 };
 
 template <typename T>
-TestStats test(const vector<TestCase> &cases, double eps, int id) {
-	printf("\nAlg name: %s\n\n", get_alg_name(id).c_str());
+TestStats test(const vector<TestCase> &cases, double eps, int alg_id) {
+	printf("\nAlg name: %s\n\n", get_alg_name(alg_id).c_str());
     vector<double> times, ratios;
     const vector<uint32_t> dummy_sol(cases[0].n - cases[0].m + 1, 1e9);
 
-    int num_cases = cases.size();
-    for (int i = 0; i < num_cases; i++) {
+    int num_rounds = NUM_ROUNDS[alg_id];
+    if(override_rounds != -1) num_rounds = override_rounds;
+    assert(num_rounds <= (int) cases.size());
+
+    for (int i = 0; i < num_rounds; i++) {
         const auto &[n, m, sigma, A, B, ref_sol] = cases[i];
         vector<T> result(n - m + 1, 0); // initialize result array to all 0
         auto t1 = chrono::steady_clock::now();
 
-		switch (id) {
+		switch (alg_id) {
 			case 0:
 				ham_dist_bf(n, m, sigma, A, B, result);
 				break;
@@ -213,12 +173,6 @@ TestStats test(const vector<TestCase> &cases, double eps, int id) {
 			case 5:
 				ham_dist_proj(n, m, sigma, eps, A, B, result, ref_sol, alg_rng);
 				break;
-            case 6:
-                HammingDistanceHeuristic_1(n, m, sigma, eps, A, B, result, dummy_sol, alg_rng);
-                break;
-            case 7:
-                HammingDistanceHeuristic_1(n, m, sigma, eps, A, B, result, ref_sol, alg_rng);
-                break;
 			default:
 				assert(false);
 		}
@@ -236,15 +190,18 @@ TestStats test(const vector<TestCase> &cases, double eps, int id) {
     sort(times.begin(), times.end());
     sort(ratios.begin(), ratios.end());
 
-    double avg_time = accumulate(times.begin(), times.end(), 0.0) / num_cases;
+    double avg_time = accumulate(times.begin(), times.end(), 0.0) / num_rounds;
     double median_time = times[times.size() / 2];
     double max_time = times.back();
 
-    double avg_ratio = accumulate(ratios.begin(), ratios.end(), 0.0) / num_cases;
+    double avg_ratio = accumulate(ratios.begin(), ratios.end(), 0.0) / num_rounds;
     double median_ratio = ratios[ratios.size() / 2];
     double max_ratio = ratios.back();
 
-    // assert(max_ratio <= eps);
+    if(max_ratio - F_EPS > eps){
+        printf("WARNING: max_ratio > eps: %.6f > %.6f\n", max_ratio, eps);
+        assert(false);
+    }
 
     printf("Average time: %.6fs, Average approx ratio: %.6f, Max approx ratio: %.6f\n",
            avg_time, avg_ratio, max_ratio);
@@ -257,6 +214,40 @@ void test_all(const vector<TestCase> &cases, double eps) {
         cout << "==============================\n";
         test<uint32_t>(cases, eps, alg_id);
     }
+}
+
+// Helper lambda to run one configuration and append to CSV
+void run_cases(const vector<TestCase> &cases, double eps, ofstream &csv){
+    int num_cases = cases.size();
+
+    for(int alg_id : ALG_IDS){
+        int n = cases[0].n;
+        int m = cases[0].m;
+        int sigma = cases[0].sigma;
+
+        printf("==============================\n");
+        printf("n = %d, m = %d, sigma = %d, eps = %.3f, algo = %d\n", n, m, sigma, eps, alg_id);
+
+        TestStats stats = test<uint32_t>(cases, eps, alg_id);
+
+        csv << n << ","
+            << m << ","
+            << sigma << ","
+            << eps << ","
+            << alg_id << ","
+            << "\"" << get_alg_name(alg_id) << "\"" << ","
+            << num_cases << ","
+            << stats.avg_time << ","
+            << stats.median_time << ","
+            << stats.max_time << ","
+            << stats.avg_ratio << ","
+            << stats.median_ratio << ","
+            << stats.max_ratio << "\n";
+    }
+
+    csv << flush;
+    fflush(stdout);
+    fflush(stderr);
 }
 
 void run_synth_grid_to_csv(const string &csv_filename, int gen_id) {
@@ -274,7 +265,7 @@ void run_synth_grid_to_csv(const string &csv_filename, int gen_id) {
 
     if(gen_id == 2){
         base_m_frac = 0.02;
-        // ns = {(int) 5e5, (int) 1e6};
+        ns = {(int) 1e5, (int) 5e5, (int) 1e6};
         m_fracs = {0.01, 0.02, 0.04, 0.08};
         sigmas = {40, 80, 160, 320, 640, 1280};
     }
@@ -289,40 +280,6 @@ void run_synth_grid_to_csv(const string &csv_filename, int gen_id) {
     csv << "n,m,sigma,eps,alg_id,algo_name,rounds,avg_time,median_time,max_time,";
     csv << "avg_ratio,median_ratio,max_ratio\n";
 
-    // Helper lambda to run one configuration and append to CSV
-    auto run_cases = [&](const vector<TestCase> &cases, double eps) {
-        int num_cases = cases.size();
-
-        for(int alg_id : ALG_IDS){
-            int n = cases[0].n;
-            int m = cases[0].m;
-            int sigma = cases[0].sigma;
-
-            printf("==============================\n");
-            printf("n = %d, m = %d, sigma = %d, eps = %.3f, algo = %d\n", n, m, sigma, eps, alg_id);
-
-            TestStats stats = test<uint32_t>(cases, eps, alg_id);
-
-            csv << n << ","
-                << m << ","
-                << sigma << ","
-                << eps << ","
-                << alg_id << ","
-                << "\"" << get_alg_name(alg_id) << "\"" << ","
-                << num_cases << ","
-                << stats.avg_time << ","
-                << stats.median_time << ","
-                << stats.max_time << ","
-                << stats.avg_ratio << ","
-                << stats.median_ratio << ","
-                << stats.max_ratio << "\n";
-        }
-
-        csv << flush;
-        fflush(stdout);
-        fflush(stderr);
-    };
-
     int seed = 0;
 
     typedef tuple<int, double, int, double> Config;
@@ -330,12 +287,12 @@ void run_synth_grid_to_csv(const string &csv_filename, int gen_id) {
 
     auto run_config = [&](int n, double m_frac, int sigma, double eps){
         Config config(n, m_frac, sigma, eps);
-        if(done_configs.find(config)!= done_configs.end()) return;
+        if(done_configs.find(config) != done_configs.end()) return;
 
         int m = n * m_frac;
-        const vector<TestCase> cases = gen_cases(n, m, sigma, eps, num_rounds, gen_id, seed);
+        const vector<TestCase> cases = gen_cases(n, m, sigma, eps, MAX_ROUNDS, gen_id, seed);
         if(cases.empty()) return;
-        run_cases(cases, eps);
+        run_cases(cases, eps, csv);
         seed += 1000;
 
         done_configs.insert(config);
@@ -360,8 +317,6 @@ void run_synth_grid_to_csv(const string &csv_filename, int gen_id) {
 void run_real_grid_to_csv(const string &csv_filename, const string &input_file) {
     vector<double> epsilons = {0.05, 0.10, 0.20, 0.50};
 
-    num_rounds = 3;
-
     ofstream csv(csv_filename.c_str());
     if (!csv.is_open()) {
         cerr << "Failed to open CSV file: " << csv_filename << endl;
@@ -373,74 +328,29 @@ void run_real_grid_to_csv(const string &csv_filename, const string &input_file) 
            "avg_time,median_time,max_time,"
            "avg_ratio,median_ratio,max_ratio\n";
 
-    // Helper lambda to run one configuration and append to CSV
-    auto run_cases = [&](const string &dataset_name,
-                         const vector<TestCase> &cases,
-                         double eps) {
-        int num_cases = cases.size();
-        int n = cases[0].n;
-        int m = cases[0].m;
-        int sigma = cases[0].sigma;
-
-        for (int alg_id : ALG_IDS) {
-            printf("==============================\n");
-            printf("dataset = %s, n = %d, m = %d, sigma = %d, eps = %.3f, algo = %d\n",
-                   dataset_name.c_str(), n, m, sigma, eps, alg_id);
-
-            TestStats stats = test<uint32_t>(cases, eps, alg_id);
-
-            csv << dataset_name << ","
-                << n << ","
-                << m << ","
-                << sigma << ","
-                << eps << ","
-                << alg_id << ","
-                << "\"" << get_alg_name(alg_id) << "\"" << ","
-                << num_cases << ","
-                << stats.avg_time << ","
-                << stats.median_time << ","
-                << stats.max_time << ","
-                << stats.avg_ratio << ","
-                << stats.median_ratio << ","
-                << stats.max_ratio << "\n";
-        }
-
-        csv << flush;
-        fflush(stdout);
-        fflush(stderr);
-    };
-
     // read input file
     vector<uint32_t> A, B;
-    int n, m;
-    tie(n, m) = parse_aa_input_file(input_file, A, B);
-    assert(n == (int)A.size());
-    assert(m == (int)B.size());
+    int n, m, sigma;
+    tie(n, m, sigma) = parse_input_file(input_file, A, B);
+    assert(n == (int) A.size());
+    assert(m == (int) B.size());
 
-    int maxA = *max_element(A.begin(), A.end());
-    int maxB = *max_element(B.begin(), B.end());
-    int sigma = 1 + max(maxA, maxB);
+    fprintf(stderr, "n = %d, m = %d, sigma = %d\n", n, m, sigma);
+    fprintf(stderr, "a_max = %d, b_max = %d\n", *max_element(A.begin(), A.end()), *max_element(B.begin(), B.end()));
 
     TestCase tc = {n, m, sigma, A, B, {}};
     get_reference_solution(input_file, tc);
 
     // repeat the same testcase num_rounds times
-    vector<TestCase> cases(num_rounds, tc);
+    vector<TestCase> cases(MAX_ROUNDS, tc);
 
-    string dataset_name = input_file;
-    {
-        size_t pos = dataset_name.find_last_of("/\\");
-        if (pos != string::npos) dataset_name = dataset_name.substr(pos + 1);
-    }
-
+    printf("Running input file %s\n\n", input_file.c_str());
     for (double eps : epsilons) {
-        run_cases(dataset_name, cases, eps);
+        run_cases(cases, eps, csv);
     }
 
     csv.close();
 }
-
-
 
 int main(int argc, char **argv){
 	if (argc < 2) {
@@ -464,8 +374,8 @@ int main(int argc, char **argv){
     }
     else if (mode == "real_grid") {
         if (argc < 4) {
-            printf("Usage: ./testing_framework real_grid <input_file> <output_file>\n");
-            printf("e.g. ./testing_framework real_grid ../real_world_data/titin/input.in ../results/titin.csv\n");
+            printf("Usage: ./testing_framework real_grid <input_file> <output_file_path>\n");
+            printf("e.g. ./testing_framework real_grid titin_11m.in ../results/titin.csv\n");
             exit(1);
         }
         string input_file = argv[2];
@@ -490,7 +400,7 @@ int main(int argc, char **argv){
 		assert(n >= m);
 		double eps = atof(argv[4]);
 		int sigma = atoi(argv[5]);
-		num_rounds = atoi(argv[6]);
+		override_rounds = atoi(argv[6]);
 
         int alg_id = -1;
 		if (argc >= 8) alg_id = atoi(argv[7]);
@@ -498,7 +408,7 @@ int main(int argc, char **argv){
 		if (argc >= 9) gen_id = atoi(argv[8]);
 
 		// Run synth data tests
-        vector<TestCase> cases = gen_cases(n, m, sigma, eps, num_rounds, gen_id, SEED);
+        vector<TestCase> cases = gen_cases(n, m, sigma, eps, override_rounds, gen_id, SEED);
 
         if (alg_id == -1) test_all(cases, eps);
         else test<uint32_t>(cases, eps, alg_id);
@@ -515,17 +425,16 @@ int main(int argc, char **argv){
 		}
 		string filename = argv[2];
 		double eps = atof(argv[3]);
-		num_rounds = atoi(argv[4]);
+		override_rounds = atoi(argv[4]);
 
         int alg_id = -1;
 		if (argc >= 6) alg_id = atoi(argv[5]);
 
 		vector<uint32_t> A, B;
 		int n, m, sigma;
-		tie(n, m) = parse_input_file(filename, A, B);
+		tie(n, m, sigma) = parse_input_file(filename, A, B);
 		assert(n == (int) A.size());
 		assert(m == (int) B.size());
-		sigma = 1 + max(*max_element(A.begin(), A.end()), *max_element(B.begin(), B.end()));
 
         TestCase tc = {n, m, sigma, A, B, {}};
         get_reference_solution(filename, tc);

@@ -47,8 +47,9 @@ void parse_text_file(const string filename, vector<T> &parser_var) {
 // n m
 // text string
 // pattern string
+// Returns n, m, sigma
 template <typename T>
-pair<int, int> parse_input_file(const string filename, vector<T>& A, vector<T>& B) {
+tuple<int, int, int> parse_input_file(const string filename, vector<T> &A, vector<T> &B) {
     A.clear(); B.clear();
     int n, m;
     string line;
@@ -57,47 +58,27 @@ pair<int, int> parse_input_file(const string filename, vector<T>& A, vector<T>& 
     fin >> n >> m;
     fin.ignore(numeric_limits<streamsize>::max(), '\n');
     getline(fin, line);
+
+    vector<T> compr;
+
     for (char ch : line) {
-        A.push_back((T)(unsigned char)ch);
+        A.push_back((T)(unsigned char) ch);
+        compr.push_back((T)(unsigned char) ch);
     }
     getline(fin, line);
     for (char ch : line) {
-        B.push_back((T)(unsigned char)ch);
+        B.push_back((T)(unsigned char) ch);
+        compr.push_back((T)(unsigned char) ch);
     }
-    return {n, m};
+
+    sort(compr.begin(), compr.end());
+    compr.resize(unique(compr.begin(), compr.end()) - compr.begin());
+
+    for(T &ch : A) ch = lower_bound(compr.begin(), compr.end(), ch) - compr.begin();
+    for(T &ch : B) ch = lower_bound(compr.begin(), compr.end(), ch) - compr.begin();
+
+    return {n, m, (int) compr.size()};
 }
-
-static unordered_map<char, int> aa_map = {
-    {'A', 0}, {'C', 1}, {'D', 2}, {'E', 3}, {'F', 4},
-    {'G', 5}, {'H', 6}, {'I', 7}, {'K', 8}, {'L', 9},
-    {'M',10}, {'N',11}, {'P',12}, {'Q',13}, {'R',14},
-    {'S',15}, {'T',16}, {'U',17}, {'V',18}, {'W',19},
-    {'X',20}, {'Y',21}
-};
-
-template <typename T>
-pair<int, int> parse_aa_input_file(const string filename, vector<T>& A, vector<T>& B) {
-    A.clear(); B.clear();
-    int n, m;
-    string line;
-    string mod_filename = string(DATA_DIR) + "/" + filename;
-    ifstream fin(mod_filename);
-    fin >> n >> m;
-    fin.ignore(numeric_limits<streamsize>::max(), '\n');
-
-    getline(fin, line);
-    for (char ch : line) {
-        A.push_back( aa_map.at(ch) );
-    }
-
-    getline(fin, line);
-    for (char ch : line) {
-        B.push_back( aa_map.at(ch) );
-    }
-
-    return {n, m};
-}
-
 
 //check cache
 // if file doesn't exist, write answer to cache
@@ -150,7 +131,7 @@ inline double approximation_ratio(const vector<uint32_t> &ref_solution,
     for(int i = 0; i < d; i++){
         int ref = ref_solution[i];
         int act = approx_solution[i];
-        final_ratio = max(final_ratio, abs(act - ref) / max<double>(1e-9, ref));
+        final_ratio = max(final_ratio, abs(act - ref) / max<double>(F_EPS, ref));
     }
     return final_ratio;
 }
