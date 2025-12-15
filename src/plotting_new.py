@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 # -------------------------------------------------
 # Load data and define short algorithm names
 # -------------------------------------------------
-GEN_NAME = "fake_binary_0.8"
+GEN_NAME = "half_skewed"
 df = pd.read_csv("../results/" + GEN_NAME + ".csv").copy()
 
 name_map = {
@@ -164,4 +164,61 @@ fig1.legend(
 )
 
 fig1.savefig("../figures/runtime_" + GEN_NAME + ".png", dpi=300, bbox_inches="tight")
+plt.show()
+
+
+# =====================================================
+# FIGURE 2 — Approx algos: AVG APPROX RATIO panels
+# =====================================================
+fig2, axes2 = plt.subplots(2, 2, figsize=(11, 8))
+
+plot_group_on_ax(
+    axes2[0, 0], sub_m, approx_algos,
+    x_col="m",
+    metric=RATIO,
+    x_label="m",
+    title=f"Approx Ratio vs m (n={baseline_n}, Sigma={baseline_sigma}, ε={baseline_eps})",
+    log_x=True, log_y=False
+)
+
+plot_group_on_ax(
+    axes2[0, 1], sub_n, approx_algos,
+    x_col="n",
+    metric=RATIO,
+    x_label="n",
+    title=f"Approx Ratio vs n (m={baseline_m_frac}n, Sigma={baseline_sigma}, ε={baseline_eps})",
+    log_x=True, log_y=False
+)
+
+plot_group_on_ax(
+    axes2[1, 0], sub_sigma, approx_algos,
+    x_col="sigma",
+    metric=RATIO,
+    x_label="Sigma",
+    title=f"Approx Ratio vs Sigma (n={baseline_n}, m={baseline_m_frac}n, ε={baseline_eps})",
+    log_x=True, log_y=False
+)
+
+plot_group_on_ax(
+    axes2[1, 1], sub_eps, approx_algos,
+    x_col="eps",
+    metric=RATIO,
+    x_label="ε",
+    title=f"Approx Ratio vs ε (n={baseline_n}, m={baseline_m_frac}n, Sigma={baseline_sigma})",
+    log_x=False, log_y=False
+)
+
+handles2, labels2 = axes2[0, 0].get_legend_handles_labels()
+fig2.suptitle(f"Approximation Ratios on {GEN_NAME}", y=0.98)
+
+fig2.tight_layout()
+fig2.subplots_adjust(bottom=BOTTOM_MARGIN)
+
+fig2.legend(
+    handles2, labels2,
+    loc=LEGEND_LOC,
+    ncol=3,
+)
+
+fig2.savefig("../figures/approx_ratio_" + GEN_NAME + ".png", dpi=300, bbox_inches="tight")
 plt.show()
