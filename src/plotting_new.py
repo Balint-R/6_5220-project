@@ -23,7 +23,7 @@ df["short_name"] = df["algo_name"].map(name_map)
 
 # approx_algos = ["KP Projection", "Heuristic 1", "Heuristic 2", "Heuristic 3"]
 approx_algos = ["KP Projection", "KP w/ Short Circuit", "KP w/ Magic Short Circuit"]
-exact_algos  = ["AVX Optimized Brute Force", "Sqrt"]
+exact_algos  = ["Brute Force", "Sqrt"]
 all_algos = exact_algos + approx_algos
 
 # approx_algos = ["KP w/ Short Circuit", "KP w/ Magic Short Circuit"]
@@ -45,12 +45,12 @@ baseline_m_frac = 0.02 if GEN_NAME == "k_difs" else 0.5
 def plot_group_on_ax(ax, data, algos, x_col, metric,
                      x_label, title, log_x=False, log_y=False, xticks=None, xticklabels=None):
 
-    for algo in algos:
+    for i, algo in enumerate(algos):
         cur = data[data["short_name"] == algo].sort_values(x_col)
         # print(cur)
         if cur.empty:
             continue
-        ax.plot(cur[x_col], cur[metric], marker="o", label=algo)
+        ax.plot(cur[x_col], cur[metric], marker="o", label=algo, linestyle=(i % 3 * 3, (3, 6)))
 
     if log_x:
         ax.set_xscale("log")

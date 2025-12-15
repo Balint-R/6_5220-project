@@ -19,7 +19,7 @@ using namespace std;
 const int SEED = 430298584;
 mt19937 alg_rng(SEED);
 
-const vector<int> ALG_IDS = {1, 2, 3, 4, 5};
+const vector<int> ALG_IDS = {0};
 const int NUM_ROUNDS[6] = {3, 3, 3, 3, 5, 5};
 const int MAX_ROUNDS = *max_element(begin(NUM_ROUNDS), end(NUM_ROUNDS));
 int override_rounds = -1;
