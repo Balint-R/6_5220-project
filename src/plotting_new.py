@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 # -------------------------------------------------
 # Load data and define short algorithm names
 # -------------------------------------------------
-GEN_NAME = "k_difs"
+GEN_NAME = "cyclic"
 df = pd.read_csv("../results/" + GEN_NAME + ".csv").copy()
 
 name_map = {
@@ -50,7 +50,14 @@ def plot_group_on_ax(ax, data, algos, x_col, metric,
         # print(cur)
         if cur.empty:
             continue
-        ax.plot(cur[x_col], cur[metric], marker="o", label=algo, linestyle=(i % 3 * 3, (3, 6)))
+        ax.plot(
+            cur[x_col],
+            cur[metric],
+            marker="o",
+            label=algo,
+            linestyle=(i % 3 * 3, (3, 6)),
+            linewidth=4,
+        )
 
     if log_x:
         ax.set_xscale("log")
