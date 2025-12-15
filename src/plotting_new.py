@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 # -------------------------------------------------
 # Load data and define short algorithm names
 # -------------------------------------------------
-GEN_NAME = "uniform"
+GEN_NAME = "k_difs"
 df = pd.read_csv("../results/" + GEN_NAME + ".csv").copy()
 
 name_map = {
