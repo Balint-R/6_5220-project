@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <cassert>
 #include <random>
 #include <vector>
@@ -18,11 +19,16 @@ pair<vector<T>, vector<T>> generate_uniform(int n, int m, int sigma, int seed){
 }
 
 template <typename T>
-pair<vector<T>, vector<T>> generate_cyclic(int n, int m, int sigma){
+pair<vector<T>, vector<T>> generate_cyclic(int n, int m, int sigma, int seed){
     assert(sigma <= m);
+	mt19937 rng(seed);
+    vector<T> ord(sigma);
+    iota(ord.begin(), ord.end(), 0);
+    shuffle(ord.begin(), ord.end(), rng);
+
     vector<T> A(n), B(m);
-    for(int i = 0; i < n; i++) A[i] = i % sigma;
-    for(int i = 0; i < m; i++) B[i] = i % sigma;
+    for(int i = 0; i < n; i++) A[i] = ord[i % sigma];
+    for(int i = 0; i < m; i++) B[i] = ord[i % sigma];
     return {A, B};
 }
 
@@ -44,6 +50,13 @@ pair<vector<T>, vector<T>> generate_k_difs(int n, int m, int sigma, int k, int s
 
         for(int i = bl; i < br; i++) A[i] = mp[i % sigma];
     }
+
+    // Shuffle indices
+    vector<T> ord(sigma);
+    iota(ord.begin(), ord.end());
+    shuffle(ord.begin(), ord.end(), rng);
+    for(int i = 0; i < n; i++) A[i] = ord[A[i]];
+    for(int i = 0; i < m; i++) B[i] = ord[B[i]];
 
     return {A, B};
 }
