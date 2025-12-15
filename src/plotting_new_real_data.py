@@ -12,6 +12,8 @@ df3 = pd.read_csv("../results/" + DATA_CSVNAMES[2] + ".csv").copy()
 df4 = pd.read_csv("../results/" + DATA_CSVNAMES[3] + ".csv").copy()
 dfs = [df1, df2, df3, df4]
 
+m_values = [14507, 1273, 34350, 8525]
+
 SAVE_NAME = '_'.join(DATA_CSVNAMES)
 name_map = {
     "Brute force": "Brute Force",
@@ -87,13 +89,13 @@ RATIO = "avg_ratio"
 # =====================================================
 fig1, axes1 = plt.subplots(2, 2, figsize=(11, 8))
 ax_poses = [(0,0), (0,1), (1,0), (1,1)]
-for df, pos, dataset_name in zip(dfs, ax_poses, DATA_CSVNAMES):
+for df, pos, dataset_name, m in zip(dfs, ax_poses, DATA_CSVNAMES, m_values):
     plot_group_on_ax(
         axes1[pos], df, all_algos,
         x_col="eps",
         metric=TIME,
         x_label="eps",
-        title=f"{dataset_name}",
+        title=f"{dataset_name}".replace("_31m", "") + f" (n={baseline_n}, m={m})",
         log_x=False, log_y=True,
     )
 
