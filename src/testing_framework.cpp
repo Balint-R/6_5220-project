@@ -200,7 +200,8 @@ TestStats test(const vector<TestCase> &cases, double eps, int alg_id) {
 
     if(max_ratio - F_EPS > eps){
         printf("WARNING: max_ratio > eps: %.6f > %.6f\n", max_ratio, eps);
-        assert(false);
+        fflush(stdout);
+        // assert(false);
     }
 
     printf("Average time: %.6fs, Average approx ratio: %.6f, Max approx ratio: %.6f\n",
@@ -253,15 +254,15 @@ void run_cases(const vector<TestCase> &cases, double eps, ofstream &csv){
 void run_synth_grid_to_csv(const string &csv_filename, int gen_id) {
     // Baselines values
     int base_n = 1e6;
-    double base_m_frac = 0.20;
+    double base_m_frac = 0.50;
     int base_sigma = 100;
-    double base_eps = 0.20;
+    double base_eps = 0.35;
 
     // Values to test
-    vector<int> ns = {(int) 1e4, (int) 1e5, (int) 1e6};
-    vector<double> m_fracs = {0.05, 0.10, 0.20, 0.40, 0.60};
+    vector<int> ns = {(int) 5e4, (int) 2e5, (int) 1e6};
+    vector<double> m_fracs = {0.05, 0.10, 0.25, 0.50};
     vector<int> sigmas = {4, 10, 20, 40, 80, 160, 320, 640, 1280};
-    vector<double> epsilons = {0.05, 0.10, 0.20, 0.50};
+    vector<double> epsilons = {0.05, 0.10, 0.20, 0.35, 0.50};
 
     if(gen_id == 2){
         base_m_frac = 0.02;

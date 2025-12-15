@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 # -------------------------------------------------
 # Load data and define short algorithm names
 # -------------------------------------------------
-GEN_NAME = "half_skewed"
+GEN_NAME = "uniform"
 df = pd.read_csv("../results/" + GEN_NAME + ".csv").copy()
 
 name_map = {
@@ -22,8 +22,8 @@ name_map = {
 df["short_name"] = df["algo_name"].map(name_map)
 
 # approx_algos = ["KP Projection", "Heuristic 1", "Heuristic 2", "Heuristic 3"]
-approx_algos = ["Heuristic TP", "Heuristic TP w/ Magic Short Circuit", "KP Projection", "KP w/ Short Circuit", "KP w/ Magic Short Circuit"]
-exact_algos  = ["Brute Force", "Sqrt"]
+approx_algos = ["KP Projection", "KP w/ Short Circuit", "KP w/ Magic Short Circuit"]
+exact_algos  = ["AVX Optimized Brute Force", "Sqrt"]
 all_algos = exact_algos + approx_algos
 
 # approx_algos = ["KP w/ Short Circuit", "KP w/ Magic Short Circuit"]
@@ -35,8 +35,8 @@ df["m_frac"] = df["m"] / df["n"]
 # Baseline settings for the slices
 baseline_n      = 1000000
 baseline_sigma  = 100
-baseline_eps    = 0.2
-baseline_m_frac = 0.02 if GEN_NAME == "k_difs" else 0.2
+baseline_eps    = 0.35
+baseline_m_frac = 0.02 if GEN_NAME == "k_difs" else 0.5
 
 
 # -------------------------------------------------
