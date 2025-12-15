@@ -1,0 +1,32 @@
+Running input file nebulin_11m.in
+
+==============================
+n = 11409987, m = 8525, sigma = 21, eps = 0.050, algo = 1
+
+Alg name: Brute force fast
+
+Round 0 time: 1.729650s
+Round 0 approximation ratio: 0.000000
+
+Round 1 time: 1.728463s
+Round 1 approximation ratio: 0.000000
+
+Round 2 time: 1.729368s
+Round 2 approximation ratio: 0.000000
+
+Average time: 1.729160s, Average approx ratio: 0.000000, Max approx ratio: 0.000000
+==============================
+n = 11409987, m = 8525, sigma = 21, eps = 0.050, algo = 2
+
+Alg name: Sqrt
+
+Round 0 time: 3.228984s
+Round 0 approximation ratio: 0.000000
+
+Round 1 time: 3.229413s
+Round 1 approximation ratio: 0.000000
+
+Round 2 time: 3.228037s
+Round 2 approximation ratio: 0.000000
+
+Average time: 3.228811s, Average approx ratio: 0.000000, Max approx ratio: 0.000000

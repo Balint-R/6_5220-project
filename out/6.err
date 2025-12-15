@@ -1,0 +1,60 @@
+n = 11409987, m = 1273, sigma = 21
+a_max = 20, b_max = 20
+Found cached solution
+planned_its: 24, act_its: 24, reduced_sigma: 21
+planned_its: 24, act_its: 24, reduced_sigma: 21
+planned_its: 24, act_its: 24, reduced_sigma: 21
+Doing brute force for last 1 indices
+planned_its: 24, act_its: 1, reduced_sigma: 21
+Doing brute force for last 1 indices
+planned_its: 24, act_its: 1, reduced_sigma: 21
+Doing brute force for last 1 indices
+planned_its: 24, act_its: 1, reduced_sigma: 21
+Doing brute force for last 1 indices
+planned_its: 24, act_its: 1, reduced_sigma: 21
+Doing brute force for last 1 indices
+planned_its: 24, act_its: 1, reduced_sigma: 21
+planned_its: 24, act_its: 1, reduced_sigma: 21
+planned_its: 24, act_its: 1, reduced_sigma: 21
+planned_its: 24, act_its: 1, reduced_sigma: 21
+planned_its: 24, act_its: 1, reduced_sigma: 21
+planned_its: 24, act_its: 1, reduced_sigma: 21
+planned_its: 24, act_its: 24, reduced_sigma: 11
+planned_its: 24, act_its: 24, reduced_sigma: 11
+planned_its: 24, act_its: 24, reduced_sigma: 11
+planned_its: 24, act_its: 1, reduced_sigma: 11
+planned_its: 24, act_its: 1, reduced_sigma: 11
+planned_its: 24, act_its: 1, reduced_sigma: 11
+planned_its: 24, act_its: 1, reduced_sigma: 11
+planned_its: 24, act_its: 1, reduced_sigma: 11
+planned_its: 24, act_its: 1, reduced_sigma: 11
+planned_its: 24, act_its: 1, reduced_sigma: 11
+planned_its: 24, act_its: 1, reduced_sigma: 11
+planned_its: 24, act_its: 1, reduced_sigma: 11
+planned_its: 24, act_its: 1, reduced_sigma: 11
+planned_its: 24, act_its: 24, reduced_sigma: 6
+planned_its: 24, act_its: 24, reduced_sigma: 6
+planned_its: 24, act_its: 24, reduced_sigma: 6
+planned_its: 24, act_its: 1, reduced_sigma: 6
+planned_its: 24, act_its: 1, reduced_sigma: 6
+planned_its: 24, act_its: 1, reduced_sigma: 6
+planned_its: 24, act_its: 1, reduced_sigma: 6
+planned_its: 24, act_its: 1, reduced_sigma: 6
+planned_its: 24, act_its: 1, reduced_sigma: 6
+planned_its: 24, act_its: 1, reduced_sigma: 6
+planned_its: 24, act_its: 1, reduced_sigma: 6
+planned_its: 24, act_its: 1, reduced_sigma: 6
+planned_its: 24, act_its: 1, reduced_sigma: 6
+planned_its: 24, act_its: 24, reduced_sigma: 3
+planned_its: 24, act_its: 24, reduced_sigma: 3
+planned_its: 24, act_its: 24, reduced_sigma: 3
+planned_its: 24, act_its: 1, reduced_sigma: 3
+planned_its: 24, act_its: 1, reduced_sigma: 3
+planned_its: 24, act_its: 1, reduced_sigma: 3
+planned_its: 24, act_its: 1, reduced_sigma: 3
+planned_its: 24, act_its: 1, reduced_sigma: 3
+planned_its: 24, act_its: 1, reduced_sigma: 3
+planned_its: 24, act_its: 1, reduced_sigma: 3
+planned_its: 24, act_its: 1, reduced_sigma: 3
+planned_its: 24, act_its: 1, reduced_sigma: 3
+planned_its: 24, act_its: 1, reduced_sigma: 3

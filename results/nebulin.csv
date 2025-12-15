@@ -1,0 +1,3 @@
+dataset,n,m,sigma,eps,alg_id,algo_name,rounds,avg_time,median_time,max_time,avg_ratio,median_ratio,max_ratio
+11409987,8525,21,0.05,1,"Brute force fast",5,1.72916,1.72937,1.72965,0,0,0
+11409987,8525,21,0.05,2,"Sqrt",5,3.22881,3.22898,3.22941,0,0,0

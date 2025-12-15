@@ -243,11 +243,11 @@ void run_cases(const vector<TestCase> &cases, double eps, ofstream &csv){
             << stats.avg_ratio << ","
             << stats.median_ratio << ","
             << stats.max_ratio << "\n";
-    }
 
-    csv << flush;
-    fflush(stdout);
-    fflush(stderr);
+        csv << flush;
+        fflush(stdout);
+        fflush(stderr);
+    }
 }
 
 void run_synth_grid_to_csv(const string &csv_filename, int gen_id) {
