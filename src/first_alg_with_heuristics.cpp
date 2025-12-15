@@ -155,7 +155,7 @@ void HammingDistanceHeuristic(int n, int m, int sigma, double in_eps,
         if(!num_bad) break;
     }
 
-    for (int i = 0; i < n; i++) result[i] = result[i] * (1 + in_eps);
+    for (int i = 0; i < n-m+1; i++) result[i] = result[i] * (1 + in_eps);
 
     fprintf(stderr, "planned_its: %d, act_its: %d, reduced_sigma: %d\n",
             rounds, act_its, reduced_sigma);
