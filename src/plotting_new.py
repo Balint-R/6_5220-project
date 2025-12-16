@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 # -------------------------------------------------
 # Load data and define short algorithm names
 # -------------------------------------------------
-GEN_NAME = "cyclic"
+GEN_NAME = "uniform"
 df = pd.read_csv("../results/" + GEN_NAME + ".csv").copy()
 
 name_map = {
@@ -42,21 +42,40 @@ baseline_m_frac = 0.02 if GEN_NAME == "k_difs" else 0.5
 # -------------------------------------------------
 # Helper to plot group on a given axis
 # -------------------------------------------------
-def plot_group_on_ax(ax, data, algos, x_col, metric,
-                     x_label, title, log_x=False, log_y=False, xticks=None, xticklabels=None):
+def plot_group_on_ax(
+    ax,
+    data,
+    algos,
+    x_col,
+    metric,
+    x_label,
+    title,
+    log_x=False,
+    log_y=False,
+    xticks=None,
+    xticklabels=None,
+    dupes : list[tuple[str, ...]] = [],
+):
 
     for i, algo in enumerate(algos):
         cur = data[data["short_name"] == algo].sort_values(x_col)
         # print(cur)
         if cur.empty:
             continue
+
+        linestyle = "solid"
+        for dup_tup in dupes:
+            if algo in dup_tup:
+                ind = dup_tup.index(algo)
+                linestyle = (ind % len(dup_tup) * 2, (2, 2 * (len(dup_tup)-1)))
+
         ax.plot(
             cur[x_col],
             cur[metric],
             marker="o",
             label=algo,
-            linestyle=(i % 3 * 3, (3, 6)),
-            linewidth=4,
+            linestyle=linestyle,
+            # linewidth=4,
         )
 
     if log_x:
