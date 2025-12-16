@@ -1,5 +1,6 @@
 #include "ham_dist_bf.h"
 #include "ham_dist_bf_fast.h"
+#include "ham_dist_heur.h"
 #include "ham_dist_proj.h"
 #include "ham_dist_proj_sc.h"
 #include "ham_dist_sqrt.h"
@@ -18,10 +19,10 @@ using namespace std;
 
 const int SEED = 430298584;
 mt19937 alg_rng(SEED);
-const bool OPT_EPS = false;
+const bool OPT_EPS = true;
 
-const vector<int> ALG_IDS = {3, 4, 5};
-const int NUM_ROUNDS[6] = {3, 3, 3, 3, 5, 5};
+const vector<int> ALG_IDS = {6};
+const int NUM_ROUNDS[7] = {3, 3, 3, 3, 5, 5, 5};
 const int MAX_ROUNDS = *max_element(begin(NUM_ROUNDS), end(NUM_ROUNDS));
 int override_rounds = -1;
 
@@ -39,6 +40,8 @@ string get_alg_name(int id){
 			return "Projection to 2/eps alphabet with short circuit";
 		case 5:
 			return "Projection to 2/eps alphabet with magic short circuit";
+		case 6:
+			return "Freq prod heuristic with magic short circuit";
 		default:
 			return "N/A";
 	}
@@ -174,6 +177,10 @@ TestStats test(const vector<TestCase> &cases, double eps, int alg_id) {
 			case 5:
 				ham_dist_proj(n, m, sigma, eps, A, B, result, ref_sol, alg_rng, OPT_EPS);
 				break;
+				break;
+			case 6:
+				ham_dist_heur(n, m, sigma, eps, A, B, result, ref_sol, alg_rng, OPT_EPS);
+				break;
 			default:
 				assert(false);
 		}
@@ -257,7 +264,7 @@ void run_synth_grid_to_csv(const string &csv_filename, int gen_id) {
     int base_n = 1e6;
     double base_m_frac = 0.50;
     int base_sigma = 100;
-    double base_eps = 0.35;
+    double base_eps = 0.2;
 
     // Values to test
     vector<int> ns = {(int) 5e4, (int) 2e5, (int) 1e6};

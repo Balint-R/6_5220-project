@@ -199,7 +199,7 @@ fig1.legend(
 fig1.savefig("../figures/runtime_" + GEN_NAME + ".png", dpi=300, bbox_inches="tight")
 plt.show()
 
-sys.exit(0)
+# sys.exit(0)
 # =====================================================
 # FIGURE 2 — Approx algos: AVG APPROX RATIO panels
 # =====================================================

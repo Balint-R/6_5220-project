@@ -19,6 +19,7 @@ add_executable(testing_framework
     src/testing_framework.cpp
     src/ham_dist_bf.cpp
     src/ham_dist_bf_fast.cpp
+    src/ham_dist_heur.cpp
     src/ham_dist_proj.cpp
     src/ham_dist_proj_sc.cpp
     src/ham_dist_sqrt.cpp

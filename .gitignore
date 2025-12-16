@@ -61,7 +61,7 @@ tmp/
 # Cache files
 cache/*
 
-build/
+build*/
 .vscode
 
 # large files

@@ -1,49 +1,49 @@
 n,m,sigma,eps,alg_id,algo_name,rounds,avg_time,median_time,max_time,avg_ratio,median_ratio,max_ratio
-100000,2000,100,0.35,3,"Projection to 2/eps alphabet",5,0.345869,0.345863,0.346128,0.146667,0.15,0.15
-100000,2000,100,0.35,4,"Projection to 2/eps alphabet with short circuit",5,0.285126,0.284715,0.287304,0.1436,0.14,0.153
-100000,2000,100,0.35,5,"Projection to 2/eps alphabet with magic short circuit",5,0.0816161,0.0815551,0.122188,0.180015,0.18,0.2
-500000,10000,100,0.35,3,"Projection to 2/eps alphabet",5,1.75603,1.75465,1.76229,0.136667,0.14,0.14
-500000,10000,100,0.35,4,"Projection to 2/eps alphabet with short circuit",5,1.56254,1.56163,1.56538,0.136,0.14,0.14
-500000,10000,100,0.35,5,"Projection to 2/eps alphabet with magic short circuit",5,0.483827,0.462778,0.832219,0.18002,0.18,0.21
-1000000,20000,100,0.35,3,"Projection to 2/eps alphabet",5,3.77075,3.76555,3.78644,0.14165,0.145,0.14995
-1000000,20000,100,0.35,4,"Projection to 2/eps alphabet with short circuit",5,3.4235,3.43402,3.45933,0.138,0.14,0.14
-1000000,20000,100,0.35,5,"Projection to 2/eps alphabet with magic short circuit",5,0.726274,0.769653,0.946797,0.183,0.17,0.21
-1000000,10000,100,0.35,3,"Projection to 2/eps alphabet",5,3.67173,3.67579,3.67712,0.132767,0.1333,0.135
-1000000,10000,100,0.35,4,"Projection to 2/eps alphabet with short circuit",5,3.32819,3.34439,3.35118,0.138983,0.14,0.140014
-1000000,10000,100,0.35,5,"Projection to 2/eps alphabet with magic short circuit",5,0.784772,0.748213,0.933268,0.19,0.19,0.21
-1000000,40000,100,0.35,3,"Projection to 2/eps alphabet",5,4.16456,4.17795,4.18865,0.133342,0.130025,0.14
-1000000,40000,100,0.35,4,"Projection to 2/eps alphabet with short circuit",5,3.72442,3.7195,3.7565,0.139283,0.141414,0.15
-1000000,40000,100,0.35,5,"Projection to 2/eps alphabet with magic short circuit",5,0.792424,0.827867,1.04826,0.178,0.17,0.19
-1000000,80000,100,0.35,3,"Projection to 2/eps alphabet",5,4.79186,4.78634,4.82529,0.126112,0.125,0.133325
-1000000,80000,100,0.35,4,"Projection to 2/eps alphabet with short circuit",5,4.28757,4.28897,4.29659,0.135,0.14,0.14
-1000000,80000,100,0.35,5,"Projection to 2/eps alphabet with magic short circuit",5,0.626199,0.721577,0.958108,0.214,0.21,0.24
-1000000,20000,40,0.35,3,"Projection to 2/eps alphabet",5,3.78753,3.79074,3.80005,0.108333,0.1,0.125
-1000000,20000,40,0.35,4,"Projection to 2/eps alphabet with short circuit",5,3.62428,3.64865,3.67102,0.110514,0.102564,0.125
-1000000,20000,40,0.35,5,"Projection to 2/eps alphabet with magic short circuit",5,0.759651,0.755592,1.14163,0.175779,0.17505,0.2
-1000000,20000,80,0.35,3,"Projection to 2/eps alphabet",5,3.81757,3.8402,3.84122,0.131775,0.13125,0.1375
-1000000,20000,80,0.35,4,"Projection to 2/eps alphabet with short circuit",5,3.40088,3.39965,3.41782,0.12875,0.125,0.1375
-1000000,20000,80,0.35,5,"Projection to 2/eps alphabet with magic short circuit",5,0.87539,0.766239,1.13845,0.18002,0.17505,0.2125
-1000000,20000,160,0.35,3,"Projection to 2/eps alphabet",5,3.78286,3.77956,3.80458,0.149983,0.15,0.1531
-1000000,20000,160,0.35,4,"Projection to 2/eps alphabet with short circuit",5,3.21483,3.20994,3.23755,0.1475,0.14375,0.15625
-1000000,20000,160,0.35,5,"Projection to 2/eps alphabet with magic short circuit",5,0.721533,0.759418,0.760523,0.18939,0.18755,0.20315
-1000000,20000,320,0.35,3,"Projection to 2/eps alphabet",5,3.8619,3.87881,3.87904,0.152117,0.153,0.1534
-1000000,20000,320,0.35,4,"Projection to 2/eps alphabet with short circuit",5,3.0398,3.04038,3.06556,0.15761,0.15635,0.1655
-1000000,20000,320,0.35,5,"Projection to 2/eps alphabet with magic short circuit",5,0.649449,0.580384,0.759407,0.1825,0.18125,0.1875
-1000000,20000,640,0.35,3,"Projection to 2/eps alphabet",5,3.79528,3.78998,3.81221,0.15845,0.1581,0.16105
-1000000,20000,640,0.35,4,"Projection to 2/eps alphabet with short circuit",5,2.8856,2.88752,2.90108,0.16084,0.16095,0.16255
-1000000,20000,640,0.35,5,"Projection to 2/eps alphabet with magic short circuit",5,0.720635,0.758474,0.760097,0.17971,0.1777,0.186
-1000000,20000,1280,0.35,3,"Projection to 2/eps alphabet",5,3.77581,3.77014,3.78999,0.160733,0.16035,0.16195
-1000000,20000,1280,0.35,4,"Projection to 2/eps alphabet with short circuit",5,2.63421,2.63453,2.6426,0.16407,0.16355,0.16625
-1000000,20000,1280,0.35,5,"Projection to 2/eps alphabet with magic short circuit",5,0.919495,0.774802,1.32072,0.17414,0.1737,0.1782
-1000000,20000,100,0.05,3,"Projection to 2/eps alphabet",5,25.0899,25.0903,25.163,0.0101352,0.010101,0.0102036
-1000000,20000,100,0.05,4,"Projection to 2/eps alphabet with short circuit",5,23.3358,23.8386,23.8874,0.0114107,0.010101,0.01665
-1000000,20000,100,0.05,5,"Projection to 2/eps alphabet with magic short circuit",5,3.76876,3.7649,3.817,0.0421417,0.040404,0.05
-1000000,20000,100,0.1,3,"Projection to 2/eps alphabet",5,12.5414,12.5267,12.5931,0.030101,0.03,0.030303
-1000000,20000,100,0.1,4,"Projection to 2/eps alphabet with short circuit",5,11.3278,11.3312,11.3748,0.0300712,0.0300015,0.030303
-1000000,20000,100,0.1,5,"Projection to 2/eps alphabet with magic short circuit",5,2.15589,1.90828,2.57613,0.0806607,0.0700035,0.1
-1000000,20000,100,0.2,3,"Projection to 2/eps alphabet",5,6.30291,6.29782,6.33518,0.0768857,0.07995,0.08
-1000000,20000,100,0.2,4,"Projection to 2/eps alphabet with short circuit",5,5.64465,5.6356,5.68512,0.0740711,0.0703518,0.08
-1000000,20000,100,0.2,5,"Projection to 2/eps alphabet with magic short circuit",5,1.00704,0.943908,1.26106,0.122845,0.121212,0.15
-1000000,20000,100,0.5,3,"Projection to 2/eps alphabet",5,2.52433,2.51695,2.5396,0.213333,0.21,0.22
-1000000,20000,100,0.5,4,"Projection to 2/eps alphabet with short circuit",5,2.27299,2.26337,2.30946,0.22202,0.22,0.24
-1000000,20000,100,0.5,5,"Projection to 2/eps alphabet with magic short circuit",5,0.45723,0.382315,0.633308,0.452,0.5,0.5
+100000,2000,100,0.2,3,"Projection to 2/eps alphabet",5,0.348995,0.349024,0.349965,0.2,0.2,0.2
+100000,2000,100,0.2,4,"Projection to 2/eps alphabet with short circuit",5,0.285839,0.285229,0.287509,0.2,0.2,0.2
+100000,2000,100,0.2,5,"Projection to 2/eps alphabet with magic short circuit",5,0.0971111,0.0844155,0.143916,0.2,0.2,0.2
+500000,10000,100,0.2,3,"Projection to 2/eps alphabet",5,1.76172,1.75417,1.78098,0.2,0.2,0.2
+500000,10000,100,0.2,4,"Projection to 2/eps alphabet with short circuit",5,1.57032,1.56679,1.5875,0.2,0.2,0.2
+500000,10000,100,0.2,5,"Projection to 2/eps alphabet with magic short circuit",5,0.449069,0.465377,0.562073,0.2,0.2,0.2
+1000000,20000,100,0.2,3,"Projection to 2/eps alphabet",5,3.81982,3.82641,3.83664,0.2,0.2,0.2
+1000000,20000,100,0.2,4,"Projection to 2/eps alphabet with short circuit",5,3.47059,3.46966,3.47422,0.2,0.2,0.2
+1000000,20000,100,0.2,5,"Projection to 2/eps alphabet with magic short circuit",5,0.773677,0.771931,0.785871,0.2,0.2,0.2
+1000000,10000,100,0.2,3,"Projection to 2/eps alphabet",5,3.70573,3.69638,3.72601,0.2,0.2,0.2
+1000000,10000,100,0.2,4,"Projection to 2/eps alphabet with short circuit",5,3.31086,3.30603,3.32445,0.2,0.2,0.2
+1000000,10000,100,0.2,5,"Projection to 2/eps alphabet with magic short circuit",5,0.775413,0.739125,1.10513,0.2,0.2,0.2
+1000000,40000,100,0.2,3,"Projection to 2/eps alphabet",5,4.13391,4.13278,4.14124,0.2,0.2,0.2
+1000000,40000,100,0.2,4,"Projection to 2/eps alphabet with short circuit",5,3.73521,3.73302,3.75906,0.2,0.2,0.2
+1000000,40000,100,0.2,5,"Projection to 2/eps alphabet with magic short circuit",5,0.751448,0.63082,1.0429,0.2,0.2,0.2
+1000000,80000,100,0.2,3,"Projection to 2/eps alphabet",5,4.80321,4.80004,4.82025,0.2,0.2,0.2
+1000000,80000,100,0.2,4,"Projection to 2/eps alphabet with short circuit",5,4.33347,4.33374,4.36203,0.2,0.2,0.2
+1000000,80000,100,0.2,5,"Projection to 2/eps alphabet with magic short circuit",5,0.77208,0.723241,1.19944,0.2,0.2,0.2
+1000000,20000,40,0.2,3,"Projection to 2/eps alphabet",5,3.78299,3.78353,3.78454,0.2,0.2,0.2
+1000000,20000,40,0.2,4,"Projection to 2/eps alphabet with short circuit",5,3.5979,3.59966,3.60569,0.2,0.2,0.2
+1000000,20000,40,0.2,5,"Projection to 2/eps alphabet with magic short circuit",5,0.726186,0.76118,0.767914,0.2,0.2,0.2
+1000000,20000,80,0.2,3,"Projection to 2/eps alphabet",5,3.79991,3.8007,3.80616,0.2,0.2,0.2
+1000000,20000,80,0.2,4,"Projection to 2/eps alphabet with short circuit",5,3.42626,3.42485,3.45247,0.2,0.2,0.2
+1000000,20000,80,0.2,5,"Projection to 2/eps alphabet with magic short circuit",5,0.685058,0.760034,0.760984,0.2,0.2,0.2
+1000000,20000,160,0.2,3,"Projection to 2/eps alphabet",5,3.78646,3.78149,3.79737,0.2,0.2,0.2
+1000000,20000,160,0.2,4,"Projection to 2/eps alphabet with short circuit",5,3.2521,3.25608,3.26573,0.2,0.2,0.2
+1000000,20000,160,0.2,5,"Projection to 2/eps alphabet with magic short circuit",5,0.992112,0.951229,1.52647,0.2,0.2,0.2
+1000000,20000,320,0.2,3,"Projection to 2/eps alphabet",5,3.82296,3.82767,3.83011,0.2,0.2,0.2
+1000000,20000,320,0.2,4,"Projection to 2/eps alphabet with short circuit",5,3.04253,3.04197,3.05008,0.2,0.2,0.2
+1000000,20000,320,0.2,5,"Projection to 2/eps alphabet with magic short circuit",5,0.799168,0.761233,1.13797,0.2,0.2,0.2
+1000000,20000,640,0.2,3,"Projection to 2/eps alphabet",5,3.78913,3.78679,3.79409,0.197814,0.196721,0.2
+1000000,20000,640,0.2,4,"Projection to 2/eps alphabet with short circuit",5,2.85218,2.85785,2.85848,0.198033,0.196721,0.2
+1000000,20000,640,0.2,5,"Projection to 2/eps alphabet with magic short circuit",5,0.958551,0.95023,1.368,0.198033,0.196721,0.2
+1000000,20000,1280,0.2,3,"Projection to 2/eps alphabet",5,3.79034,3.78774,3.79593,0.2,0.2,0.2
+1000000,20000,1280,0.2,4,"Projection to 2/eps alphabet with short circuit",5,2.64901,2.64667,2.659,0.2,0.2,0.2
+1000000,20000,1280,0.2,5,"Projection to 2/eps alphabet with magic short circuit",5,0.874866,0.950588,1.13932,0.2,0.2,0.2
+1000000,20000,100,0.05,3,"Projection to 2/eps alphabet",5,13.2876,13.3401,13.3502,0.05,0.05,0.05
+1000000,20000,100,0.05,4,"Projection to 2/eps alphabet with short circuit",5,12.1602,12.0605,12.6637,0.05,0.05,0.05
+1000000,20000,100,0.05,5,"Projection to 2/eps alphabet with magic short circuit",5,2.83313,2.70774,3.35958,0.05,0.05,0.05
+1000000,20000,100,0.1,3,"Projection to 2/eps alphabet",5,6.95808,6.97185,6.97462,0.1,0.1,0.1
+1000000,20000,100,0.1,4,"Projection to 2/eps alphabet with short circuit",5,6.24966,6.24257,6.28336,0.1,0.1,0.1
+1000000,20000,100,0.1,5,"Projection to 2/eps alphabet with magic short circuit",5,1.6793,1.39832,2.48135,0.1,0.1,0.1
+1000000,20000,100,0.35,3,"Projection to 2/eps alphabet",5,2.54621,2.54246,2.55972,0.35,0.35,0.35
+1000000,20000,100,0.35,4,"Projection to 2/eps alphabet with short circuit",5,2.33062,2.33109,2.34853,0.35,0.35,0.35
+1000000,20000,100,0.35,5,"Projection to 2/eps alphabet with magic short circuit",5,0.461424,0.388446,0.637287,0.35,0.35,0.35
+1000000,20000,100,0.5,3,"Projection to 2/eps alphabet",5,1.91977,1.90956,1.94063,0.5,0.5,0.5
+1000000,20000,100,0.5,4,"Projection to 2/eps alphabet with short circuit",5,1.73109,1.71877,1.75397,0.5,0.5,0.5
+1000000,20000,100,0.5,5,"Projection to 2/eps alphabet with magic short circuit",5,0.490165,0.48816,0.682859,0.5,0.5,0.5

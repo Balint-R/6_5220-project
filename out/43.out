@@ -1,0 +1,336 @@
+==============================
+n = 100000, m = 2000, sigma = 100, eps = 0.200, algo = 6
+
+Alg name: Freq prod heuristic with magic short circuit
+
+Round 0 time: 0.082568s
+Round 0 approximation ratio: 0.200000
+
+Round 1 time: 0.082120s
+Round 1 approximation ratio: 0.200000
+
+Round 2 time: 0.081935s
+Round 2 approximation ratio: 0.200000
+
+Round 3 time: 0.081850s
+Round 3 approximation ratio: 0.200000
+
+Round 4 time: 0.081888s
+Round 4 approximation ratio: 0.200000
+
+Average time: 0.082072s, Average approx ratio: 0.200000, Max approx ratio: 0.200000
+==============================
+n = 500000, m = 10000, sigma = 100, eps = 0.200, algo = 6
+
+Alg name: Freq prod heuristic with magic short circuit
+
+Round 0 time: 0.375702s
+Round 0 approximation ratio: 0.200000
+
+Round 1 time: 0.372408s
+Round 1 approximation ratio: 0.200000
+
+Round 2 time: 0.279405s
+Round 2 approximation ratio: 0.200000
+
+Round 3 time: 0.372627s
+Round 3 approximation ratio: 0.200000
+
+Round 4 time: 0.372792s
+Round 4 approximation ratio: 0.200000
+
+Average time: 0.354587s, Average approx ratio: 0.200000, Max approx ratio: 0.200000
+==============================
+n = 1000000, m = 20000, sigma = 100, eps = 0.200, algo = 6
+
+Alg name: Freq prod heuristic with magic short circuit
+
+Round 0 time: 0.580921s
+Round 0 approximation ratio: 0.200000
+
+Round 1 time: 0.953100s
+Round 1 approximation ratio: 0.200000
+
+Round 2 time: 0.573855s
+Round 2 approximation ratio: 0.200000
+
+Round 3 time: 0.954226s
+Round 3 approximation ratio: 0.200000
+
+Round 4 time: 0.573659s
+Round 4 approximation ratio: 0.200000
+
+Average time: 0.727152s, Average approx ratio: 0.200000, Max approx ratio: 0.200000
+==============================
+n = 1000000, m = 10000, sigma = 100, eps = 0.200, algo = 6
+
+Alg name: Freq prod heuristic with magic short circuit
+
+Round 0 time: 0.931664s
+Round 0 approximation ratio: 0.200000
+
+Round 1 time: 0.927068s
+Round 1 approximation ratio: 0.200000
+
+Round 2 time: 1.109749s
+Round 2 approximation ratio: 0.200000
+
+Round 3 time: 0.744154s
+Round 3 approximation ratio: 0.200000
+
+Round 4 time: 0.558848s
+Round 4 approximation ratio: 0.200000
+
+Average time: 0.854297s, Average approx ratio: 0.200000, Max approx ratio: 0.200000
+==============================
+n = 1000000, m = 40000, sigma = 100, eps = 0.200, algo = 6
+
+Alg name: Freq prod heuristic with magic short circuit
+
+Round 0 time: 0.627090s
+Round 0 approximation ratio: 0.200000
+
+Round 1 time: 0.625290s
+Round 1 approximation ratio: 0.200000
+
+Round 2 time: 1.039450s
+Round 2 approximation ratio: 0.200000
+
+Round 3 time: 1.247012s
+Round 3 approximation ratio: 0.200000
+
+Round 4 time: 0.626354s
+Round 4 approximation ratio: 0.200000
+
+Average time: 0.833039s, Average approx ratio: 0.200000, Max approx ratio: 0.200000
+==============================
+n = 1000000, m = 80000, sigma = 100, eps = 0.200, algo = 6
+
+Alg name: Freq prod heuristic with magic short circuit
+
+Round 0 time: 0.737180s
+Round 0 approximation ratio: 0.200000
+
+Round 1 time: 0.975731s
+Round 1 approximation ratio: 0.200000
+
+Round 2 time: 0.975795s
+Round 2 approximation ratio: 0.200000
+
+Round 3 time: 0.975889s
+Round 3 approximation ratio: 0.200000
+
+Round 4 time: 0.965171s
+Round 4 approximation ratio: 0.200000
+
+Average time: 0.925953s, Average approx ratio: 0.200000, Max approx ratio: 0.200000
+==============================
+n = 1000000, m = 20000, sigma = 40, eps = 0.200, algo = 6
+
+Alg name: Freq prod heuristic with magic short circuit
+
+Round 0 time: 0.636247s
+Round 0 approximation ratio: 0.200000
+
+Round 1 time: 0.958320s
+Round 1 approximation ratio: 0.200000
+
+Round 2 time: 0.580936s
+Round 2 approximation ratio: 0.200000
+
+Round 3 time: 0.768476s
+Round 3 approximation ratio: 0.200000
+
+Round 4 time: 0.777245s
+Round 4 approximation ratio: 0.200000
+
+Average time: 0.744245s, Average approx ratio: 0.200000, Max approx ratio: 0.200000
+==============================
+n = 1000000, m = 20000, sigma = 80, eps = 0.200, algo = 6
+
+Alg name: Freq prod heuristic with magic short circuit
+
+Round 0 time: 0.576181s
+Round 0 approximation ratio: 0.200000
+
+Round 1 time: 0.957975s
+Round 1 approximation ratio: 0.200000
+
+Round 2 time: 0.575896s
+Round 2 approximation ratio: 0.200000
+
+Round 3 time: 0.766176s
+Round 3 approximation ratio: 0.200000
+
+Round 4 time: 0.578753s
+Round 4 approximation ratio: 0.200000
+
+Average time: 0.690996s, Average approx ratio: 0.200000, Max approx ratio: 0.200000
+==============================
+n = 1000000, m = 20000, sigma = 160, eps = 0.200, algo = 6
+
+Alg name: Freq prod heuristic with magic short circuit
+
+Round 0 time: 0.576316s
+Round 0 approximation ratio: 0.200000
+
+Round 1 time: 0.767586s
+Round 1 approximation ratio: 0.200000
+
+Round 2 time: 0.766255s
+Round 2 approximation ratio: 0.200000
+
+Round 3 time: 0.767770s
+Round 3 approximation ratio: 0.200000
+
+Round 4 time: 0.770254s
+Round 4 approximation ratio: 0.200000
+
+Average time: 0.729636s, Average approx ratio: 0.200000, Max approx ratio: 0.200000
+==============================
+n = 1000000, m = 20000, sigma = 320, eps = 0.200, algo = 6
+
+Alg name: Freq prod heuristic with magic short circuit
+
+Round 0 time: 0.960684s
+Round 0 approximation ratio: 0.200000
+
+Round 1 time: 0.766691s
+Round 1 approximation ratio: 0.200000
+
+Round 2 time: 0.765834s
+Round 2 approximation ratio: 0.200000
+
+Round 3 time: 1.145484s
+Round 3 approximation ratio: 0.200000
+
+Round 4 time: 1.715041s
+Round 4 approximation ratio: 0.200000
+
+Average time: 1.070747s, Average approx ratio: 0.200000, Max approx ratio: 0.200000
+==============================
+n = 1000000, m = 20000, sigma = 640, eps = 0.200, algo = 6
+
+Alg name: Freq prod heuristic with magic short circuit
+
+Round 0 time: 1.336756s
+Round 0 approximation ratio: 0.196721
+
+Round 1 time: 0.576178s
+Round 1 approximation ratio: 0.200000
+
+Round 2 time: 1.336084s
+Round 2 approximation ratio: 0.196721
+
+Round 3 time: 0.577148s
+Round 3 approximation ratio: 0.196721
+
+Round 4 time: 0.766437s
+Round 4 approximation ratio: 0.200000
+
+Average time: 0.918521s, Average approx ratio: 0.198033, Max approx ratio: 0.200000
+==============================
+n = 1000000, m = 20000, sigma = 1280, eps = 0.200, algo = 6
+
+Alg name: Freq prod heuristic with magic short circuit
+
+Round 0 time: 0.955010s
+Round 0 approximation ratio: 0.200000
+
+Round 1 time: 0.956664s
+Round 1 approximation ratio: 0.200000
+
+Round 2 time: 0.765791s
+Round 2 approximation ratio: 0.200000
+
+Round 3 time: 0.765085s
+Round 3 approximation ratio: 0.200000
+
+Round 4 time: 1.146959s
+Round 4 approximation ratio: 0.200000
+
+Average time: 0.917902s, Average approx ratio: 0.200000, Max approx ratio: 0.200000
+==============================
+n = 1000000, m = 20000, sigma = 100, eps = 0.050, algo = 6
+
+Alg name: Freq prod heuristic with magic short circuit
+
+Round 0 time: 3.315345s
+Round 0 approximation ratio: 0.050000
+
+Round 1 time: 3.315625s
+Round 1 approximation ratio: 0.050000
+
+Round 2 time: 3.318273s
+Round 2 approximation ratio: 0.050000
+
+Round 3 time: 2.655908s
+Round 3 approximation ratio: 0.050000
+
+Round 4 time: 1.992453s
+Round 4 approximation ratio: 0.050000
+
+Average time: 2.919521s, Average approx ratio: 0.050000, Max approx ratio: 0.050000
+==============================
+n = 1000000, m = 20000, sigma = 100, eps = 0.100, algo = 6
+
+Alg name: Freq prod heuristic with magic short circuit
+
+Round 0 time: 1.744089s
+Round 0 approximation ratio: 0.100000
+
+Round 1 time: 1.393361s
+Round 1 approximation ratio: 0.100000
+
+Round 2 time: 1.741521s
+Round 2 approximation ratio: 0.100000
+
+Round 3 time: 1.397021s
+Round 3 approximation ratio: 0.100000
+
+Round 4 time: 1.396608s
+Round 4 approximation ratio: 0.100000
+
+Average time: 1.534520s, Average approx ratio: 0.100000, Max approx ratio: 0.100000
+==============================
+n = 1000000, m = 20000, sigma = 100, eps = 0.350, algo = 6
+
+Alg name: Freq prod heuristic with magic short circuit
+
+Round 0 time: 0.392742s
+Round 0 approximation ratio: 0.350000
+
+Round 1 time: 0.519765s
+Round 1 approximation ratio: 0.350000
+
+Round 2 time: 0.393081s
+Round 2 approximation ratio: 0.350000
+
+Round 3 time: 0.392639s
+Round 3 approximation ratio: 0.350000
+
+Round 4 time: 0.516679s
+Round 4 approximation ratio: 0.350000
+
+Average time: 0.442981s, Average approx ratio: 0.350000, Max approx ratio: 0.350000
+==============================
+n = 1000000, m = 20000, sigma = 100, eps = 0.500, algo = 6
+
+Alg name: Freq prod heuristic with magic short circuit
+
+Round 0 time: 0.292547s
+Round 0 approximation ratio: 0.500000
+
+Round 1 time: 0.387433s
+Round 1 approximation ratio: 0.500000
+
+Round 2 time: 0.387367s
+Round 2 approximation ratio: 0.500000
+
+Round 3 time: 0.388094s
+Round 3 approximation ratio: 0.500000
+
+Round 4 time: 0.386643s
+Round 4 approximation ratio: 0.500000
+
+Average time: 0.368417s, Average approx ratio: 0.500000, Max approx ratio: 0.500000

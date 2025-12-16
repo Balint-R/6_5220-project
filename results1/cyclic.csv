@@ -1,0 +1,20 @@
+n,m,sigma,eps,alg_id,algo_name,rounds,avg_time,median_time,max_time,avg_ratio,median_ratio,max_ratio
+50000,25000,100,0.2,6,"Freq prod heuristic with magic short circuit",5,0.0215593,0.0204732,0.0260252,0.0976,0.1,0.104
+200000,100000,100,0.2,6,"Freq prod heuristic with magic short circuit",5,0.090984,0.0913046,0.0920093,0.1104,0.112,0.124
+1000000,500000,100,0.2,6,"Freq prod heuristic with magic short circuit",5,0.406174,0.405539,0.413698,0.1048,0.104,0.116
+1000000,50000,100,0.2,6,"Freq prod heuristic with magic short circuit",5,0.252559,0.252497,0.253833,0.1096,0.104,0.128
+1000000,100000,100,0.2,6,"Freq prod heuristic with magic short circuit",5,0.282373,0.281927,0.284612,0.1048,0.104,0.136
+1000000,250000,100,0.2,6,"Freq prod heuristic with magic short circuit",5,0.356769,0.356299,0.359214,0.1128,0.116,0.128
+1000000,500000,4,0.2,6,"Freq prod heuristic with magic short circuit",5,0.271151,0.27073,0.27352,0.2,0.2,0.2
+1000000,500000,10,0.2,6,"Freq prod heuristic with magic short circuit",5,0.400937,0.399864,0.404523,0.2,0.2,0.2
+1000000,500000,20,0.2,6,"Freq prod heuristic with magic short circuit",5,0.478992,0.399714,0.792812,0.168,0.16,0.2
+1000000,500000,40,0.2,6,"Freq prod heuristic with magic short circuit",5,0.400644,0.400673,0.402042,0.134,0.14,0.17
+1000000,500000,80,0.2,6,"Freq prod heuristic with magic short circuit",5,0.402036,0.401134,0.404926,0.108,0.11,0.115
+1000000,500000,160,0.2,6,"Freq prod heuristic with magic short circuit",5,0.400729,0.400472,0.402777,0.095,0.0925,0.11
+1000000,500000,320,0.2,6,"Freq prod heuristic with magic short circuit",5,0.401628,0.401071,0.404091,0.0685012,0.069998,0.07625
+1000000,500000,640,0.2,6,"Freq prod heuristic with magic short circuit",5,0.401406,0.400066,0.406246,0.0568796,0.055012,0.065
+1000000,500000,1280,0.2,6,"Freq prod heuristic with magic short circuit",5,0.408017,0.409404,0.409555,0.0390708,0.039084,0.041566
+1000000,500000,100,0.05,6,"Freq prod heuristic with magic short circuit",5,1.65385,1.38567,2.74518,0.0479,0.05,0.05
+1000000,500000,100,0.1,6,"Freq prod heuristic with magic short circuit",5,0.728547,0.727389,0.740249,0.0692,0.067,0.078
+1000000,500000,100,0.35,6,"Freq prod heuristic with magic short circuit",5,0.269555,0.267972,0.272576,0.1587,0.1495,0.1745
+1000000,500000,100,0.5,6,"Freq prod heuristic with magic short circuit",5,0.204456,0.204241,0.205984,0.167,0.17,0.23
