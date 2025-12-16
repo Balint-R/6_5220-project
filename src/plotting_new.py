@@ -1,11 +1,12 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import sys
 
 # -------------------------------------------------
 # Load data and define short algorithm names
 # -------------------------------------------------
-GEN_NAME = "uniform"
+GEN_NAME = "k_difs"
 df = pd.read_csv("../results/" + GEN_NAME + ".csv").copy()
 
 name_map = {
@@ -67,7 +68,8 @@ def plot_group_on_ax(
         for dup_tup in dupes:
             if algo in dup_tup:
                 ind = dup_tup.index(algo)
-                linestyle = (ind % len(dup_tup) * 2, (2, 2 * (len(dup_tup)-1)))
+                linestyle = (ind % len(dup_tup) * 4, (4, 4 * (len(dup_tup)-1)))
+                print("linestyle", linestyle)
 
         ax.plot(
             cur[x_col],
@@ -75,7 +77,7 @@ def plot_group_on_ax(
             marker="o",
             label=algo,
             linestyle=linestyle,
-            # linewidth=4,
+            linewidth=2,
         )
 
     if log_x:
@@ -133,6 +135,9 @@ RATIO = "avg_ratio"
 # =====================================================
 # FIGURE 1 — Approx algos: AVG TIME panels
 # =====================================================
+
+global_dupes = [("KP w/ Short Circuit", "KP w/ Magic Short Circuit")] if GEN_NAME == "uniform" else []
+
 fig1, axes1 = plt.subplots(2, 2, figsize=(11, 8))
 # custom_ticks = [5e4, 1e5, 5e5]
 # custom_labels = [rf"$5\cdot10^{4}$", rf"$10^{5}$", rf"$5\cdot10^{5}$"]
@@ -143,8 +148,7 @@ plot_group_on_ax(
     x_label="m",
     title=f"Runtime vs m (n={baseline_n}, Sigma={baseline_sigma}, ε={baseline_eps})",
     log_x=True, log_y=True,
-    # xticks=custom_ticks,
-    # xticklabels=custom_labels
+    dupes=global_dupes,
 )
 
 plot_group_on_ax(
@@ -154,6 +158,7 @@ plot_group_on_ax(
     x_label="n",
     title=f"Runtime vs n (m={baseline_m_frac}n, Sigma={baseline_sigma}, ε={baseline_eps})",
     log_x=True, log_y=True,
+    dupes=global_dupes,
 )
 
 plot_group_on_ax(
@@ -163,6 +168,7 @@ plot_group_on_ax(
     x_label="Sigma",
     title=f"Runtime vs Sigma (n={baseline_n}, m={baseline_m_frac}n, ε={baseline_eps})",
     log_x=True, log_y=True,
+    dupes=global_dupes,
 )
 
 plot_group_on_ax(
@@ -172,6 +178,7 @@ plot_group_on_ax(
     x_label="ε",
     title=f"Runtime vs ε (n={baseline_n}, m={baseline_m_frac}n, Sigma={baseline_sigma})",
     log_x=False, log_y=True,
+    dupes=global_dupes,
 )
 
 handles, labels = axes1[0, 0].get_legend_handles_labels()
@@ -192,7 +199,7 @@ fig1.legend(
 fig1.savefig("../figures/runtime_" + GEN_NAME + ".png", dpi=300, bbox_inches="tight")
 plt.show()
 
-
+sys.exit(0)
 # =====================================================
 # FIGURE 2 — Approx algos: AVG APPROX RATIO panels
 # =====================================================
