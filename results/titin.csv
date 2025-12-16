@@ -1,4 +1,4 @@
-dataset,n,m,sigma,eps,alg_id,algo_name,rounds,avg_time,median_time,max_time,avg_ratio,median_ratio,max_ratio
+n,m,sigma,eps,alg_id,algo_name,rounds,avg_time,median_time,max_time,avg_ratio,median_ratio,max_ratio
 11409987,34350,21,0.05,1,"Brute force fast",5,9.95905,9.95427,9.97076,0,0,0
 11409987,34350,21,0.05,2,"Sqrt",5,6.16762,6.16564,6.17257,0,0,0
 11409987,34350,21,0.05,3,"Projection to 2/eps alphabet",5,193.577,193.363,194.213,0.05,0.05,0.05
