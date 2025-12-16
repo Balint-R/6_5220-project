@@ -18,8 +18,9 @@ using namespace std;
 
 const int SEED = 430298584;
 mt19937 alg_rng(SEED);
+const bool OPT_EPS = false;
 
-const vector<int> ALG_IDS = {0};
+const vector<int> ALG_IDS = {3, 4, 5};
 const int NUM_ROUNDS[6] = {3, 3, 3, 3, 5, 5};
 const int MAX_ROUNDS = *max_element(begin(NUM_ROUNDS), end(NUM_ROUNDS));
 int override_rounds = -1;
@@ -165,13 +166,13 @@ TestStats test(const vector<TestCase> &cases, double eps, int alg_id) {
 				ham_dist_sqrt(n, m, sigma, A, B, result);
 				break;
 			case 3:
-				ham_dist_proj(n, m, sigma, eps, A, B, result, dummy_sol, alg_rng);
+				ham_dist_proj(n, m, sigma, eps, A, B, result, dummy_sol, alg_rng, OPT_EPS);
 				break;
 			case 4:
-				ham_dist_proj_sc(n, m, sigma, eps, A, B, result, alg_rng);
+				ham_dist_proj_sc(n, m, sigma, eps, A, B, result, alg_rng, OPT_EPS);
 				break;
 			case 5:
-				ham_dist_proj(n, m, sigma, eps, A, B, result, ref_sol, alg_rng);
+				ham_dist_proj(n, m, sigma, eps, A, B, result, ref_sol, alg_rng, OPT_EPS);
 				break;
 			default:
 				assert(false);

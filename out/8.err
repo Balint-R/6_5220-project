@@ -1,3 +1,75 @@
 n = 11409987, m = 14507, sigma = 21
 a_max = 20, b_max = 20
-Did not find cached solution
+Found cached solution
+planned_its: 24, act_its: 24, reduced_sigma: 21
+planned_its: 24, act_its: 24, reduced_sigma: 21
+planned_its: 24, act_its: 24, reduced_sigma: 21
+Doing brute force for last 14944 indices
+planned_its: 24, act_its: 1, reduced_sigma: 21
+Doing brute force for last 14944 indices
+planned_its: 24, act_its: 1, reduced_sigma: 21
+Doing brute force for last 14944 indices
+planned_its: 24, act_its: 1, reduced_sigma: 21
+Doing brute force for last 14944 indices
+planned_its: 24, act_its: 1, reduced_sigma: 21
+Doing brute force for last 14944 indices
+planned_its: 24, act_its: 1, reduced_sigma: 21
+planned_its: 24, act_its: 1, reduced_sigma: 21
+planned_its: 24, act_its: 1, reduced_sigma: 21
+planned_its: 24, act_its: 1, reduced_sigma: 21
+planned_its: 24, act_its: 1, reduced_sigma: 21
+planned_its: 24, act_its: 1, reduced_sigma: 21
+planned_its: 24, act_its: 24, reduced_sigma: 11
+planned_its: 24, act_its: 24, reduced_sigma: 11
+planned_its: 24, act_its: 24, reduced_sigma: 11
+Doing brute force for last 7 indices
+planned_its: 24, act_its: 1, reduced_sigma: 11
+Doing brute force for last 14 indices
+planned_its: 24, act_its: 1, reduced_sigma: 11
+Doing brute force for last 3 indices
+planned_its: 24, act_its: 1, reduced_sigma: 11
+Doing brute force for last 5 indices
+planned_its: 24, act_its: 1, reduced_sigma: 11
+Doing brute force for last 7 indices
+planned_its: 24, act_its: 1, reduced_sigma: 11
+planned_its: 24, act_its: 1, reduced_sigma: 11
+planned_its: 24, act_its: 1, reduced_sigma: 11
+planned_its: 24, act_its: 1, reduced_sigma: 11
+planned_its: 24, act_its: 1, reduced_sigma: 11
+planned_its: 24, act_its: 1, reduced_sigma: 11
+planned_its: 24, act_its: 24, reduced_sigma: 6
+planned_its: 24, act_its: 24, reduced_sigma: 6
+planned_its: 24, act_its: 24, reduced_sigma: 6
+Doing brute force for last 1 indices
+planned_its: 24, act_its: 1, reduced_sigma: 6
+Doing brute force for last 1 indices
+planned_its: 24, act_its: 1, reduced_sigma: 6
+Doing brute force for last 1 indices
+planned_its: 24, act_its: 1, reduced_sigma: 6
+Doing brute force for last 1 indices
+planned_its: 24, act_its: 1, reduced_sigma: 6
+Doing brute force for last 1 indices
+planned_its: 24, act_its: 1, reduced_sigma: 6
+planned_its: 24, act_its: 1, reduced_sigma: 6
+planned_its: 24, act_its: 1, reduced_sigma: 6
+planned_its: 24, act_its: 1, reduced_sigma: 6
+planned_its: 24, act_its: 1, reduced_sigma: 6
+planned_its: 24, act_its: 1, reduced_sigma: 6
+planned_its: 24, act_its: 24, reduced_sigma: 3
+planned_its: 24, act_its: 24, reduced_sigma: 3
+planned_its: 24, act_its: 24, reduced_sigma: 3
+Doing brute force for last 1 indices
+planned_its: 24, act_its: 1, reduced_sigma: 3
+Doing brute force for last 1 indices
+planned_its: 24, act_its: 1, reduced_sigma: 3
+Doing brute force for last 1 indices
+planned_its: 24, act_its: 1, reduced_sigma: 3
+Doing brute force for last 1 indices
+planned_its: 24, act_its: 1, reduced_sigma: 3
+Doing brute force for last 1 indices
+planned_its: 24, act_its: 1, reduced_sigma: 3
+planned_its: 24, act_its: 1, reduced_sigma: 3
+planned_its: 24, act_its: 1, reduced_sigma: 3
+planned_its: 24, act_its: 1, reduced_sigma: 3
+planned_its: 24, act_its: 1, reduced_sigma: 3
+planned_its: 24, act_its: 1, reduced_sigma: 3
