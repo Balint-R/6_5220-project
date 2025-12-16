@@ -1,6 +1,6 @@
 \documentclass{article}
 \usepackage[english]{babel}
-\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=2.5cm,right=2.5cm,marginparwidth=1.75cm]{geometry}
 
 % Useful packages
 \usepackage{amsmath}
@@ -12,13 +12,11 @@
 \usepackage{mathtools}
 \usepackage{caption}
 \usepackage{subcaption}
-\usepackage{textcomp}
 \usepackage[colorlinks=true, allcolors=blue]{hyperref}
 
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}[section]
 \newtheorem{theorem}{Theorem}[section]
-\newtheorem{problem}{Problem}[section]
 
 \newcommand{\ve}{\varepsilon}
 \newcommand{\op}{\operatorname}
@@ -41,6 +39,9 @@
 \newcommand{\Paren}{\paren*}
 
 \newcommand{\E}{\mathrm{E}}
+\newcommand{\score}{\text{score}}
+\newcommand{\freq}{\text{freq}}
+\newcommand{\KP}{Kopelowitz and Porat}
 
 \title{Practical Implementations of the Approximate Text-to-Pattern Hamming Distance Algorithm}
 \author{
@@ -63,23 +64,23 @@ Finally, we implement the algorithms and examine their performance on different 
 \section{Preliminaries}
 \subsection{Problem Description}
 
-For two strings $S, T$ of the same length, let $\op{HAM}(S, T)$ denote the Hamming distance between $S$ and $T$.
-I.e. the number of indices $i$ such that the $i$-th character of $S$ is different from the $i$-th character of $T$.
+For two strings $S, T$ of the same length, let $\op{HAM}(S, T)$ denote the regular Hamming distance between $S$ and $T$.
+i.e. the number of indices $i$ such that the $i$-th character of $S$ is different from the $i$-th character of $T$.
 We study algorithms that compute or approximate the Hamming distance between a pattern string and every offset of a text string.
 
-\begin{problem}[Text-to-pattern Hamming distance] \label{def:ham_exact}
+\begin{definition}[Text-to-pattern Hamming distance] \label{def:ham_exact}
     Let $T = t_1 t_2 \ldots t_n$ be a string of length $n$ and $P = p_1 p_2 \ldots p_m$ be a string of length $m$ with $m \leq n$.
-    For each $m$ character substring $T_i = t_it_{i+1} \ldots t_{i+m-1}$ of $T$, let $d_i = \op{HAM}(T_i, P)$.
+    For each $m$ character substring $T_i$ of $T$, let $d_i = \op{HAM}(T_i, P)$.
     The exact version of the problem requires the algorithm to output the $n-m+1$ integers $d_i$.
-\end{problem}
+\end{definition}
 
-\begin{problem}[Text-to-pattern approximate Hamming distance] \label{def:ham_approx}
-    Given an instance of Problem\ref{def:ham_exact} and a real number $\eps \in (0, 1)$, find a value $\hat{d}_i$ such that $(1-\epsilon)d_i \leq \hat{d}_i \leq (1+\epsilon)d_i$ for each $i$.
-\end{problem}
+\begin{definition}[Text-to-pattern approximate Hamming distance] \label{def:ham_approx}
+    Given an instance of \ref{def:ham_approx} and a real number $\eps \in (0, 1)$, find a value $\hat{d}_i$ such that $(1-\epsilon)d_i \leq \hat{d}_i \leq (1+\epsilon)d_i$ for each $i$.
+\end{definition}
 
 \subsection{Near-linear algorithm}
 
-Kopelowitz and Porat \cite{kopelowitz18} introduced a near-linear time Monte-Carlo algorithm to solve the text-to-pattern approximate Hamming distance problem with running time $O(\eps^{-1} n \log n \log m)$ and failure probability $n^{-(c-1)}$, where $c$ is a constant you can set arbitrarily, and which linearly increases the runtime of the algorithm.
+Kopelowitz and Porat \cite{kopelowitz18} introduced a near-linear Monte-Carlo algorithm to solve the text-to-pattern approximate Hamming distance problem with running time $O(\eps^{-1} n \log n \log m)$ and failure probability $n^{-(c-1)}$, where $c$ is a constant you can set arbitrarily, and which linearly increases the runtime of the algorithm.
 Let $\Sigma$ denote the common alphabet of $T$ and $P$.
 
 One of the main tools they used is the following algorithm, developed by \cite{fischer74}.
@@ -90,19 +91,17 @@ One of the main tools they used is the following algorithm, developed by \cite{f
 \begin{proof}
     The Hamming distance $d_i$ is the number of mismatching characters between $T_i$ and $P$, i.e. the number of $j$ with $t_{i+j} \neq p_j$.
     This is equal to $m$ minus the number of matching characters (number of $j$ with $t_{i+j} = p_j$).
-    If we are counting matches instead of mismatches, we can treat each character separately.
+    For a specific character $\sigma \in \Sigma$, we can use a convolution to compute all the contributions from matching characters where both characters are $\sigma$ in $O(n \log m)$ time.
+    Specifically, for each $i$, we can compute the number of $j$ such that $t_{i+j} = p_j = \sigma$.
 
-    For a specific character $\sigma \in \Sigma$, we can replace all instances of that character with $1$ and all instances of other characters with $0$, and now the task is to compute the contribution from all pairs of $1$s. 
-    We can use a convolution to compute this.
-    Specifically, for each $i$, this will compute the number of $j$ such that $t_{i+j} = p_j = \sigma$.
-    We achieve this by first reversing the pattern string $P$ after converting it to binary, then use an FFT to compute the convolution in $O(n \log m)$ time.
-    This can be implemented in $O(n \log m)$ time instead of $O(n \log n)$ by first splitting up $T$ into blocks of size $m$, then separately convolving each of these $n/m$ blocks with $P$ using FFT.
-
+    To achieve this, we simply replace all characters $s$ with $1$ and all other characters with $0$, reverse $P$, then use FFT to compute a convolution.
     We can repeat this for all $\sigma \in \Sigma$ to compute the total number of matches for each position, which we can subtract from $m$ to calculate the number of mismatches for each position.
     This results in a runtime of $O(\abs{\Sigma} n \log m)$.
+
+    The convolution can be implemented in $O(n \log m)$ time instead of $O(n \log n)$ by first splitting up $T$ into blocks of size $m$, then separately convolving each of these $n/m$ blocks with $P$ using FFT.
 \end{proof}
 
-The second idea they use is that if you randomly project (hash) the alphabet to a smaller alphabet of size $2/\eps$, the Hamming distance for each specific substring is expected to only get multiplied by a factor of $(1 - \eps/2)$.
+The second idea they use is that if you randomly hash the alphabet to a smaller alphabet of size $2/\eps$, the Hamming distance for each specific substring is expected to only get multiplied by a factor of $(1 - \eps/2)$.
 Specifically, if the Hamming distance of the original substring is $d_i$, then each of these $d_i$ mismatches has an $\eps/2$ chance of disappearing, if the two characters hash to the same character in the smaller alphabet.
 Two characters that were the same initially always remain the same after hashing, so no new mismatches are ever created.
 Thus, the expected Hamming distance of the hashed substring is $(1 - \eps/2)$.
@@ -112,7 +111,7 @@ Using a union bound across the $\le n$ substrings, this means we get a $(1 - \ep
 
 This leads to the following simple algorithm.
 \begin{algorithm} 
-\caption{Simple near-linear algorithm: KP Projection}
+\caption{Simple near-linear algorithm: ApproxHAM}
 \label{alg:fft_sample}
 \begin{algorithmic}
 \For {$j=1$ to $c \log n$}
@@ -130,7 +129,7 @@ For a long time, the fastest algorithm for the problem was the one introduced by
 However, the near-linear algorithm defined earlier improved the epsilon dependence to $O(\eps^{-1})$. 
 
 Recently, Chan et al. \cite{chan2024} discovered a connection between the text-to-pattern approximate problem with the 3SUM problem.
-Using Fredman's trick and Equality Product, they reduced the epsilon dependence to approximately $O(\eps^{-0.93})$ using an algorithm of running time $\tilde{O}(\epsilon^{-0.93}n)$, where $\tilde{O}$ hides away the log factors.
+Using Fredman's trick and Equality Product, they reduced the epsilon dependence to approximately $O(\eps^{0.93})$ using an algorithm of running time $\tilde{O}(\epsilon^{-0.93}n)$, where $\tilde{O}$ hides away the log factors.
 Due to the complicated nature of the algorithm, we decided to omit this algorithm from implementation.
 
 \subsection{Exact Algorithms}
@@ -149,44 +148,41 @@ We will compute the alignments of heavy and light characters separately, where $
     The total runtime for all heavy characters is $O(\frac{mn}{H} \log m)$.
     \item Light characters:
     For each character, create a list of all the indices where that character appears in $P$.
-    Iterate over all indices $i$ of $T$ and if $t_i$ is light, iterate over all the indices $j$ where it appears in $P$ and increment $a_{i-j}$.
+    Iterate over all pairs of indices $i$ of $T$ and if $t_i$ is light, iterate over all the indices $j$ where it appears in $P$ and increment $a_{i-j}$.
     This takes $O(n H)$ time.
 \end{itemize}
 Since $d_i = m - a_i$, we have an algorithm that computes exact text-to-pattern Hamming distance.
 Set $H = \sqrt{m \log m}$, and the combined runtime is $O(\frac{mn}{\sqrt{m \log m}} \log m + n \sqrt{m \log m}) = O(n \sqrt{m \log m})$.
-
-Chan et al. later improved this runtime bound to $O(n \sqrt{m})$ \cite{chan2024} along with their $\tilde{O}(\eps^{-0.93} n)$ result, by proving a key lemma on counting the elements of all values in the sum of two sets.
+Chan et al. later improved this runtime bound to $O(n \sqrt{m})$ \cite{chan2024}, by proving a key lemma on counting the elements of all values in the sum of two sets.
 
 \section{Optimizations}
 
-\subsection{Simple optimizations}
-
-A number of simple optimizations can be made to KP Projection (Algorithm \ref{alg:fft_sample}) that can improve its performance at generally no cost:
+A number of simple optimizations can be made to Algorithm $\ref{alg:fft_sample}$ at generally no cost:
 
 \begin{itemize}
     \item The algorithms we use always underestimate the answer, computing a $\hat{d}_i$ satisfying $(1-\eps)d_i \leq \hat{d}_i \leq d_i$. We can instead compute a $(1 - \eps)/(1 + \eps)$ approximation of the answer and the multiply it by $(1 + \eps)$ to get a $(1 \pm \eps)$ approximation.
     For small $\eps$, this almost doubles the amount of error we are allowed, approximately halving the runtime of Algorithm $\ref{alg:fft_sample}$.
     \item If the number of FFT calls we would make is greater than the alphabet size, we can switch to the exact algorithm of Theorem \ref{thm:sigma_fft} instead of sampling.
     \item If there are items with very small or very large frequencies, we can treat them as light or heavy characters as in Abrahamson's square root algorithm to reduce the alphabet size.
-    We do this by computing the alignments of these characters, then replacing them with dummy characters (e.g. $-1$ for all the eliminated characters in $T$ and $-2$ for all the eliminated characters in $P$), then treating the rest of the algorithm as also computing alignments, and combining these two results at the end to get the number of mismatches.
-    This is not too useful for the original algorithm, but it can make heuristics more robust if they rely on a small alphabet size or the fact that there are no frequent elements.
-    \item If $n$ or $m$ are small, we can switch to the brute force solution, which has a very good constant factor in practice.
+    This is not too useful for the original algorithm, but it can make heuristics more robust if they rely on a small alphabet size or the fact that there are nor frequent elements.
+    \item If $n$ or $m$ are small, we can switch to brute force, which has a very good constant factor in practice.
 \end{itemize}
 
 \subsection{Balanced hashing} \label{sec:balenced_hash}
 
-We can restrict the hash functions of KP Projection to something slightly more stable.
-Let $k = 2/\eps$ be the size of the reduced alphabet.
-Instead of hashing each $\sigma \in \Sigma$ to a random value in $\{1, 2, \ldots, k\}$, we instead ensure that each bucket receives $\floor{\abs{\Sigma}/k}$ or $\ceil{\abs{\Sigma}/k}$ items.
-
-This can be done conveniently by taking the list of characters $[1, 2, \ldots, \abs{\Sigma}]$, shuffling it randomly, then hashing the $i$-th element to $i \pmod{k}$.
-This still satisfies the property that any two distinct elements hash to the same value with probability at most $1/k$, so the original analysis is still valid.
+We can also restrict the hash function of Algorithm \ref{alg:fft_sample} to something slightly more stable.
+Instead of hashing each $\sigma \in \Sigma$ to a random value in $\{1, 2, \ldots, 2/\eps\}$, we instead take the list of characters $[1, 2, \ldots, \abs{\Sigma}]$, shuffle it randomly, then hash the $i$-th element to $i \pmod{2/\eps}$.
+This still satisfies the property that any two elements hash to the same value with probability at most $\eps/2$, so the original analysis is still valid.
 
 In general, a useful way to think about our hash functions is as follows.
-We have a graph with $\abs{\Sigma}$ nodes that we color with $k$ colors.
+We have a graph with $\abs{\Sigma}$ nodes that we color with $k = \ceil{2 / \eps}$ colors.
 Every edge that is monochromatic, i.e. both endpoints have the same color, represents a collision.
 The above set of hash functions minimize the number of monochromatic edges, and all edges are equally likely to be monochromatic due to symmetry.
-Thus, each edge still has at most an $\eps/2$ chance of being monochromatic.
+Thus, each edge still has at most a $\eps/2$ chance of being monochromatic.
+
+\section{Heuristics}
+
+In this section we improve on Algorithm \ref{alg:fft_sample} for certain input classes.
 
 \subsection{Terminating early} \label{sec:term_early}
 
@@ -197,14 +193,14 @@ After a specific sampling round, we can count the number of positions with $\til
 Let this value be $k$.
 \begin{itemize}
     \item If $k = 0$, we can terminate the algorithm immediately.
-    \item If we want our algorithm to succeed with probability $1 - 2^{-c_1}$, then we can decrease the remaining number of sampling rounds to $\log_2 k + c_1$.
+    \item If we want our algorithm to succeed with probability $1 - 2^{-c_1}$, then we can decrease the remaining number of sampling rounds to $\log k + c_1$.
     \item If $k$ is sufficiently small, we can switch to the brute force algorithm, which takes $O(km)$ time and has a very good constant factor.
     \item If we suspect the string has a few characters with high frequency that cause a lot of matches and prevent us from terminating early --- since they cause many of the $d_i$ values to be $\ll m$ --- then we can use a single FFT convolution for each high frequency character to count the number of matches of that character for each offset.
     This allows us to get a better upper bound than $m$ on the number of possible mismatches at an offset $i$ of the text string.
     If we find that there are $a_i$ aligned/matched characters between $T_i$ and $P$, then $d_i \le m - a_i$, so we can terminate if our current lower bound $\tilde{d_i}$ satisfies $\tilde{d_i} \ge (1 - \eps)(m - a_i)$.
 \end{itemize}
 
-This kind of optimization could provide a significant speedup to the algorithm for data where many of the substrings are not at all similar and there are a few matches or almost matches.
+This kind of optimization could provide a significant speedup to the algorithm for practical data where many of the substrings are not at all similar and there are a few matches or almost matches.
 
 We prove that for the case when each character of the input data is uniformly chosen from $\Sigma$, a short circuiting algorithm that terminates when $k = 0$ finishes after one round with high probability for most reasonable input parameters.
 To do this, we analyze the probability that for a specific offset in the input, the $\tilde{d_i}$ we would compute after a single round is $< (1 - \eps)m$.
@@ -228,234 +224,510 @@ If we terminate in one round, the time complexity is $O(\eps^{-1} n \log m)$.
 If $m < 36 \ln(n)/\eps$, then we can run the $O(nm)$ brute force to get a runtime of $O(\eps^{-1} n \log(n))$.
 Thus, we get a runtime of $O(\eps^{-1} n \log m)$ or $O(\eps^{-1} n \log n)$ in all three cases, which is a log factor faster than on arbitrary data.
 
-\subsection{Other hash picking heuristics}
+% In a single iteration of the algorithm, a specific hash function $h$ is chosen. By our optimization, this hash function has the property that each character in $\{1, \dots, \frac{2}{\eps} \}$ is mapped to by $\frac{|\Sigma|\eps}{2}$ characters. Recall that $x_{ji} = \op{HAM}(h(T_i), h(P))$. The probability that two distinct characters remain distinct under the hash function for a position $j$ is $\left(\frac{\abs{\Sigma}\eps}{2} - 1\right) / \abs{\Sigma} \leq \frac{\eps}{2} $. By the uniform data assumption, $x_{ji}$ is independently chosen for $1\leq j \leq m$. Instead of using a Markov inequality, we can now apply a Chernoff bound over all positions in substring $T_i$. 
 
-We thought about some other strategies for ordering hash functions and picking certain ones that are less likely to cause collisions, but they generally did not work out.
-For example, we considered hash functions where for each bucket, we compute the product of the number of characters hashing to that bucket in the two strings, then prefer hash functions that make this value smaller.
-Such a heuristic would generally place characters of large frequencies in different buckets.
-However, on adversarial inputs, this can be a bad heuristic, if there is a single substring where many low frequency strings collide, which are now more likely to be placed in the same bucket.
-Thus, to maintain correctness on all cases, we would have to evaluate more hash functions, possibly sampling some from the original distribution, in which case, it becomes hard to argue that such a heuristic would even provide a benefit, especially since random hashing or balanced hashing is already pretty good at putting high frequency characters in different buckets.
+% Let $Y_{ij}$ be the random variable that indicates the event that position $j$ of $T_i$ and $P$ maps to the same character under $h$ while $P_j \neq T_{ij}$. 
+% \[\mathbb{E}[Y_{ij}] = \Pr[\text{distinct characters remain distinct}] \leq \frac{\eps}{2}\]
+
+\subsection{An efficient scoring scheme by the TP bucket mass metric}
+In this subsection we introduce the TP scoring heuristic expanding on Algorithm \ref{alg:fft_sample}, explain its
+motivation, and analyze a simple binary setting in which it reduces the number of required projections from $\Theta(\log n)$ to $O(1)$.
+
+\subsubsection{Ranking hashes by text-pattern (TP) bucket mass}
+
+We briefly describe the motivation behind the TP hash-scoring scheme. 
+In the real-world sequences we investigated (e.g.\ protein and DNA strings), we observed a tendency for a near-random distribution of characters, but the distribution is rarely perfectly uniform. For example, in the MUC16 protein, the most common amino acids, serine and threonine, each appear with frequency $18\%$, whereas the rarest amino acid, Cysteine, only appears with frequency $0.2\%$ (see Section \ref{sec: real_world_data}).
+% For example, amino acid frequencies in proteins vary but exhibit common patterns: Leucine, Serine, Alanine, Glycine, and Lysine are often the most abundant (around 7-10\%), while Tryptophan and Methionine are typically the least common (around 1-2\%). Natural language text is similarly skewed toward common letters and words.
+
+This tendency for random-like data from a skewed distribution to appear in nature inspired us to develop a hash scoring scheme that favors hash functions which isolate frequent symbols. 
+On such inputs, collisions involving frequent symbols have a much larger effect on the projected Hamming distance than collisions between two rare symbols. \KP's algorithm selects a random 2-universal hash $h:\Sigma\to\{1,\dots,B\}$ in each round, guaranteeing that any fixed pair of distinct keys collides with probability at most $1/B$, where $B=2/\varepsilon$ is the number of buckets.
+However, computing $\operatorname{HAM}(h(T_j),h(P))$ via FFT in each round costs $O(n\log m)$ time with a large constant factor, so it is desirable to discard hash functions that are likely to be ``bad'' (for example, those that cause many collisions between frequent characters) before doing FFT on the filtered candidate pool. 
+The TP score $\score_{TP}(h)$ is designed precisely to rank hash functions by how well they separate high-mass buckets of $T$ and $P$, so that we can spend FFT time only on the most promising candidates.
+
+% \begin{algorithm}
+% \caption{ApproxHAM Heuristic 1}
+
+% \begin{algorithmic}
+% \State Pick a sample of $S=c_0\log n$ random hash functions, $H=\{ h_1, ..., h_S \}$ where each $h : \Sigma \rightarrow  \{1, 2, \dots, B\}$ with $B=\frac{2}{\epsilon}$, is chosen independently from a 2-universal hash family.
+
+% \State Sort the hash functions in increasing order of $\score_1(h)$, obtaining an ordering $h_{(1)}, \dots, h_{(S)}$.
+% \[
+% \text{score}_1(h)=\sum_{b=1}^{B} M_b^2 ,
+% % \text{ where }
+% % M_b= (\# \text{positions $i$ where $h(s_i)=b$}) + (\# \text{positions $j$ where $h(t_j)=b$}).
+% \]
+% Where $M_b$ is the total number of occurrences of symbols $\sigma$ in $T$ and $P$ combined such that $h(\sigma)=b$.
+% \For {$i=1$ to $R$ where $R=c_1\log n\le S$}
+%     \State Choose $h=h_{(i)}$ (the $i$-th hash function in the sorted $H$)
+%     \State compute $x_{ij} = \op{HAM}(h(T_j), h(P))$ for all $T_j$
+% \EndFor
+% \State \Return $ \{\max_j x_{ij}\}$
+% \end{algorithmic}
+% \end{algorithm}
+
+\begin{definition}[TP Score Function] \label{def:scoreTP}
+    For a hash function $h: \Sigma\to\{1, 2, \dots, B\}$, define
+    \[
+    \text{score}_\text{TP}(h)=\sum_{b=1}^{B} f_T(b) f_P(b),
+    \]
+    Where $f_T(b)$ is the total number of occurrences of symbols that hash to bucket $b$ in $T$, and similarly $f_P(b)$ is the total number of occurrences of symbols that hash to bucket $b$ in $P$.
+    
+\end{definition}
+
+\begin{algorithm}
+\caption{ApproxHAM Heuristic TP}
+\label{alg:HeuristicTP}
+
+\begin{algorithmic}
+\State Pick a sample of $S=c_0\log n$ random hash functions, $H=\{ h_1, ..., h_S \}$ where each $h : \Sigma \rightarrow  \{1, 2, \dots, B\}$ with $B=\frac{2}{\epsilon}$, is chosen independently from a 2-universal hash family.
+
+\State Sort the hash functions in increasing order of $\score_{TP}(h)$ (Definition \ref{def:scoreTP}), obtaining an ordering $h_{(1)}, \dots, h_{(S)}$.
+% \[
+% \text{score}_{TP}(h)=\sum_{b=1}^{B} f_T(b) f_P(b) ,
+% % \text{ where }
+% % M_b= (\# \text{positions $i$ where $h(s_i)=b$}) + (\# \text{positions $j$ where $h(t_j)=b$}).
+% \]
+% Where $f_T(b)$ is the total number of occurrences of symbols that hash to bucket $b$ in $T$, and similarly $f_P(b)$ is the total number of occurrences of symbols that hash to bucket $b$ in $P$.
+\For {$i=1$ to $R$ where $R=c_1\log n\le S$}
+    \State Choose $h=h_{(i)}$ (the $i$-th hash function in the sorted $H$)
+    \State compute $x_{ij} = \op{HAM}(h(T_j), h(P))$ for all $T_j$
+\EndFor
+\State \Return $ \{\max_j x_{ij}\}$
+\end{algorithmic}
+\end{algorithm}
+
+For any input, Kopelowitz and Porat showed that there exists a constant $c_0$ such that Algorithm \ref{alg:fft_sample} produces a $(1\pm \epsilon)$ approximation with high probability after $c_0 \log n$ iterations.
+In our setting, we first draw the same number $S = c_0 \log n$ of independent 2-universal hash functions $H = \{h_1,\dots,h_S\}$ as in Algorithm \ref{alg:fft_sample}, and then apply them in a different order.
+If we choose $c_1 = c_0$ and set $R = S$, Algorithm \ref{alg:HeuristicTP} applies exactly the same set of hash functions as Algorithm \ref{alg:fft_sample}.
+Each position ultimately takes the maximum over the same $S$ projected Hamming distances, and permuting the hashes does not change this maximum.
+Therefore, for any input, Algorithm \ref{alg:HeuristicTP} with $R = c_0 \log n$ achieves the same $(1\pm \epsilon)$ guarantee as Algorithm \ref{alg:fft_sample}.
+The remaining question is to identify input families on which taking $R < c_0 \log n$ still obtains a $(1\pm \epsilon)$ approximation with high probability.
+
+
+\subsubsection{Heuristic TP achieves $(1\pm\epsilon)$ Approximation in $O(1)$ iterations for a constant\\ alphabet size}
+
+To simplify the analysis, we'll consider the case where the input is restricted to a binary alphabet $\Sigma=\{0,1\}$.
+
+Call a hash function \textit{good} if $h(0)\ne h(1)$, and \textit{bad} otherwise.
+Since ApproxHAM succeeds with high probability in $c_0\log n$ iterations, and we pick $H$ to be the same $S=c_0\log n$ hash functions as ApproxHAM, we know at least one of the $S$ hash functions must be \textit{good} w.h.p. Otherwise, if all $S$ hash functions are bad, neither algorithms would achieve $(1\pm \eps)$ accuracy for small $\eps$.
+
+Let $t_0,t_1$ for the total number of zeros and ones in $T$, and
+$p_0,p_1$ for the total number of zeros and ones in $P$, so
+$t_0+t_1=n$ and $p_0+p_1=m$.
+
+If $h$ is bad, then both $0$ and $1$ map to the same bucket $b_0$, so $f_T(b_0) = t_0+t_1 = n$ and $f_P(b_0) = p_0+p_1 = m$, and all other buckets have zero mass. Thus
+$$\score_\text{TP}(h_{bad}) = f_T(b_0) \ f_P(b_0) = nm.$$
+
+If $h$ is good, say $h(0)=b_0$ and $h(1)=b_1$ with $b_0\neq b_1$, then
+\[
+f_T(b_0)=t_0,\ f_P(b_0)=p_0,\qquad
+f_T(b_1)=t_1,\ f_P(b_1)=p_1.
+\]
+Therefore,
+\[
+\score_\text{TP}(h_{good})
+  = t_0 p_0 + t_1 p_1
+  < (t_0+t_1)(p_0+p_1) = nm = \score_\text{TP}(h_{bad}),
+\]
+% $$\score_{TP}(h_{good}) = f_T(h_{good}(0)) \ f_P(h_{good}(0)) 
+% + f_T(h_{good}(1)) \ f_P(h_{good}(1)) < nm.$$
+since $t_0p_1 + t_1p_0 > 0$ whenever both symbols appear in $T$ and $P$. Thus, a good hash preserves all mismatches, and a bad hash collapses $0$ and $1$, so all mismatches are destroyed and $x_j=0$.
+
+% Assuming that ApproxHAM achieves a $(1\pm \eps)$ approximation in $c_0\log n$ rounds with high probability, there is at least one \textit{good} hash function in the sample $H$. Since $\score_{TP}(h_{good}) < \score_{TP}(h_{bad})$ always, sorting the candidates by $\score_{TP}(h)$ will place any \textit{good} hash function above any bad one. Thus, \textbf{Algorithm 2} terminates in one iteration with high probability.
+
+For a random hash in the sample $H$, $\Pr[h(0)=h(1)] = 1/B$, so
+$\Pr[h(0)\neq h(1)] = 1-1/B$. The probability that all $S$ candidates
+are bad is at most $(1/B)^S$. With probability $1-(1/B)^S$, at least one good hash appears in the sample and, by the inequality above, every such good hash has strictly smaller $\score_{TP}$ than any bad hash. Thus sorting by $\score_{TP}$ places a good hash first, and taking $R=1$ in Algorithm \ref{alg:HeuristicTP}, we compute the exact Hamming Distance with probability at least $1-(1/B)^S$.
+
+In particular, if we choose $S = c_0 \log n$ for a suitable constant
+$c_0$ as proven in \KP's paper, then $(1/B)^S = n^{-\Omega(1)}$ and one iteration of Heuristic TP suffices with high probability. This demonstrates that in the proposed binary setting, scoring hashes according to $\score_\text{TP}$ can reduce the number of required projections from $\Theta(\log n)$ to $O(1)$ on certain input families.
+
+Although we were not able to generalize this analysis rigorously for arbitrarily large alphabets, we conjecture that a similar pattern holds. The analysis above, despite assuming a highly-simplified binary model, may capture the basic mechanism by which TP scoring prefers hashes that separate frequently occurring text and pattern symbols.
+
+For a general constant-size alphabet, one can view each symbol $a\in\Sigma$ as the ``main'' symbol (1) and collapse all others to a background symbol (0), yielding a similar two-symbol abstraction.
+The same analysis holds for larger alphabet sizes where mismatches are restricted to pairs $(a,x)$ for a single ``main'' character $a\in\Sigma$ with any other character $x\ne a$. However, whether this pattern generalizes to other input classes remain a preliminary hypothesis, and require further analysis.
+
+We also observed that the TP Heuristic performs well in adversarial cases, achieving significantly lower approximation ratios than the base ApproxHAM algorithm (KP Projection) for cyclic and k-difs data with half the runtime (see Section \ref{sec:results}).
+
+% on certain input classes, we can choose $c_1<c_0$. Specifically, we consider two types of inputs: uniform strings with each symbol $\sigma\in\Sigma$ appearing with probability $1/|\Sigma|$, and the skewed case, where a dominant symbol (0) appears with probability $\texttt{big\_prob} > 1/2$. We will show that in the skewed case, we can choose $c_1<c_0$, and in the uniform case, choosing $c_1=c_0$ preserves the correctness guarantees of the original algorithm.
+
+
+% \subsubsection{Uniform Data Preserves $1\pm\epsilon$ Correctness with a Constant $c_1\le c_0$}
+
+% Under this model, we assume each symbol $\sigma$ appears with equal probability $p_\sigma =1/|\Sigma|$ in each character of $T$ and $P$.
+% Let $N=n+m$. For any $\sigma_1, \sigma_2$ drawn independently from $\Sigma$,
+% \[
+% \Pr[h(\sigma_1)=h(\sigma_2)] = \sum_{b=1}^{B} \left(\frac{M_b}{N}\right)^2 = \frac{\text{score}_1(h)}{N^2}.
+% \]
+
+% The function $\frac{\text{score}_1(h)}{N^2}$ increases as $\text{score}_1(h)$ increases, so a hash function that minimizes $\text{score}_1(h)$ also minimizes $\Pr[h(\sigma_1)=h(\sigma_2)]$ for random $\sigma_1$ and $\sigma_2$.
+
+% % Let $\hat d_j$ be the estimat ed hamming distance between $T_j$ and $P$, where $T_j$ is the substring $T[j..j+m-1]$. Let $d_j = \op{HAM}(h(T_j), h(P))$ be the exact hamming distance at shift $j$.
+
+% Call $h$ \textit{good} for position $j$ if
+% \[
+% \hat d_j \ge (1-\epsilon) d_j.
+% \]
+
+% Let $S^*$ be the minimum $\text{score}_1(h)$ over all hash functions $h: \Sigma\to \{ 1, ..., B\}$. To minimize $\text{score}_1(h)$, it is optimal for each bucket to contain $N/B$ items, since an even distribution of characters over all $B$ buckets minimizes the sum of squares. So
+% $$
+% S^* = \min_{h}\text{score}_1(h) = \sum_{b=1}^B \left(\frac{N}{B} \right)^2 = \frac{N^2}{B}.
+% $$
+
+% Call a specific $h$ \textit{nice} if 
+% \[
+% \text{score}_1(h) \le (1+\delta) S^* = (1+\delta) \frac{N^2}{B}.
+% \]
+
+% For a nice $h$,
+% \[
+% \Pr[h(\sigma_1)=h(\sigma_2)] = \frac{\text{score}_1(h)}{N^2} 
+% \le \frac{(1+\delta)S^*}{N^2} = \frac{1+\delta}{B}.
+% \]
+
+% Now fix a position $j$ and a hash function $h$.
+% \[
+% \E[x_j]  \ge \left( 1-\frac{1+\delta}{B}\right) d_j 
+% =\left( 1-\frac{1+\delta}{2/\epsilon}\right)d_j 
+% =\left( 1-\frac{(1+\delta) \epsilon}{2}\right)d_j 
+% \]
+% \[
+% \E[d-x_j] = d-\E[x_j] \le \frac{d_j(1+\delta) \epsilon}{2}.
+% \]
+
+% By Markov,
+% \[
+% \Pr[x_i < (1-\epsilon)d] = \Pr[d-x_i > \epsilon d]
+% \le \frac{\E[d-x_i]}{\epsilon d} \le \frac{d(1+\delta)\epsilon}{2\epsilon d} = \frac{1+\delta}{2}.
+% \]
+
+% Choosing a sufficiently small $\delta$, we can achieve the same $1\pm\eps$ accuracy as ApproxHAM.
+
+
+\subsubsection{Runtime}
+The precomputation of symbol frequencies takes $O(n+m)$ time. 
+Given these frequencies, scoring each of the $S = c_0 \log n$ candidate hash functions takes $O(B) = O(1/\epsilon)$ time, so the scoring step costs $O\left(\frac{1}{\epsilon}\log n\right)$ in total.
+Sorting the $S$ hash functions by score takes $O(S \log S) = O(\log n \log \log n)$.
+The rest of the work is the same as in ApproxHAM. The total runtime is
+$$O\left(\frac{1}{\epsilon} \log n + \frac{n}{\epsilon} \log n\log m\right)=O\left(\frac{n}{\epsilon} \log n\log m\right),$$
+which is the same asymptotic runtime as ApproxHAM.
+
+Empirically, we have also shown that the required constant factor is often smaller in several benchmark datasets (see Section \ref{sec:results}), making Heuristic TP a more efficient algorithm in practice. 
+
+
+% \subsection{Local bucket mass}
+
+% \begin{algorithm}
+% \caption{ApproxHAM Heuristic 2}
+
+% \begin{algorithmic}
+% \State Pick a sample of $S=c_0\log n$ random hash functions, $H=\{ h_1, ..., h_S \}$ where each $h : \Sigma \rightarrow  \{1, 2, \dots, B\}$ with $B=\frac{2}{\epsilon}$, is chosen independently from a 2-universal hash family.
+
+% \State Sort the hash functions in increasing order of $\score_1(h)$, obtaining an ordering $h_{(1)}, \dots, h_{(S)}$.
+% \[
+% \text{score}_1(h)=\sum_{b=1}^{B} M_b^2 ,
+% % \text{ where }
+% % M_b= (\# \text{positions $i$ where $h(s_i)=b$}) + (\# \text{positions $j$ where $h(t_j)=b$}).
+% \]
+% Where $M_b$ is the total \# of occurrences of symbols $\sigma$ in $T$ and $P$ combined such that $h(\sigma)=b$.
+% \For {$i=1$ to $R$ where $R=c_1\log n\le S$}
+%     \State Choose $h=h_i$ (the $i$-th hash function in the sorted $H$)
+%     \State compute $x_{ij} = \op{HAM}(h(T_j), h(P))$ for all $T_j$
+% \EndFor
+% \State \Return $ \{\max_j x_{ij}\}$
+% \end{algorithmic}
+% \end{algorithm}
 
 \section{Experiments}
 
 \subsection{Setup}
 
 We implemented all algorithms in C++.
-We used AtCoder's template library for the main part of the FFT implementation \cite{ac_library}.
-Each algorithm is implemented as a function.
-We first load the input into \texttt{vector}s of $32$-bit integers, then pass them into the function along with a buffer for the function to write its output, as well as the values of $n$, $m$, $\eps$, $\abs{\Sigma}$, and we time how long it takes the function to execute.
-We compare the answer with the correct answer as computed by one of the exact algorithms, and check that it is a sufficient approximation.
-
-We run each experiment several times with different random seeds for the generator as well as the algorithm.
-For the algorithms where we don't expect a significant variation in runtime (\texttt{Brute Force}, \texttt{Sqrt}, \texttt{KP Projection}), we run them $3$ times and take the average of the runtimes.
-For the algorithms where we might expect to see a larger variation in runtime between runs (\texttt{KP Projection with Short Circuit}, \texttt{KP Projection with Magic Short Circuit}), we run them $5$ times and take the average.
-
-The experiments were conducted on a machine with an Intel\textsuperscript{\textregistered} Core\textsuperscript{TM} i9-13900H CPU running Ubuntu 24.04.
-We compiled with \texttt{g++} version \texttt{13.3.0} and \texttt{-O3} optimization level.
+We use AtCoder's template library for the main part of the FFT implementation \cite{ac_library}.
+The experiments were conducted on a MacBook Pro with an Apple M2 (ARM64) processor running macOS. We compiled with \texttt{g++} version \texttt{13.3.0} and \texttt{-O3} optimization level. 
 The code is available at \href{https://github.com/Balint-R/6_5220-project}{https://github.com/Balint-R/6\_5220-project}.
 
-\subsection{Algorithms tested}
 
-We tested the following algorithms.
+
+\subsection{Algorithms tested}
+We tested three approximation algorithms (\textsc{KP Projection}, \textsc{KP Projection} with Short Circuit, \textsc{Heuristic TP}), and compared their performance against two exact algorithms (\textsc{Brute Force}, \textsc{Sqrt}).
 
 \begin{itemize}
-    \item \texttt{Brute Force}
-
-    This is an $O(nm)$ brute force implementation that computes the answer for each $T_i$ one at a time, by counting the number of $j$ where $t_{i+j} \neq p_j$.
-
-    \item \texttt{Sqrt}
-
-    This is an $O(n \sqrt{m \log m})$ time deterministic algorithm similar to the one presented by Abrahamson \cite{abrahamson87}.
+    \item \textsc{Brute Force} (\texttt{ham\_dist\_bf})
+    
+    This is a $O(nm)$ brute force implementation that computes the answer for each $T_i$ one at a time, by counting the number of $j$ where $t_{i+j} \neq p_j$.
+    
+    \item \textsc{Sqrt} (\texttt{ham\_dist\_sqrt})
+    
+    This is a $O(n \sqrt{m \log m})$ time deterministic algorithm similar to the one presented by Abrahamson \cite{abrahamson87}.
     It focuses on counting matches instead of mismatches.
     For each character, it computes $f_a$ and $f_b$, the frequency of the character in the two strings.
     If the product $f_af_b$ is above a certain threshold based on $n$ and $m$, then it uses FFT for that character, otherwise, it enumerates all $f_af_b$ pairs of indices where the character appears to count its contribution.
     
-    \item \texttt{KP Projection}
-
+    \item \textsc{KP Projection} (\texttt{ham\_dist\_proj})
+    
     This is the main $O(\eps^{-1} n \log n \log m)$ FFT sampling algorithm described earlier as Algorithm \ref{alg:fft_sample}.
-    We apply the optimization where we set $\eps' = 1 - (1 - \eps)/(1 + \eps)$, calculate a $(1 - \eps')$ approximation by repeatedly projecting to an alphabet of size $\ceil{2/\eps'}$, then multiply the answer by $(1 + \eps)$ to get a $(1 \pm \eps)$ approximation.
+    We apply the optimization where we set $\eps' = 1 - (1 - \eps)/(1 + \eps)$, calculate an $1 - \eps'$ approximation by repeatedly projecting to an alphabet of size $\ceil{2/\eps'}$, then multiply the answer by $(1 + \eps)$ to get a $(1 \pm \eps)$ approximation.
     We always pick a balanced hash function (see section \ref{sec:balenced_hash}) by shuffling the order of the elements in $\Sigma$, then hashing the $i$-th one to $i \pmod {\ceil{2/\eps'}}$.
     We do not implement any other optimizations, such as eliminating very low or very high frequency characters, since this might make it more difficult to observe the runtime of the base algorithm.
-
-    \item \texttt{KP Projection} with Short Circuit (\texttt{KP Projection with Short Circuit})
-
+    
+    \item \textsc{KP Projection} with Short Circuit (\texttt{ham\_dist\_proj\_sc})
+    
     This is also Algorithm \ref{alg:fft_sample}, but we also implement a version of short circuiting, as described in Section $\ref{sec:term_early}$.
     Let $k$ be the number of estimations below $(1 - \eps')m$.
     We terminate if $k = 0$.
     Otherwise, we decrease the number of remaining rounds to $\log_2(k) + 3$ (if this would be a decrease).
-
-    Further, if $k$ becomes very small, so that $km < 1 \cdot n \log_2(m)$, we switch to the brute force algorithm for the remaining indices.
-    We implemented this only because the real world data we use generally had very small but non-zero $k$ (e.g. $k < 10$), so this optimization is extremely relevant for it.
-    In practice, a much larger constant then $1$ should be used (e.g. $100$), but we chose $1$ so that it would be easier to observe the rest of the algorithm, instead of it just switching to brute force very quickly.
-
-    \item \texttt{KP Projection with Magic Short Circuit}
-    In practice, we found that \texttt{KP Projection} often got the correct approximation ratio much earlier than the number of rounds we ran it for, but it could not stop early, since we do not have a proof that in all cases, it can run for a smaller number of rounds and maintain correctness.
-    Thus, we decided it would be interesting to also measure the number of sampling rounds it takes the algorithm until its prediction has the correct approximation ratio.
-    We implement this by simply comparing the current estimation of the algorithm to the reference solution at the end of each round, and stopping if it is good enough.
-    Of course, such an algorithm could not be implemented without already having computed the answer, hence why we call it magic.
-    However, it is still useful, because it provides a lower bound on how many iterations the algorithm has run for.
-    It is possible that with more careful analysis, it can be proven that running KP Projection for $c \log n$ rounds with $c = 0.6$ or $c = 0.4$ is sufficient to get a good approximation.
-    This algorithm helps us give a lower bound on this minimal $c$.
+    
+    \item \textsc{Heuristic TP} (\texttt{HammingDistanceHeuristic})
+    
+    This is the Heuristic (Algorithm \ref{alg:HeuristicTP}) with TP scoring (Definition \ref{def:scoreTP}) aimed to minimize hash collisions among frequent characters. We apply the same optimizations as the \textsc{KP Projection} algorithm, except for the hash-selection mechanism. Instead of picking a random balanced hash function as described in Section \ref{sec:balenced_hash}, we pick the best $R\le c_0\log n$ hash functions with the lowest $\score_\text{TP}(h)$ (Definition \ref{def:scoreTP}), with an empirically determined $R$ to achieve $(1\pm\eps)$ accuracy.
+    % We empirically determined that running  \textsc{Heuristic TP} for half the iterations yielded the same or lower approximation ratio as the base \textsc{KP Projection} on all inputs tested.
 \end{itemize}
 
-\subsection{Test data}
+\subsection{Synthetic Test Data}
+To thoroughly evaluate the behavior of the algorithms across a wide range of parameters, we conduct experiments on synthetically generated data.
+% We compared the algorithms' runtime and approximation ratios across 3 test cases, varying $n,m,|\Sigma|,$ and $\eps$.
 
-Ideally, we would evaluate all algorithms on a standard real-world benchmark where approximate text-to-pattern Hamming distance is used in practice.
-However, we were unable to find such a dataset in the literature: although several papers claim practical usefulness, they do not specify concrete applications where approximate Hamming both arises naturally and outperforms simple exact methods.
-There may well be applications in computational biology, but in the concrete use cases we examined, simple exact algorithms or alternative distance measures were preferable.
-In our experience, the practicality of approximate Hamming is limited by issues such as:
+% Ideally, we would evaluate all algorithms on a standard real-world benchmark where approximate text-to-pattern Hamming distance is used in practice.
+% However, we were unable to find such a dataset in the literature: although several papers claim practical usefulness, they do not specify concrete applications where approximate Hamming both arises naturally and outperforms simple exact methods.
+% There may well be applications in computational biology, but in the concrete use cases we examined, simple exact algorithms or alternative distance measures were preferable.
+% In our experience, the practicality of approximate Hamming is limited by issues such as:
 
-\begin{itemize}
-    \item Many applications in biology often want more complicated metrics than Hamming distance, for example edit distance is more useful, as it allows useful similarity comparisons when insertions and deletions are allowed.
-    \item Many potential applications have a query string that's too short. If $m$ is small, the brute force algorithm wins due to its constant factor.
-    \item Applications where the strings are DNA sequences are also not great, since there, the alphabet size is $4$, so running FFT $4$ times --- once for each character --- is sufficient to compute an exact solution quickly, making the approximation algorithms useless (since they would almost always use more than $4$ FFT calls).
-\end{itemize}
+% \begin{itemize}
+%     \item Many applications in biology often want more complicated metrics than Hamming distance, for example edit distance is more useful, as it allows useful similarity comparisons when insertions and deletions are allowed.
+%     \item Many potential applications have a query string that's too short. If $m$ is small, the brute force algorithm wins due to its constant factor.
+%     \item Applications where the strings are DNA sequences are also not great, since there, the alphabet size is $4$, so running FFT $4$ times --- once for each character --- is sufficient to compute an exact solution quickly, making the approximation algorithms useless (since they would almost always use more than $4$ FFT calls).
+% \end{itemize}
 
-% We eventually did find some real data to include as test inputs, although it is unclear whether computing all pairs of Hamming distances on them is meaningful.
-% We used the proteome sequence of humans (LINK) and used certain specific proteins as the query strings.
+% The lack of real world data is unfortunate, since it makes it difficult to define what would be a good heuristic for this problem.
+% Solving data where the input is uniformly random is easy and not interesting.
+% Further, our main sampling algorithm is Monte-Carlo with runtime only depending on $n, m, \eps$, and not the content of the input, which makes it not very interesting to develop test cases for.
 
-The lack of good real world data is unfortunate, since it makes it difficult to define what would be a good heuristic for this problem.
-Solving data where the input is uniformly random is easy and not interesting.
-Further, our main sampling algorithm is Monte-Carlo with runtime only depending on $n, m, \eps$, and not the content of the input, which makes it not very interesting to develop test cases for.
+% We address these in the following way.
+Aside from the fixed runtime of algorithms on the synthetic data, we also measure for sampling algorithms the runtime and number of samples needed to reach the correct approximation ratio. This data tells us if the high probability bounds are tight and if we can feasibly run the algorithms for a lower number of rounds in certain inputs, sampling less data while maintaining the correct approximation ratio.
+% TODO: motivate this a bit better
 
-We address these in the following way by testing \texttt{KP Projection with Magic Short Circuit} as defined above, and by  designing test cases to meet the following criteria.
+Our synthetic test cases are designed to evaluate the strengths and weaknesses of all the algorithms, especially when compared against each other. These test cases meet the following criteria.
 \begin{itemize}
     \item For each algorithm, we should have a family of test cases that maximize its runtime.
     \item For each sampling based approximation algorithm, we should have a family of test case that maximize the number of iterations it takes until its answer becomes correct (or at least test cases which makes this large).
     \item For each optimization/heuristic we propose, we should have a family of test cases where that heuristic performs better than the other algorithms.
 \end{itemize}
 
-Further, we want to design test cases where an easy deterministic optimization does not easily solve the problem.
-In particular, test cases with extremely small $m$ (e.g. less than $\Theta(\eps^{-1} \log n \log m)$) are not good, because we could easily run the brute force algorithm instead of our approximation algorithms.
+Furthermore, we design test cases where an easy deterministic optimization does not easily solve the problem.
+In particular, test cases with extremely small $m$ (e.g. less than $\Theta(\eps^{-1} \log n \log m)$) are not interesting, because we could easily run the brute force algorithm instead of our approximation algorithms.
 Test cases where there are characters with very low or very high frequency are also not good, because we could easily count the frequencies of the characters at the start, and use the part of the sqrt algorithm optimized for low or high frequency characters to eliminate these characters before running the reset of the algorithm (if not all characters were eliminated).
-
 To achieve these goals, we use the following families of test cases.
-For each family, we vary $n$, $m$, $\abs{\Sigma}$, and $\eps$.
 
 \begin{itemize}
     \item \texttt{uniform}:
-    Each character is chosen independently at random from $\Sigma$, with each character having equal probability.
+    Each character is chosen independently and uniformly at random from $\Sigma$.
     
-    In theory, this should achieve the worst case runtime for \texttt{Brute Force} when $m$ is about $0.5n$.
-    It gets the worst case runtime for \texttt{Sqrt} when $\abs{\Sigma} = \Theta(m/\log(m))$.
-    It gets the worst case runtime for \texttt{KP Projection} when $m = \Theta(n)$.
-    It gets a very good runtime for \texttt{KP Projection with Short Circuit}, as we proved in Section \ref{sec:term_early} that it usually terminates after one round, which is the best possible.
+    In theory, this should achieve the worst case runtime for \texttt{ham\_dist\_brute} when $m$ is about $0.5n$.
+    It gets worst case runtime for \texttt{ham\_dist\_sqrt} when $\abs{\Sigma} = \Theta(m/\log(m))$.
+    It gets the worst case runtime for \texttt{ham\_dist\_proj} when $m = \Theta(n)$.
+    It gets a very good runtime for \texttt{ham\_dist\_proj\_sc}, as we proved in Section \ref{sec:term_early} that it usually terminates after one round, which is the best possible.
 
     \item \texttt{cyclic}:
     We set the $i$-th character of $T$ to $i \pmod{\abs{\Sigma}}$ and the $i$-th character of $P$ also to $i \pmod{\abs{\Sigma}}$.
-    We also randomly permute the identities of the characters (i.e. pick a random permutation $\Sigma \to \Sigma$, and apply it to all characters in both $T$ and $P$), so that it no longer looks like a simple increasing sequence.
     
     This test case is most useful when $\abs{\Sigma} = n^{1/3}$ and $m = n^{2/3}$.
     In this case, there are $n^{1/3}$ distinct characters, each with frequency product $n$.
-    Thus, both parts of the Sqrt algorithm --- the part for dealing with low frequency characters and the part for dealing with high frequency characters --- would take $\Omega(n^{4/3})$ time, so this case is not trivial.
+    Thus, both the low and high frequency algorithms would take $\Omega(n^{4/3})$ time, so this case is not trivial.
     Brute force would also take $\Omega(n^{5/3})$ time, since $m$ is not small.
 
-    This test case has $n^{2/3}$ substrings of $T$ that perfectly match $P$, giving \texttt{KP Projection with Short Circuit} a bad runtime, since the approximation for those indices never gets close to $m$ (since it always stays at $0$).
+    This test case has $n^{2/3}$ substrings of $T$ that perfectly match $P$, giving \texttt{ham\_dist\_proj\_sc} a bad runtime, since the approximation for those indices never gets close to $m$ (since it always stays at $0$).
 
     \item \texttt{k\_difs}:
     Let $k = \ceil{1/\eps'} - 1$.
-    We start with the same $T$ and $P$ as in \texttt{cyclic}.
-    Then for each of the $n/m$ non-overlapping substrings of $T$ of length $m$, we choose $k$ distinct characters $s_1, s_2, \ldots, s_k$, and a sequence of replacements $r_1, r_2, \ldots r_k$ such that all elements of $\{s_1, s_2, \ldots s_k, r_1, r_2, \ldots r_k\}$ are distinct.
-    Then we replace each instance of $s_i$ in this substring with $r_i$.
+    Start with the same $T$ and $P$ as in \texttt{cyclic}.
+    For each of the $n/m$ non-overlapping substrings of $T$ of length $m$, choose $k$ distinct characters $s_1, s_2, \ldots, s_k$, and a sequence of replacements $r_1, r_2, \ldots r_k$ such that all elements of $\{s_1, s_2, \ldots s_k, r_1, r_2, \ldots r_k\}$ are distinct. Replace each instance of $s_i$ in this substring with $r_i$.
 
     We again analyze the case where $\abs{\Sigma} = n^{1/3}$ and $m = n^{2/3}$.
     This is again not trivial, since the frequencies of characters are about the same as in \texttt{cyclic}, so there are no extremely low or high frequency characters.
 
-    The idea of this test case is that it tries to cause \texttt{KP Projection with Magic Short Circuit} to take a long time to get a good estimation.
+    The idea of this test case is that it tries to cause \texttt{ham\_dist\_proj} to take a long time to get a good estimation.
     For each of the $n/m$ non-overlapping substrings, if even one of the $k = \ceil{1/\eps'} - 1$ edges get mapped to the same color, then the algorithm already finds a worse than $(1 - \eps')$ approximation.
     The probability of this happening is constant for each position, so we need to sample $\Omega(\log n^{1/3})$ times to have a constant probability of success.
     % TODO: make analysis better
 \end{itemize}
 
-Initially, we had more test cases, but these $3$ are already sufficient to get a good and a bad case for each of our algorithms.
+% Initially, we had more test cases, but these $3$ are already sufficient to get a good and a bad case for each of our algorithms.
 
 
-\subsection{Experiment Results}
+\subsection{Experiment Results on Synthetic Data}
 \label{sec:results}
+For each of the input families above, we measured the runtime and approximation ratios of the five algorithms under different values of $n$, $m$, $\abs{\Sigma}$, and $\eps$.
+Each data point is obtained by generating $5$ test cases using the same parameters but a different random seed, and taking the average of the run times.
+
+Magic short circuiting means measuring the time it takes to reach the correct approximation ratio.
+Note that this could not actually be implemented in practice, since it requires you to know the answer beforehand to know when to terminate.
+However, if we find that this algorithm is significantly better than without magic short circuit on all inputs, then we could simply decrease the maximum number of iterations we run our algorithm for.
 
 \subsubsection{Uniform}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\linewidth]{b_runtime_uniform.png}
+    \includegraphics[width=0.7\linewidth]{runtime_uniform.png}
     \caption{Runtime of algorithms on \texttt{uniform} data}
     \label{fig:uniform_runtime}
 \end{figure}
 
 \begin{itemize}
-    \item \texttt{Sqrt} is quite strong in general, and has a worse runtime than \texttt{KP Projection} only for very lenient $\eps$, like $\eps = 0.5$.
-    \item \texttt{Sqrt} is the only algorithm that varies greatly as we change $\abs{\Sigma}$, having a bad runtime around $\abs{\Sigma} = 80$, which is what we expect with our current implementation.
-    \item \texttt{KP Projection with Short Circuiting} is the fastest on uniform data, since it usually terminates after a single sample.
-    \item \texttt{KP Projection with Magic Short Circuiting} achieves the same performance as \texttt{KP Projection with Short Circuiting}, since short circuiting is already perfect.
-    This is expected, on all test cases, we should have magic short circuit being the fastest, followed by short circuit, followed by basic projection (although adjacent pairs might also be equal in performance).
+    \item \texttt{ham\_dist\_sqrt} is quite strong in general, and has a better runtime than \texttt{ham\_dist\_proj} only for very lenient $\eps$, like $\eps = 0.5$.
+    \item \texttt{ham\_dist\_sqrt} is the only algorithm that varies greatly as we change $\abs{\Sigma}$, having a bad runtime around $\abs{\Sigma} = 80$, which is what we expect with our current implementation.
+    \item \texttt{ham\_dist\_sc} is the fastest on uniform data, since it usually terminates after a single sample.
 \end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{approx_ratio_uniform.png}
+    \caption{Approximation Ratio of algorithms on \texttt{uniform} data}
+    \label{fig:uniform_runtime}
+\end{figure}
+
+\begin{itemize}
+    \item The base KP projection algorithm achieves very small relative error ($\le 5$\%), whereas Heuristic TP typically incurs larger relative error (around $16\%$) while still meeting the $\eps=0.2$ guarantee.
+    \item On uniformly random data, all characters have similar frequency and the TP bucket-mass score becomes nearly constant across hash functions. As a result, the TP heuristic cannot reliably distinguish ``good'' from ``bad'' projections. With short-circuiting and ``magic'' termination, both KP and TP variants terminate after essentially a single sample on uniform inputs, so their runtimes are comparable, but KP remains significantly more accurate. This confirms that TP scoring is not helpful on fully uniform data and is only beneficial on skewed or structured inputs (see Sections \ref{sec: cyclic} and \ref{sec: kdifs}).
+\end{itemize}
+
+% \begin{itemize}
+%     \item The base algorithm and the heuristics showed the most differentce in runtime with large $n$ (e.g. $n=10^6$) and different value of $m$.
+
+%     With $n=10^6$, we saw $x$\% improvement in runtime with almost no increase in approximation ratio.
+    
+%     \item Runtime varied significantly with $|\Sigma|$ up to a limit of $|\Sigma|\approx 100$; increasing $|\Sigma|$ past $100$ did not result in further increases in runtime.
+
+%     (maybe plot more values of sigma? Also discuss how hashing allows larger sigma to not affect the runtime as much, and compare with exact algorithms. Perhaps run another test with pure FFT, no hashing to show the difference with large sigma? )
+
+%     \item Approximation ratio is similar across the 4 algorithms, maybe slightly lower for the base KP, but not by much. Can be increased by cranking up $c$
+    
+%     \item Interestingly large Sigma didn't increase the approximation ratio much. 
+
+%     \item Approx ratio / epsilon is basically 1/2. We can probably decrease $c$ by half and it still works.
+
+%     \item Sqrt is faster than pretty much everything else but suffers at intermediate values of Sigma. This is also true for the approximation algorithms so probably worth discussing.
+
+    
+% \end{itemize}
 
 \subsubsection{Cyclic}
 \label{sec: cyclic}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\linewidth]{b_runtime_cyclic.png}
+    \includegraphics[width=0.7\linewidth]{runtime_cyclic_0.5m.png}
     \caption{Runtime of algorithms on \texttt{cyclic} data}
-    \label{fig:cyclic_runtime}
+    \label{fig:uniform_runtime}
 \end{figure}
 
 \begin{itemize}
-    \item \texttt{KP Projection with Short Circuit} gets the same runtime on these test cases as \texttt{KP Projection}, since many positions perfectly match, and it has no opportunities for short circuiting.
+    \item \texttt{ham\_dist\_sqrt} has better runtime compared to \texttt{cyclic}, since we decreased $m$ for most of these test cases, so most characters have slightly low frequency.
+    \item \texttt{ham\_dist\_pro\_sc} gets the same runtime on these test cases as \texttt{ham\_dist\_proj}, since many positions perfectly match, and it has no opportunities for short circuiting.
     Getting this behaviour was our main goal for this test case.
-    \item \texttt{KP Projection with Magic Short Circuit} still does well, since each $d_i$ is either $0$ or $m$, with the character mismatch graph forming a cycle of length $\abs{\Sigma}$, where each edge has weight $n/m$.
+    \item The actual approximation ratio still becomes good quite quickly, as shown by the fact that magic short circuit is more than $10$ times faster than \texttt{ham\_dist\_proj} in many cases.
 \end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{approx_ratio_cyclic_0.5m.png}
+    \caption{Approximation Ratio of algorithms on \texttt{cyclic} data}
+    \label{fig:uniform_runtime}
+\end{figure}
+% \subsubsection{Approximation Ratio on Cyclic data}
+\begin{itemize}
+    \item On cyclic data, Heuristic TP consistently achieves much lower approximation error than the base KP projection, since the TP score effectively filters out hash functions that collapse the periodic structure.
+    However, the ``magic short-circuiting'' variant does not obtain as large a speedup as it does for KP. This is partly because Heuristic TP incurs a fixed scoring and sorting overhead per candidate hash function, which magic short-circuit cannot remove, and partly because the base TP algorithm is already highly accurate: stopping early once we reach a $(1 \pm \varepsilon)$ approximation saves fewer FFT rounds and trades away some of this extra accuracy.
+
+    \item The high accuracy of Heuristic TP decreases the rounds of FFT needed for all values of $\eps$ we investigated, but the overhead of scoring and sorting can dominate at large $\eps$ (especially $\eps \ge 0.1$). We expect that with smaller values of $\eps$ (e.g. $\eps =0.01$), we would observe a much more pronounced increase in runtime with the base KP Projection, but Heuristic TP's runtime would remain more or less the same. KP Projection currently runs twice as many iterations of FFT as Heuristic TP, but the approximation ratio hovers around $0.1$-$0.15$ for all values of $n$ and $m$ we tested, so we suspect that this ratio is unlikely to decrease past 0.01 without a huge increase in the number of FFT's. Although we were unable to run all the algorithms at $\eps$ values much smaller than 0.05 (as this would make testing rather slow), we have observed this pattern in the limited runs we conducted manually.
+\end{itemize}
+
+
+% \begin{itemize}
+%     \item The $\tilde{O}(n \sqrt{m})$ solution seems to beat out most approximation algorithms tested. Notably, it is much faster than KP projection.
+%     \item However, with heuristics such as the magic short circuiting, the approximation algorithm was able to overtake the sqrt solution in some cases, such as when the alphabet size is small, the approximation ratio is big, or when m is large relative to n.
+%     \item The short circuiting technique does not help much in the case of cyclic inputs.
+%     \item approximation ratio of the magic short circuit algorithms seems to be better as well.
+% \end{itemize}
+
 
 \subsubsection{K-difs}
 \label{sec: kdifs}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\linewidth]{b_runtime_k_difs.png}
+    \includegraphics[width=0.7\linewidth]{runtime_k_difs.png}
     \caption{Runtime of algorithms on \texttt{k\_difs} data.}
     \label{fig:k_difs_runtime}
 \end{figure}
 
 \begin{itemize}
-    \item \texttt{KP Projection with Short Circuit} provides little benefit on this case either.
-    \item Magic short circuiting is closer to the original projection algorithm than on the other test cases.
+    % \item \texttt{ham\_dist\_proj\_sc} provides little benefit on this case either.
+    \item Magic short circuiting is closer to the original projection algorithm than on the other test cases, being only about $3$ times faster instead of being $10$ times faster.
     This means that we were somewhat successful in making a test case where you need to take many samples to get a correct approximation ratio.
-
-    However, the exact ratio is a bit hard to see from the graphs, so let us look at the number of iterations each version of the KP algorithm uses in one specific case across $10$ inputs with different random seeds.
-    By number of iterations, we mean the number of times the algorithm projected to a $2/\eps'$ size alphabet and performed $2/\eps'$ FFTs.
-    The runtime is practically proportional to the number of iterations (for fixed $n, m, \eps$).
-
-    \begin{table}[H]
-        \centering
-        \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|}
-            \hline
-            Algorithm & & & & & & & & & & \\
-            \hline
-            \texttt{KP Projection} & 20 & 20 & 20 & 20 & 20 & 20 & 20 & 20 & 20 & 20 \\
-            \texttt{KP Projection with Short Circuit} & 18 & 19 & 18 & 18 & 19 & 18 & 18 & 18 & 18 & 19 \\
-            \texttt{KP Projection with Magic Short Circuit} & 5 & 8 & 5 & 5 & 6 & 5 & 5 & 5 & 4 & 7 \\
-            \hline
-        \end{tabular}
-        \caption{Number of iterations taken on \texttt{k\_difs}} cases with $n = 10^6, m = 5000, \abs{\Sigma} = 100, \eps = 0.05$.
-        \label{tab:k_dif_ex}
-    \end{table}
-
-    As we can see, if we were to run KP Projection for less than $1/3$ of the theoretically proven number of iterations, it would have a non-trivial probability of failure.
+    However, it is still $3$ times faster, so this might not be the best test case, or it might be provable that the algorithm samples more efficiently than the basic bound we proved.
 \end{itemize}
 
-\subsubsection{Approximation ratios}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{approx_ratio_k_difs.png}
+    \caption{Approximation Ratio of algorithms on \texttt{k\_difs} data.}
+    \label{fig:k_difs_runtime}
+\end{figure}
 
-The approximation ratios achieved by the algorithms were generally not a very useful measure, since we designed our algorithms trying to minimize runtime while consider any approximation ratio at least as good as a $1 \pm \eps$ approximation to be correct.
-The optimization where we use $\eps' = 1 - (1-\eps)/(1+\eps)$ instead of $\eps$ then multiply the result by $(1+\eps)$ at the end also makes it more difficult to interpret approximation ratios, since it would turn a perfect algorithm into one that overestimates by a factor of $(1 + \eps)$.
-\texttt{KP Projection} often got an approximation ratio close to $\eps/2$ when run without the ``multiply by $(1 + \eps)$'' optimization, which is about the best it could hope to achieve when reducing the alphabet size to $\eps/2$ on uniform data.
-% TODO: add data
+
+\subsection{Real World Data}
+\label{sec: real_world_data}
+To complement our synthetic benchmarks, we evaluated all algorithms on real biological sequences. Our goal was not to solve a specific bioinformatics application, but to test whether approximate Hamming distance can offer practical advantages on large, naturally occurring strings with diverse structural properties.
+
+As a hypothetical scenario, imagine we found a new protein in species $A$ (e.g. humans), and we wanted to see if the protein evolved from species $B$ (e.g. gorillas). Additionally, suppose that in this hypothetical protein, any indel mutation is deadly, so we are restricted to substitutions. In the real world, this is a highly simplified assumption, but in this scenario we might compute approximate Hamming distance to identify homologs with up to $k$ substitutions in species $B$. Standard DP algorithms for global sequence alignment such as Needleman-Wunsch and Smith-Waterman are $O(mn)$, so approximate Hamming could be used as a fast first filter for aligning new proteins against a large database (although Hamming Distance is rarely used in practice because it does not account for indels).
+
+For the text string ($T$), we used the human proteome (UniProt proteome ID UP000005640 \cite{uniprot}), which is around $31$ million amino acids long.
+
+We chose four proteins as pattern strings ($P$). Protein sequences are obtained from Uniprot, using the accessions Q8WZ42 (Titin), P20929 (Nebulin), Q8WXI7 (MUC16), and P0DTC2 (SARS-CoV-2 Spike) \cite{uniprot}.
+\begin{itemize}
+    \item Titin (34,350 aa's): This is the longest known protein in humans with high complexity (near-random, very few repeated windows).
+    
+    \item MUC16 (14,507 aa's): This is the second-longest known human protein with many serine/threonine-rich tandem repeats. The composition is highly skewed toward S/T (around $18\%$ each), and other amino acids are rare ($< 9\%$ each).
+
+    \item Nebulin (8,525 aa's): A highly repetitive protein composed of repeated actin-binding motifs, but less skewed than MUC16.
+
+    \item SARS-Cov2 Spike protein (1,273 aa's): A practically meaningful protein with a substantially shorter sequence, included to mirror realistic applications.
+    
+\end{itemize}
+
+\subsection{Experiment Results on Real World Data}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{runtime_MUC16_31m_covid_31m_titin_31m_nebulin_31m.png}
+    \caption{Runtime of algorithms on matching four proteins (MUC16, SARS-Cov2 Spike, Titin, and Nebulin) against the human proteome.}
+    \label{fig:k_difs_runtime}
+\end{figure}
+
+Across all real-world patterns examined, the behavior of the algorithms mirrors---but also meaningfully deviates from---that of the synthetic data in Section \ref{sec:results}. Instead, runtimes change more smoothly with $\eps$ and follow the same general ordering between algorithms on all protein sequences. This stands in contrast against certain adversarial generators (specifically \texttt{cyclic} and \texttt{k-difs}), which showed sharper deviations in runtime.
+
+\begin{itemize}
+    \item On Titin, the long pattern string and near-random structure allows the approximate algorithms (specifically the magic short-circuiting versions) to outperform the exact algorithms (Brute Force and Sqrt). We noticed that in most runs, the approximate algorithms reached $(1\pm \eps)$ accuracy in one iteration.
+
+    \item The highly skewed and repetitive composition of MUC16 makes different windows of the text appear similar under projection, making it challenging for hashing-based algorithms to achieve a good approximation ratio. However, the algorithms still performed well due to the long pattern length.
+
+    \item On Nebulin, the approximation algorithms still perform fairly well, but less so compared to a longer, more random protein like titin.
+
+    \item Because of the shorter length of the SARS-Cov2 Spike protein, Brute Force and Sqrt outperformed the approximation algorithms in almost all values of $\eps$ due to constant factor domination.
+\end{itemize}
+
+
+
+
+
 
 \section{Conclusion}
 
-Overall, the exact algorithms are relatively fast, and the proven approximation algorithm is only better if the input is extremely large and $\eps$ is lenient.
+Overall, the exact algorithms are relatively fast, and the basic approximation algorithm is only better if the input is extremely large and $\eps$ is lenient.
 The short circuiting version does provide a significant advantage for uniformly distributed data.
 The lack of interesting real world data makes it difficult to determine which algorithm would be best for large inputs, since it would depend on the distribution of the data.
-We ran \texttt{KP Projection} for $\log_2(n) + 1$ iterations, which in theory we only proved has about a $1/2$ chance of success.
+We ran \texttt{ham\_dist\_proj} for $\log_2(n) + 1$ iterations, which in theory we only proved has about a $1/2$ chance of success.
 However, in practice, the algorithm seems to get an approximation much faster, with the magic short circuiting version always being at least $3$ times faster.
 This is because it is hard to construct strings where every substring of $T$ is bad for the approximation algorithm, since substrings overlap.
 It might be possible to prove that the algorithm converges faster by a constant factor than stated in the original paper, if one can find a useful way to examine the interactions between overlapping substrings.
